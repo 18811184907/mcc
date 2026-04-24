@@ -218,4 +218,4 @@ Reviewer: "实现完整的 metrics tracking，带数据库、日期过滤、CSV 
 - **上游：** `requesting-code-review` skill —— 那个 skill 负责发出请求，本 skill 处理收到的反馈
 - **涉及具体 bug 时派 `debugger` agent** —— review 指出某段代码有 bug、但根因不明显时，不要自己瞎猜，直接派 debugger 定位根因；本 skill 的"对照代码库核实"那一步交给他做
 - **涉及安全问题时：** review 提到认证、加密、SQL 注入等，转给 `security-reviewer` agent 复核，不要直接按 reviewer 话术实施
-- `/mcc:code-review` 命令完成后的反馈处理就走本 skill
+- `/code-review` 命令完成后的反馈处理就走本 skill

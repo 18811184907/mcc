@@ -11,7 +11,7 @@ argument-hint: "[PR# | PR URL]（留空则审本地未提交）"
 
 对单点改动做深度审查——要么是本地未提交的改动，要么是一个 GitHub PR。**并行委派 `code-reviewer`（质量/架构）+ `security-reviewer`（安全）** 两个 agent，然后汇总给 CRITICAL/HIGH/MEDIUM/LOW 4 级 finding。
 
-与 `mcc-full-review` prompt 的区别：本命令是单点，范围小、速度快；full-review 是模块或项目级全景审查。
+与 `/full-review` 的区别：本命令是单点，范围小、速度快；full-review 是模块或项目级全景审查。
 
 ---
 
@@ -273,7 +273,7 @@ Next steps:
 
 ## 与其他命令的关系
 
-- 要求：在 `mcc-implement` prompt 或手工 commit 后运行
-- 配合：`mcc-verify` prompt 单跑验证
-- 更重：`mcc-full-review` prompt 全景审查
-- 之后：`mcc-pr` prompt 或 `gh pr merge`
+- 要求：在 `/implement` 或手工 commit 后运行
+- 配合：`/verify` 单跑验证
+- 更重：`/full-review` 全景审查
+- 之后：`/pr` 或 `gh pr merge`

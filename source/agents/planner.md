@@ -201,7 +201,7 @@ Stripe Checkout, and webhook events keep subscription status in sync.
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `/mcc:plan`、`/mcc:implement`、`/mcc:feature-dev` 调用
+- **上游**：被 `/plan`、`/implement`、`/feature-dev` 调用
 - **下游交接**：
   - `tdd-guide`：按计划先写测试
   - `backend-architect`：后端架构细化

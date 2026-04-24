@@ -61,6 +61,6 @@ argument-hint: "(无参数，自动扫描当前 session)"
 
 ## 与其他命令的关系
 
-- `/mcc:fix-bug` 后立即 `/mcc:learn` 能把根因沉淀为 skill
-- `/mcc:skill-create` 从 git history 批量提取；`/mcc:learn` 从单个 session 实时提取
-- 后续：`/mcc:session-save` 记进 session，`/mcc:session-resume` 重启时这些 learned skill 已就绪
+- `/fix-bug` 后立即 `/learn` 能把根因沉淀为 skill
+- `/skill-create` 从 git history 批量提取；`/learn` 从单个 session 实时提取
+- 后续：`/session-save` 记进 session，`/session-resume` 重启时这些 learned skill 已就绪

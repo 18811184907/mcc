@@ -23,6 +23,7 @@ function parseArgs(argv) {
     force: false,
     dryRun: false,
     verbose: false,
+    exclusive: false,
   };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
@@ -31,6 +32,7 @@ function parseArgs(argv) {
     else if (a === '--force') args.force = true;
     else if (a === '--dry-run') args.dryRun = true;
     else if (a === '--verbose') args.verbose = true;
+    else if (a === '--exclusive') args.exclusive = true;
     else if (a === '-h' || a === '--help') {
       printHelp();
       process.exit(0);
@@ -46,7 +48,7 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
-  console.log(`MCC Installer v1.0.0
+  console.log(`MCC Installer v1.2.0
 
 用法:
   node scripts/installer.js [选项]
@@ -58,14 +60,18 @@ function printHelp() {
                                      hybrid: 通用资产全局 + rules/PRPs 项目级
   --target <auto|claude-code|codex|both>  目标工具（默认 auto = 检测已装的）
   --force                            同名文件覆盖（默认跳过用户已有的）
+  --exclusive                        独占模式：先备份并清空 agents/commands/skills/modes 目录
+                                     再装 MCC。rules/ 和 settings.json 保留。
+                                     只用 MCC、想清干净现有 agent/command/skill 的场景。
   --dry-run                          只打印计划，不动任何文件
   --verbose                          详细日志
   -h, --help                         显示此帮助
 
 示例:
-  node scripts/installer.js                          # 自动检测 + 全局装
-  node scripts/installer.js --scope project         # 装到当前项目
-  node scripts/installer.js --target codex          # 只装 Codex 侧
+  node scripts/installer.js                          # 自动检测 + 全局装（共存模式，同名跳过）
+  node scripts/installer.js --exclusive              # 全局 + 独占（清空 agent/command/skill/mode 再装）
+  node scripts/installer.js --scope project          # 装到当前项目
+  node scripts/installer.js --target codex           # 只装 Codex 侧
 `);
 }
 
@@ -384,6 +390,25 @@ async function installClaudeCode(distDir, scope, options) {
 
   // 备份
   const timestamp = makeBackupTimestamp();
+
+  // v1.2: 独占模式 — 备份并清空 agents/commands/skills/modes（保留 rules/settings.json）
+  if (options.exclusive && pathExists(targetDir)) {
+    const ccDirs = ['agents', 'commands', 'skills', 'modes'];
+    const excBackupRoot = `${targetDir}.exclusive-backup-${timestamp}`;
+    log('info', `[exclusive] 备份+清空 ${ccDirs.join(', ')} → ${excBackupRoot}`);
+    for (const d of ccDirs) {
+      const fromDir = path.join(targetDir, d);
+      if (!pathExists(fromDir)) continue;
+      const toDir = path.join(excBackupRoot, d);
+      if (!options.dryRun) {
+        ensureDir(path.dirname(toDir));
+        try { fs.renameSync(fromDir, toDir); }
+        catch { copyDirRecursive(fromDir, toDir); fs.rmSync(fromDir, { recursive: true, force: true }); }
+      }
+      log('ok', `  ✓ ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
+    }
+  }
+
   let backup = null;
   if (pathExists(targetDir) && !options.dryRun) {
     // 不备份整个 ~/.claude/（太大），只备份会被我们碰的部分：settings.json
@@ -543,6 +568,25 @@ async function installCodex(distDir, scope, options) {
   log('info', `Codex 目标: ${targetDir}`);
 
   const timestamp = makeBackupTimestamp();
+
+  // v1.2: 独占模式 — 备份并清空 agents/prompts/rules（保留 config.toml）
+  if (options.exclusive && pathExists(targetDir)) {
+    const cxDirs = ['agents', 'prompts', 'rules'];
+    const excBackupRoot = `${targetDir}.exclusive-backup-${timestamp}`;
+    log('info', `[exclusive] 备份+清空 ${cxDirs.join(', ')} → ${excBackupRoot}`);
+    for (const d of cxDirs) {
+      const fromDir = path.join(targetDir, d);
+      if (!pathExists(fromDir)) continue;
+      const toDir = path.join(excBackupRoot, d);
+      if (!options.dryRun) {
+        ensureDir(path.dirname(toDir));
+        try { fs.renameSync(fromDir, toDir); }
+        catch { copyDirRecursive(fromDir, toDir); fs.rmSync(fromDir, { recursive: true, force: true }); }
+      }
+      log('ok', `  ✓ ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
+    }
+  }
+
   let backup = null;
   if (pathExists(targetDir) && !options.dryRun) {
     const configPath = path.join(targetDir, 'config.toml');

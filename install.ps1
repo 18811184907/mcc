@@ -1,7 +1,8 @@
 # install.ps1 — MCC installer (Windows)
 #
 # 用法:
-#   .\install.ps1                        # 自动检测 + 全局安装
+#   .\install.ps1                        # 自动检测 + 全局安装（共存模式，同名跳过）
+#   .\install.ps1 -Exclusive             # 独占模式：清空 agents/commands/skills/modes 再装 MCC
 #   .\install.ps1 -Scope project         # 装到当前项目的 .claude / .codex
 #   .\install.ps1 -Target claude-code    # 只装 Claude Code 侧
 #   .\install.ps1 -Force                 # 覆盖同名文件（默认跳过）
@@ -18,6 +19,7 @@ param(
     [string]$Target = 'auto',
 
     [switch]$Force,
+    [switch]$Exclusive,
     [switch]$DryRun,
     [switch]$Verbose
 )
@@ -79,13 +81,14 @@ $installerArgs = @(
     '--scope', $Scope,
     '--target', $Target
 )
-if ($Force)   { $installerArgs += '--force' }
-if ($DryRun)  { $installerArgs += '--dry-run' }
-if ($Verbose) { $installerArgs += '--verbose' }
+if ($Force)     { $installerArgs += '--force' }
+if ($Exclusive) { $installerArgs += '--exclusive' }
+if ($DryRun)    { $installerArgs += '--dry-run' }
+if ($Verbose)   { $installerArgs += '--verbose' }
 
 Write-Host ""
 Write-Host "====================================" -ForegroundColor Cyan
-Write-Host "  MCC Installer v1.0.0" -ForegroundColor Cyan
+Write-Host "  MCC Installer v1.2.0" -ForegroundColor Cyan
 Write-Host "====================================" -ForegroundColor Cyan
 Write-Host ""
 

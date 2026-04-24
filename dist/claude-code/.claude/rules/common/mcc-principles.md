@@ -16,7 +16,7 @@
 
 **在 MCC 里的落地**：
 - `confidence-check` skill 在实现前做 5 维度评估（Need / Scope / Risk / Feasibility / Evidence），≥90% 才动手，70–89% 给出备选方案，<70% 反问用户
-- `/mcc:implement` 的第一步是 evidence 收集，不是直接编码
+- `/implement` 的第一步是 evidence 收集，不是直接编码
 - agent 回答统一"结论先出、证据在后"，跳过"让我来帮您分析一下"这类开场白
 
 ---
@@ -180,7 +180,7 @@ class Square(Rectangle):
 
 **在 MCC 里的落地**：
 - `party-mode` skill 召集多视角（事实审查者 / 高级工程师 / 安全专家 / 一致性审查者 / 冗余检查者）对抗单点偏差
-- `/mcc:review` 的五角色评审默认走多视角
+- `/review` 的五角色评审默认走多视角
 
 ---
 
@@ -237,11 +237,11 @@ Trigger: <什么信号触发缓解动作>
 
 | 原则 | 主要组件 | 次要组件 |
 |---|---|---|
-| 核心指令 / 证据驱动 | `confidence-check` (skill) | Context7 MCP、`/mcc:implement` |
+| 核心指令 / 证据驱动 | `confidence-check` (skill) | Context7 MCP、`/implement` |
 | SOLID / 架构 | `architect` (agent) | `code-reviewer` (agent) |
 | 系统思维 / 决策 | `architecture-decision-records` (skill) | `planner` (agent) |
 | 风险管理 | `planner` (agent) | `security-reviewer` (agent)、`verification-loop` (skill) |
-| 偏差识别 | `party-mode` (skill) | `/mcc:review` |
+| 偏差识别 | `party-mode` (skill) | `/review` |
 | 证据链 debug | `debugger` (agent) | sequential-thinking MCP |
 
 与 `rules/common/coding-style.md`、`development-workflow.md`、`agents.md`、`testing.md`、`security.md` 配合使用，构成 MCC 的完整规则栈。

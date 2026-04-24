@@ -20,8 +20,8 @@
 | 维度 | 内容 |
 |---|---|
 | **19 个角色 agent** | planner / code-reviewer / debugger / security-reviewer / ai-engineer / python-pro / typescript-pro / fastapi-pro / frontend-developer / backend-architect / database-optimizer / performance-engineer / …… |
-| **20 个 slash 命令** | `/mcc:prd` `/mcc:plan` `/mcc:implement` `/mcc:pr`（PRP 四件套流水线）、`/mcc:full-stack`（9 步全栈）、`/mcc:review` `/mcc:full-review`（两档审查）、`/mcc:tdd` `/mcc:e2e` `/mcc:test-coverage`（测试三路）、`/mcc:fix-bug` `/mcc:troubleshoot` `/mcc:build-fix`（诊断三档）、`/mcc:session-save` `/mcc:session-resume`（跨 session 持久化）…… |
-| **16 个 skill** | **v1.0 基础（8）**：`product-lens`（产品诊断）、`confidence-check`（5 维度开工门槛）、`party-mode`（真并行多 agent 辩论）、`mcc-help`（扫 FS 推当前阶段+建议下一步）、`architecture-decision-records`、`coding-standards`、`verification-loop`、`continuous-learning-v2`<br><br>**v1.1 Superpowers 增量（8）**：`subagent-driven-development`（每任务 fresh subagent + 两阶段 review）、`tdd-workflow`（含 testing-anti-patterns，`/mcc:tdd` 的 skill 实现体）、`writing-skills`（创作 skill 的 meta-skill + Anthropic 最佳实践）、`using-git-worktrees`、`finishing-a-development-branch`、`requesting-code-review` + `receiving-code-review`（审查两端）、`dispatching-parallel-agents`（和 party-mode 辩论互补：一个分发一个辩论） |
+| **20 个 slash 命令** | `/prd` `/plan` `/implement` `/pr`（PRP 四件套流水线）、`/full-stack`（9 步全栈）、`/review` `/full-review`（两档审查）、`/tdd` `/e2e` `/test-coverage`（测试三路）、`/fix-bug` `/troubleshoot` `/build-fix`（诊断三档）、`/session-save` `/session-resume`（跨 session 持久化）…… |
+| **16 个 skill** | **v1.0 基础（8）**：`product-lens`（产品诊断）、`confidence-check`（5 维度开工门槛）、`party-mode`（真并行多 agent 辩论）、`mcc-help`（扫 FS 推当前阶段+建议下一步）、`architecture-decision-records`、`coding-standards`、`verification-loop`、`continuous-learning-v2`<br><br>**v1.1 Superpowers 增量（8）**：`subagent-driven-development`（每任务 fresh subagent + 两阶段 review）、`tdd-workflow`（含 testing-anti-patterns，`/tdd` 的 skill 实现体）、`writing-skills`（创作 skill 的 meta-skill + Anthropic 最佳实践）、`using-git-worktrees`、`finishing-a-development-branch`、`requesting-code-review` + `receiving-code-review`（审查两端）、`dispatching-parallel-agents`（和 party-mode 辩论互补：一个分发一个辩论） |
 | **3 个 behavioral mode** | `brainstorming` · `task-management` · `token-efficiency`（按关键词/上下文自动激活） |
 | **8 条 hook** | `pre:config-protection` 独家（阻止 Claude 修改 config 绕过 lint/security）、`stop:format-typecheck`（批量 lint+tsc，不每次 edit 跑）、`pre:bash:safety`（破坏性命令拦截）等 |
 | **5 个 MCP 服务器** | Serena（语义记忆）、Context7（实时查文档）、GitHub、Sequential（深推理）、Playwright |
@@ -79,7 +79,7 @@ installer 会自动：
 
 在 Claude Code 里打一条消息：
 ```
-/mcc-help
+mcc-help
 ```
 
 会告诉你当前项目在 MCC workflow 的什么阶段、建议下一步。
@@ -123,7 +123,7 @@ source/                              ← 一份真相
 dist/
 ├── claude-code/.claude/             ← 给 Claude Code 用
 │   ├── agents/          (19)
-│   ├── commands/mcc/    (20，触发 /mcc:*)
+│   ├── commands/    (20，触发 /*)
 │   ├── skills/          (8)
 │   ├── modes/           (3)
 │   ├── .mcc-hooks/      (25 scripts + hooks.json)
@@ -168,11 +168,11 @@ MCC 的 agent/command 都是 **融合改写**过的，不是多个源并存：
 ### 场景 1：做一个新功能
 
 ```
-/mcc:prd    → 7 phase Socratic 对话生成 PRD
-/mcc:plan   → 从 PRD 生成自包含实施计划（含 mandatory reading）
-/mcc:implement → 按 plan 执行，每步 5 级验证（type/lint/test/build/integration）
-/mcc:review → 并行跑 code-reviewer + security-reviewer
-/mcc:pr     → 创建 PR 关联所有 PRP artifacts
+/prd    → 7 phase Socratic 对话生成 PRD
+/plan   → 从 PRD 生成自包含实施计划（含 mandatory reading）
+/implement → 按 plan 执行，每步 5 级验证（type/lint/test/build/integration）
+/review → 并行跑 code-reviewer + security-reviewer
+/pr     → 创建 PR 关联所有 PRP artifacts
 ```
 
 artifacts 都落 `.claude/PRPs/{prds,plans,reports,reviews}/`。
@@ -180,7 +180,7 @@ artifacts 都落 `.claude/PRPs/{prds,plans,reports,reviews}/`。
 ### 场景 2：卡住了
 
 ```
-/mcc:fix-bug "登录接口偶尔 500" → root cause 调查 → 方案 A/B → 实施
+/fix-bug "登录接口偶尔 500" → root cause 调查 → 方案 A/B → 实施
 ```
 
 禁止 retry，强制根因分析，产出归档到 `docs/mistakes/`。
@@ -188,7 +188,7 @@ artifacts 都落 `.claude/PRPs/{prds,plans,reports,reviews}/`。
 ### 场景 3：方向有分歧
 
 ```
-/mcc-help → 查看当前阶段 + 推荐 skill
+mcc-help → 查看当前阶段 + 推荐 skill
 调 party-mode → 真并行 spawn 4 个 MCC agent 辩论
              (planner + backend-architect + security-reviewer + ai-engineer)
 ```
@@ -196,8 +196,8 @@ artifacts 都落 `.claude/PRPs/{prds,plans,reports,reviews}/`。
 ### 场景 4：跨天继续上次的活
 
 ```
-昨天结束前：/mcc:session-save
-今天开始：/mcc:session-resume → 秒懂昨天做到哪了、什么没跑通、下一步 exact action
+昨天结束前：/session-save
+今天开始：/session-resume → 秒懂昨天做到哪了、什么没跑通、下一步 exact action
 ```
 
 完整 20 个命令速查见 [USAGE.md](./USAGE.md)。
@@ -211,7 +211,7 @@ artifacts 都落 `.claude/PRPs/{prds,plans,reports,reviews}/`。
 ```
 ~/.claude/
 ├── agents/{19 个 MCC agent}.md        ← 同名用户已有的不覆盖
-├── commands/mcc/{20 个命令}.md         ← 触发 /mcc:*
+├── commands/{20 个命令}.md         ← 触发 /*
 ├── skills/{8 个 skill 目录}/           ← 同名跳过
 ├── modes/{3 个 mode}.md
 ├── rules/python/ + rules/common/mcc-principles.md
@@ -256,7 +256,7 @@ artifacts 都落 `.claude/PRPs/{prds,plans,reports,reviews}/`。
 
 卸载会：
 - 恢复 `settings.json` / `config.toml` 到安装前
-- 删除 `.mcc-hooks/` / `commands/mcc/` / `rules/common/mcc-principles.md`（MCC 独有）
+- 删除 `.mcc-hooks/` / `commands/` / `rules/common/mcc-principles.md`（MCC 独有）
 - **保留** 你的 PRPs artifacts、session-data、learned skills、mistakes、ADR
 - **保留** agents/skills/modes（因为你可能改过同名文件）—— 手动清理
 
@@ -276,7 +276,7 @@ artifacts 都落 `.claude/PRPs/{prds,plans,reports,reviews}/`。
 
 - [x] 纳入 [obra/superpowers](https://github.com/obra/superpowers) 8 个独家 skill
 - [x] **subagent-driven-development**：每任务 fresh subagent + 两阶段 review（spec → quality）
-- [x] **tdd-workflow**（改名自 test-driven-development）：填补 `/mcc:tdd` 的 skill 实现体，含 testing-anti-patterns
+- [x] **tdd-workflow**（改名自 test-driven-development）：填补 `/tdd` 的 skill 实现体，含 testing-anti-patterns
 - [x] **writing-skills**：创作 skill 的 meta-skill + Anthropic 官方最佳实践参考
 - [x] **using-git-worktrees**：worktree 隔离并行开发
 - [x] **finishing-a-development-branch**：分支收尾（merge/PR/cleanup）
@@ -284,13 +284,21 @@ artifacts 都落 `.claude/PRPs/{prds,plans,reports,reviews}/`。
 - [x] **dispatching-parallel-agents**：独立任务并行分发（和 party-mode 辩论互补）
 - [x] skills 从 8 扩展到 **16**
 
-### v1.2+ · 待定（按社区反馈）
+### v1.2 · 2026-04-24 便捷性提升 ✅
 
-- [ ] `doc-updater` agent（ECC 有但 v1 没装）
+- [x] Claude Code slash 命令**去 `/mcc:` 前缀**：`/mcc:prd` → **`/prd`**、`/mcc:plan` → **`/plan`**（20 个全部去）
+- [x] adapter 改：`commands/mcc/` 子目录 → `commands/` 顶层
+- [x] installer 加 **`--exclusive`** flag：独占模式备份并清空 `agents/commands/skills/modes/` 再装 MCC（`rules/` 和 `settings.json` 保留）
+- [x] 文档全量更新（README / USAGE / ARCHITECTURE 所有 `/mcc:xxx` → `/xxx`）
+- [x] Codex 侧保持 `mcc-` prefix 不变（Codex 生态里防 prompt 撞）
+
+### v1.3+ · 待定（按社区反馈）
+
+- [ ] `doc-updater` agent（ECC 有但当前没装）
 - [ ] 更多语言 rules（Go / Rust 等按需）
 - [ ] Cursor / Gemini CLI 支持（按需）
 - [ ] MCC 自检测试套件
-- [ ] e2e-testing skill（v1 `/mcc:e2e` 是内联版）
+- [ ] e2e-testing skill（当前 `/e2e` 是内联版）
 
 ---
 

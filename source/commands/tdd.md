@@ -85,7 +85,7 @@ npm test <test-file>
 - 外部服务调用
 - 带 hook 的 React component
 
-**E2E Tests** → 用 `/mcc:e2e` 单独跑
+**E2E Tests** → 用 `/e2e` 单独跑
 
 ---
 
@@ -104,17 +104,17 @@ npm test <test-file>
 
 ## 典型 session
 
-1. 用 `/mcc:plan` 明确要造什么
-2. 用 `/mcc:tdd` 按 RED-GREEN-REFACTOR 实现
-3. 遇到 build error → `/mcc:build-fix`
-4. 跑 `/mcc:review` 审查
-5. `/mcc:test-coverage` 验证覆盖达标
+1. 用 `/plan` 明确要造什么
+2. 用 `/tdd` 按 RED-GREEN-REFACTOR 实现
+3. 遇到 build error → `/build-fix`
+4. 跑 `/review` 审查
+5. `/test-coverage` 验证覆盖达标
 
 ---
 
 ## 与其他命令的关系
 
-- 新功能：先 `/mcc:plan`，再 `/mcc:tdd`
-- Bug fix：`/mcc:fix-bug` 的 Phase 4 会调用 TDD 流程
-- 老代码补测试：`/mcc:test-coverage`
-- 完成后：`/mcc:review`
+- 新功能：先 `/plan`，再 `/tdd`
+- Bug fix：`/fix-bug` 的 Phase 4 会调用 TDD 流程
+- 老代码补测试：`/test-coverage`
+- 完成后：`/review`

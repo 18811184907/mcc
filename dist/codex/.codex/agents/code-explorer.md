@@ -90,7 +90,7 @@ tools: [read_file, search, list_files, run_shell_command]
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `/mcc:feature-dev`、`/mcc:plan`、`/mcc:implement` 在"先摸清现状"阶段调用
+- **上游**：被 `/feature-dev`、`/plan`、`/implement` 在"先摸清现状"阶段调用
 - **下游**：
   - 输出喂给 `planner` 做实现计划
   - 输出喂给 `backend-architect` 做架构决策

@@ -120,6 +120,6 @@ safety check                                 # 依赖已知漏洞
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `/mcc:security-review`、`/mcc:review`（安全维度）调用
+- **上游**：被 `/security-review`、`/review`（安全维度）调用
 - **并行**：与 `code-reviewer`、`silent-failure-hunter` 一起跑
 - **下游**：修复交 `python-pro` / `typescript-pro` 等实现专家落地

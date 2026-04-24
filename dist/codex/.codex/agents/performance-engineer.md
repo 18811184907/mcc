@@ -355,7 +355,7 @@ const fastCode = ...;
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `/mcc:review`、性能问题触发自动调用
+- **上游**：被 `/review`、性能问题触发自动调用
 - **并行**：DB 深度优化 → `database-optimizer`；系统架构 → `backend-architect`
 - **下游**：具体修复交 `python-pro` / `typescript-pro` / `frontend-developer`
 

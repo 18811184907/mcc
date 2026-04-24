@@ -101,7 +101,7 @@ EOF
 )"
 ```
 
-**或者直接调 MCC 的 `/mcc:prp-pr` 命令**——它会自动分析 commit 历史、起草 PR 描述、push 新分支。本 skill 里只给最小命令，复杂场景走那条命令。
+**或者直接调 MCC 的 `/prp-pr` 命令**——它会自动分析 commit 历史、起草 PR 描述、push 新分支。本 skill 里只给最小命令，复杂场景走那条命令。
 
 然后：清理 worktree（Step 5）。
 
@@ -198,5 +198,5 @@ git worktree remove <worktree-path>
 
 **配套使用：**
 - `using-git-worktrees` —— 清理由该 skill 建出来的 worktree
-- `/mcc:prp-pr` —— 选 Option 2 时的首选命令，自动处理 PR 分析、push、创建
-- `/mcc:prp-commit` —— 合并前还有未提交工作时用
+- `/prp-pr` —— 选 Option 2 时的首选命令，自动处理 PR 分析、push、创建
+- `/prp-commit` —— 合并前还有未提交工作时用

@@ -114,7 +114,7 @@ Total < 0.70:  ❌ STOP，补上下文再来
 
 ## 与 MCC 其它组件的配合
 
-- `/mcc:tdd` 前：先跑 confidence-check，不到 90% 先补齐再写测试
-- `/mcc:implement` 前：plan 产出后、动手前，跑一次确认
-- `/mcc:plan` 产出后：plan 里的技术选型通过 confidence-check 才进 implement 阶段
-- `confidence < 0.7` 时：切到 `/mcc:prd` 或 `product-lens` skill 补需求侧上下文
+- `/tdd` 前：先跑 confidence-check，不到 90% 先补齐再写测试
+- `/implement` 前：plan 产出后、动手前，跑一次确认
+- `/plan` 产出后：plan 里的技术选型通过 confidence-check 才进 implement 阶段
+- `confidence < 0.7` 时：切到 `/prd` 或 `product-lens` skill 补需求侧上下文

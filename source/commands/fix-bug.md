@@ -47,7 +47,7 @@ argument-hint: "<bug 描述或错误信息（可选，为空则 Claude 主动询
 1. 按 TDD 流程：先写失败测试（证明能复现 bug）
 2. 修改代码让测试通过
 3. 跑完整测试套件（回归检查）
-4. 跑 `/mcc:verify` 做最终验证
+4. 跑 `/verify` 做最终验证
 
 ## Phase 5 — 归档
 
@@ -80,7 +80,7 @@ docs/mistakes/bug-{yyyy-mm-dd}-{short-name}.md
 [方案 + diff 摘要]
 
 ## 验证
-[测试 + 回归 + /mcc:verify 结果]
+[测试 + 回归 + /verify 结果]
 
 ## 教训
 [下次同类问题如何更早发现]
@@ -88,4 +88,4 @@ docs/mistakes/bug-{yyyy-mm-dd}-{short-name}.md
 
 ---
 
-**Related**: `/mcc:troubleshoot`（更轻量、多域分诊）, `/mcc:verify`（最终闸门）, `/mcc:learn`（把这个根因变成 learned skill）
+**Related**: `/troubleshoot`（更轻量、多域分诊）, `/verify`（最终闸门）, `/learn`（把这个根因变成 learned skill）

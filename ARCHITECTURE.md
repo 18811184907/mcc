@@ -67,7 +67,7 @@ mcc/
 │
 ├── source/                       # ★ 单一源（改这里）
 │   ├── agents/*.md               # 19 个角色 agent
-│   ├── commands/*.md             # 20 个 slash 命令（不含 /mcc: 前缀）
+│   ├── commands/*.md             # 20 个 slash 命令（v1.2 起直接触发 /prd、/plan 等，无前缀）
 │   ├── skills/*/SKILL.md         # 8 个 skill 目录
 │   ├── modes/*.md                # 3 个 behavioral mode
 │   ├── hooks/
@@ -90,7 +90,7 @@ mcc/
     ├── claude-code/
     │   ├── .claude/              # 拷到 ~/.claude/
     │   │   ├── agents/ (19)
-    │   │   ├── commands/mcc/ (20)
+    │   │   ├── commands/ (20)
     │   │   ├── skills/ (8)
     │   │   ├── modes/ (3)
     │   │   ├── .mcc-hooks/
@@ -120,7 +120,7 @@ mcc/
         │
         ├──────────────────→ adapt-to-claude-code.js
         │                          │ 1. 目录结构化拷贝（agents/commands/skills/...）
-        │                          │ 2. commands/ → commands/mcc/（触发 /mcc:*）
+        │                          │ 2. commands/ → commands/（触发 /*）
         │                          │ 3. hooks scripts → .mcc-hooks/
         │                          │ 4. PRPs 占位目录 + .gitkeep
         │                          │ 5. 生成 INSTALL-MANIFEST.json
@@ -130,7 +130,7 @@ mcc/
         └──────────────────→ adapt-to-codex.js
                                    │ 1. agents: tools 字段按 TOOLS_MAP 重命名，删 model
                                    │    Read → read_file  Grep → search  Bash → run_shell_command  ...
-                                   │ 2. commands: /mcc:xxx → `mcc-xxx` prompt，文件重命名 mcc-*.md
+                                   │ 2. commands: /xxx → `mcc-xxx` prompt，文件重命名 mcc-*.md
                                    │ 3. skills 不拷（Codex 不原生支持），编译入 AGENTS.md
                                    │ 4. hooks 不拷（Codex 不支持），生成 HOOKS-SOFT-GUIDANCE.md
                                    │ 5. mcp.json → config.fragment.toml（JSON → TOML）
@@ -189,14 +189,16 @@ mcc/
 
 ## 关键设计决策
 
-### 为什么 commands 放 `commands/mcc/` 子目录
+### 为什么 v1.2 把 commands 从 `commands/mcc/` 平到 `commands/` 顶层
 
-Claude Code 识别子目录作为命令命名空间。放 `commands/mcc/prd.md` 就会触发 `/mcc:prd`。
+**v1.0-1.1**：`commands/mcc/prd.md` → 触发 `/mcc:prd`（带命名空间避免冲突）。
 
-好处：
-- 不和用户可能已有的 `/prd` `/plan` 撞
-- 不和其他插件（比如 ECC 的 `/prp-*`、SuperClaude 的 `/sc:*`）撞
-- Tab 补全分组：敲 `/mcc:` 可以看全部 MCC 命令
+**v1.2 起**：`commands/prd.md` → 触发 `/prd`（更简洁，对独占 MCC 的用户不繁琐）。
+
+代价：**和用户已有同名命令可能冲突**（如之前装过别的插件有 `/plan`）。两种处理：
+
+- **独占模式**：`install.sh --exclusive` 先备份并清空 `agents/commands/skills/modes/` 再装 MCC（`rules/` 和 `settings.json` 保留）
+- **共存模式**（默认）：同名跳过，保留用户已有。想让 MCC 覆盖就加 `--force`
 
 ### 为什么 hooks 放 `.mcc-hooks/` 隐藏 namespace
 
@@ -274,9 +276,9 @@ SC 的 `root-cause-analyst` 偏"方法论、证据链文档化"，wshobson 的 `
 
 1. 在 `source/commands/` 下新建 `my-cmd.md`
 2. frontmatter: `description`（中文一句话）+ 可选 `argument-hint`
-3. 命名不含 `/mcc:` 前缀（adapter 会加）
+3. 命名不含 `/` 前缀（adapter 会加）
 4. 引用其他 MCC agent/skill 时用它们的裸名
-5. build + install + 在 Claude Code 里 `/mcc:my-cmd` 测
+5. build + install + 在 Claude Code 里 `/my-cmd` 测
 
 ### 加一个新 skill
 
@@ -340,5 +342,5 @@ ls -la .claude/.mcc-hooks/ 2>/dev/null   # 应不存在
 - **hooks 脚本的 `ECC_` 环境变量前缀**：拷贝自 ECC 的 hook scripts 内部用 `ECC_HOOK_PROFILE` 等变量名。为了不破坏脚本互相引用，保留不改。用户不会看到这些（纯内部）
 - **continuous-learning-v2 默认关闭 observer**：启用要手动改 `skills/continuous-learning-v2/config.json` 的 `observer.enabled: true`
 - **Windows 上部分 hook 降级**：`pre-bash-tmux-reminder` 在无 tmux 环境静默 no-op（不报错）；`observe.sh` 需要 Git Bash + Python，未装 Python 时静默跳过
-- **`/mcc:tdd` 和 `/mcc:e2e`**：没有对应的 `tdd-workflow` / `e2e-testing` skill（A3 决策没装），命令本体是内联简化版。v1.2 计划补齐
+- **`/tdd` 和 `/e2e`**：没有对应的 `tdd-workflow` / `e2e-testing` skill（A3 决策没装），命令本体是内联简化版。v1.2 计划补齐
 - **`.codex/skills/` 不拷**：Codex 不原生支持 skill，skill 内容编译进了 `AGENTS.md` 作为场景指引

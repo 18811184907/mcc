@@ -131,7 +131,7 @@ AI 全栈项目的典型 bug 模式：
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `/mcc:fix-bug` 调用；任何报错 / 测试失败时自动触发
+- **上游**：被 `/fix-bug` 调用；任何报错 / 测试失败时自动触发
 - **下游**：
   - 防复发测试 → `test-automator` 补测试
   - 代码修复 → 专业实现者（`python-pro` / `typescript-pro` / `frontend-developer`）

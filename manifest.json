@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -104,6 +104,17 @@
   },
 
   "version_history": [
+    {
+      "version": "1.2.0",
+      "date": "2026-04-24",
+      "changes": [
+        "v1.2 便捷性提升：Claude Code 侧 slash 命令去 /mcc: 前缀，/mcc:prd → /prd",
+        "adapter 改：commands/mcc/ → commands/ 顶层（Codex 侧保持 mcc- 前缀不变）",
+        "installer 加 --exclusive flag：独占模式备份+清空 agents/commands/skills/modes 再装（rules/settings.json 保留）",
+        "文档全量更新：README/USAGE/ARCHITECTURE 里所有 /mcc:xxx → /xxx",
+        "适合'只用 MCC，干掉其他插件'场景（如之前装过 ECC/SuperClaude 等）"
+      ]
+    },
     {
       "version": "1.1.0",
       "date": "2026-04-24",

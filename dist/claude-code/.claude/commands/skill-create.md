@@ -8,14 +8,14 @@ allowed_tools: ["Bash", "Read", "Write", "Grep", "Glob"]
 
 ## 核心价值
 
-从你的 repo git history 里自动挖出团队实际使用的 pattern——commit 约定、文件共变、目录结构、测试风格——生成可被 Claude 自动加载的 SKILL.md。与 `/mcc:learn` 互补（后者从单 session 提）。
+从你的 repo git history 里自动挖出团队实际使用的 pattern——commit 约定、文件共变、目录结构、测试风格——生成可被 Claude 自动加载的 SKILL.md。与 `/learn` 互补（后者从单 session 提）。
 
 ## 用法
 
 ```bash
-/mcc:skill-create                    # 分析当前 repo 默认 200 commits
-/mcc:skill-create --commits 100      # 只看最近 100 个
-/mcc:skill-create --output ./skills  # 自定义输出目录（默认 ./skills/）
+/skill-create                    # 分析当前 repo 默认 200 commits
+/skill-create --commits 100      # 只看最近 100 个
+/skill-create --output ./skills  # 自定义输出目录（默认 ./skills/）
 ```
 
 ## 做什么
@@ -84,8 +84,8 @@ analyzed_commits: {count}
 ## 与其他组件的关系
 
 - 配合 `continuous-learning-v2` skill 使用——本命令做 repo 级批量提取，`continuous-learning-v2` 做 session 级实时学习
-- `/mcc:learn` 从单个 session 提单个 pattern
-- `/mcc:skill-create` 从整个 repo 提整套团队约定
+- `/learn` 从单个 session 提单个 pattern
+- `/skill-create` 从整个 repo 提整套团队约定
 
 ## 产出路径
 

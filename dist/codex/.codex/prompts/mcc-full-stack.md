@@ -399,7 +399,7 @@ Full-stack feature 开发完成：$FEATURE
 ## Next Steps
 1. 审阅全部生成代码与文档
 2. 跑完整测试套件
-3. 用 `mcc-pr` prompt 创建 PR
+3. 用 /pr 创建 PR
 4. 按 08-deployment.md 的 runbook 部署
 ```
 
@@ -411,6 +411,6 @@ Full-stack feature 开发完成：$FEATURE
 
 ## 与其他命令的关系
 
-- 本命令≈ 把 ``mcc-prd` prompt → `mcc-plan` prompt → `mcc-implement` prompt + `mcc-review` prompt(安全+性能)` 做成编排，加上前端/部署/文档
-- 更轻量的单线：``mcc-prd` prompt → `mcc-plan` prompt → `mcc-implement` prompt → `mcc-review` prompt → `mcc-pr` prompt`
-- 审查既有代码（不是新造）：`mcc-full-review` prompt
+- 本命令≈ 把 `/prd → /plan → /implement + /review(安全+性能)` 做成编排，加上前端/部署/文档
+- 更轻量的单线：`/prd → /plan → /implement → /review → /pr`
+- 审查既有代码（不是新造）：`/full-review`

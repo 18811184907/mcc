@@ -77,5 +77,5 @@ CORRECT: 检查 response.stop_reason，对 content_filter / max_tokens / refusal
 
 ## 与其他 agent 的协同
 
-- **并行**：被 `/mcc:review` 作为子项与 `code-reviewer`、`security-reviewer` 并行执行
+- **并行**：被 `/review` 作为子项与 `code-reviewer`、`security-reviewer` 并行执行
 - **下游**：发现的问题交 `debugger` 深挖根因，或交原作者按修复建议落实

@@ -340,13 +340,13 @@ When {situation}, I want to {motivation}, so I can {outcome}.
 
 ### To Start Implementation
 
-运行 `/mcc:plan .claude/PRPs/prds/{name}.prd.md` → 自动选中下一个 pending phase 并生成实施计划。
+运行 `/plan .claude/PRPs/prds/{name}.prd.md` → 自动选中下一个 pending phase 并生成实施计划。
 ```
 
 ---
 
 ## 与其他命令的关系
 
-- 之后：`/mcc:plan` 把每个 phase 转化为自包含实施计划
-- 之后：`/mcc:session-save` 在 PRD 生成完保存 session，方便跨日继续
+- 之后：`/plan` 把每个 phase 转化为自包含实施计划
+- 之后：`/session-save` 在 PRD 生成完保存 session，方便跨日继续
 - 若 PRD 写着写着发现范围不清楚，回到 Phase 2 继续问

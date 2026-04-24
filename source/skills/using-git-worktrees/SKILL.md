@@ -218,4 +218,4 @@ Ready to implement auth feature
 
 **配套使用：**
 - `finishing-a-development-branch` —— 工作完成后清理 worktree
-- `/mcc:prp-commit`、`/mcc:prp-pr` —— 在 worktree 内执行 commit / PR 创建
+- `/prp-commit`、`/prp-pr` —— 在 worktree 内执行 commit / PR 创建

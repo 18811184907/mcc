@@ -1,5 +1,5 @@
 ---
-description: "多域问题诊断：bug / build / performance / deployment。快速定位→根因→修复。单 bug 深挖用 `mcc-fix-bug` prompt，专 build 错用 `mcc-build-fix` prompt。"
+description: "多域问题诊断：bug / build / performance / deployment。快速定位→根因→修复。单 bug 深挖用 /fix-bug，专 build 错用 /build-fix。"
 argument-hint: "<issue 描述> [--type bug|build|performance|deployment] [--trace] [--fix]"
 ---
 
@@ -11,7 +11,7 @@ argument-hint: "<issue 描述> [--type bug|build|performance|deployment] [--trac
 
 问题发生但还不确定是什么类型——代码 bug？build 失败？性能退化？部署故障？本命令做**先分诊再解决**：系统性根因分析 + 结构化调试方法 + 安全修复 + 验证。
 
-与 `mcc-fix-bug` prompt 的分工：troubleshoot 适合类型未知或跨域；fix-bug 适合已确认是 bug 且需要深度根因分析的单点问题。
+与 `/fix-bug` 的分工：troubleshoot 适合类型未知或跨域；fix-bug 适合已确认是 bug 且需要深度根因分析的单点问题。
 
 ---
 
@@ -60,12 +60,12 @@ argument-hint: "<issue 描述> [--type bug|build|performance|deployment] [--trac
 
 | 问题类型 | 处理 |
 |---|---|
-| Build 类 | 转 `mcc-build-fix` prompt |
-| Bug 类（单点深挖）| 转 `mcc-fix-bug` prompt |
+| Build 类 | 转 `/build-fix` |
+| Bug 类（单点深挖）| 转 `/fix-bug` |
 | 性能类 | 可委派 `performance-engineer` agent，或按本命令内联方案修 |
 | 部署类 | 按运维视角排查（env / secret / health check） |
 
-修完跑 `mcc-verify` prompt 确认解决。
+修完跑 `/verify` 确认解决。
 
 ---
 
@@ -82,28 +82,28 @@ argument-hint: "<issue 描述> [--type bug|build|performance|deployment] [--trac
 
 ### 代码 bug 调查
 ```
-`mcc-troubleshoot` prompt "user service 里的空指针异常" --type bug --trace
+/troubleshoot "user service 里的空指针异常" --type bug --trace
 # 系统性分析错误上下文和调用栈
 # 识别根因 + 给出精准修复建议
 ```
 
 ### Build 失败分析
 ```
-`mcc-troubleshoot` prompt "TypeScript 编译错误" --type build --fix
+/troubleshoot "TypeScript 编译错误" --type build --fix
 # 分析 build log 和 TS 配置
-# 对常见编译问题自动应用安全修复（委派 `mcc-build-fix` prompt）
+# 对常见编译问题自动应用安全修复（委派 /build-fix）
 ```
 
 ### 性能退化诊断
 ```
-`mcc-troubleshoot` prompt "API response 时间变慢" --type performance
+/troubleshoot "API response 时间变慢" --type performance
 # 指标分析 + 瓶颈识别
 # 给出优化建议和监控方向
 ```
 
 ### 部署问题
 ```
-`mcc-troubleshoot` prompt "服务在 prod 起不来" --type deployment --trace
+/troubleshoot "服务在 prod 起不来" --type deployment --trace
 # 环境和配置分析
 # 系统性验证部署前置条件和依赖
 ```
@@ -126,7 +126,7 @@ argument-hint: "<issue 描述> [--type bug|build|performance|deployment] [--trac
 
 ## 与其他命令的关系
 
-- 专 build 问题 → `mcc-build-fix` prompt
-- 单 bug 深挖 → `mcc-fix-bug` prompt
-- 修完验证 → `mcc-verify` prompt
-- 复盘沉淀 → `mcc-learn` prompt（把解法变成 learned skill）
+- 专 build 问题 → `/build-fix`
+- 单 bug 深挖 → `/fix-bug`
+- 修完验证 → `/verify`
+- 复盘沉淀 → `/learn`（把解法变成 learned skill）

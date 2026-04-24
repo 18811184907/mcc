@@ -82,7 +82,7 @@ ruff check --select F401,F811 src/         # 未用 import + 重复定义
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `/mcc:refactor-clean` 调用
+- **上游**：被 `/refactor-clean` 调用
 - **前置依赖**：`tdd-guide` 已保证覆盖率 ≥ 80%（否则不要开工）
 - **下游**：清理完成后交 `code-reviewer` 做最后把关
 

@@ -54,10 +54,11 @@ async function adaptToClaudeCode(sourceDir, distDir) {
     { filter: (f) => f.endsWith('.md') }
   );
 
-  // 2) commands → .claude/commands/mcc/*.md 子目录（Claude Code 识别为 /mcc:prd 等）
-  //    放到 mcc 子目录既避免和用户已有 commands 冲突，又能让 Claude Code 生成 /mcc: 前缀
+  // 2) commands → .claude/commands/*.md（直接顶层，触发 /prd、/plan 等）
+  //    v1.2 去掉 mcc/ 子目录前缀。Claude Code 会把 commands/xxx.md 识别为 /xxx 命令。
+  //    和用户已有 commands 冲突时由 installer 的 --force / --exclusive 处理。
   const cmdSrc = path.join(sourceDir, 'commands');
-  const cmdDst = path.join(claudeRoot, 'commands', 'mcc');
+  const cmdDst = path.join(claudeRoot, 'commands');
   assertExists(cmdSrc);
   ensureDir(cmdDst);
   for (const rel of walkFiles(cmdSrc)) {
@@ -65,7 +66,7 @@ async function adaptToClaudeCode(sourceDir, distDir) {
     const src = path.join(cmdSrc, rel);
     const dst = path.join(cmdDst, rel);
     copyFile(src, dst);
-    log.step(`commands: ${rel} → .claude/commands/mcc/${rel}  (触发 /mcc:${rel.replace(/\.md$/, '')})`);
+    log.step(`commands: ${rel} → .claude/commands/${rel}  (触发 /${rel.replace(/\.md$/, '')})`);
     recordFile(manifest, src, dst, distDir, 'command');
   }
 

@@ -237,7 +237,7 @@ Accepted
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `planner`、`/mcc:feature-dev` 在架构阶段调用
+- **上游**：被 `planner`、`/feature-dev` 在架构阶段调用
 - **并行**：与 `architect`（通用系统设计）一起跑
 - **下游**：
   - FastAPI 落地 → `fastapi-pro`

@@ -1,5 +1,5 @@
 ---
-description: "5 阶段全面代码审查：质量+架构 / 安全+性能 / 测试+文档 / 最佳实践+CI/CD → 优先级汇总。模块或项目级；单点审查请用 /mcc:review。"
+description: "5 阶段全面代码审查：质量+架构 / 安全+性能 / 测试+文档 / 最佳实践+CI/CD → 优先级汇总。模块或项目级；单点审查请用 /review。"
 argument-hint: "<target path or description> [--security-focus] [--performance-critical] [--strict-mode] [--framework react|spring|django|rails]"
 ---
 
@@ -11,7 +11,7 @@ argument-hint: "<target path or description> [--security-focus] [--performance-c
 
 对一个模块或整个项目做分层全面审查：质量 / 架构 / 安全 / 性能 / 测试 / 文档 / 框架最佳实践 / CI/CD，每层并行委派专家 agent，最后汇总成按优先级排序的 action plan。
 
-与 `/mcc:review` 的区别：`/mcc:review` 是单点（本地未提交或单个 PR），本命令是全景。
+与 `/review` 的区别：`/review` 是单点（本地未提交或单个 PR），本命令是全景。
 
 ## CRITICAL BEHAVIORAL RULES
 
@@ -424,6 +424,6 @@ Comprehensive code review complete for: $ARGUMENTS
 
 ## 与其他命令的关系
 
-- 单 PR / 单文件审查：`/mcc:review` 更合适
-- 新造全栈特性：`/mcc:full-stack` 已包含审查 step
-- 修 bug 后做 sanity check：`/mcc:review` 或 `/mcc:verify`
+- 单 PR / 单文件审查：`/review` 更合适
+- 新造全栈特性：`/full-stack` 已包含审查 step
+- 修 bug 后做 sanity check：`/review` 或 `/verify`

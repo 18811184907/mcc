@@ -11,7 +11,7 @@ description: "扫 .claude/PRPs/* 和 docs/mistakes/* 推断当前进度，给结
 
 - 用户问"我该做什么 / 下一步干啥 / 从哪开始"
 - 用户说"帮我理一下流程 / MCC 怎么用"
-- 用户 `/mcc:help` 或 `/help`（mcc 侧）
+- 用户 `/help` 或 `/help`（mcc 侧）
 - 用户问"XX 阶段在哪"、"PRD 在哪"、"plan 该放哪"
 
 ## 期望结果
@@ -106,6 +106,6 @@ Rule 6: reviews/ 有文件 → 7-ship
 ## 全程约束
 
 - **中文输出**
-- **推荐在新 context window 跑每个重磅命令**（/mcc:prd、/mcc:plan、/mcc:implement 等）
+- **推荐在新 context window 跑每个重磅命令**（/prd、/plan、/implement 等）
 - **匹配用户语气**：用户随意就随意；用户要精准就结构化
 - **不要凭空说项目细节**：没有的信息直接说"没找到 prds/，看起来是全新项目"，不编造

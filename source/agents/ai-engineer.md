@@ -132,7 +132,7 @@ async def chat(req: ChatRequest, client=Depends(get_claude)):
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `/mcc:feature-dev`、`planner` 调用于 AI 功能规划
+- **上游**：被 `/feature-dev`、`planner` 调用于 AI 功能规划
 - **下游分工**：
   - **向量 DB 深度优化** → `vector-database-engineer`
   - **Prompt 设计深度优化** → `prompt-engineer`

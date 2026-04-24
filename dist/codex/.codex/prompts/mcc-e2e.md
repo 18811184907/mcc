@@ -186,7 +186,7 @@ ls artifacts/*.png
 
 ## 与其他命令的关系
 
-- `mcc-tdd` prompt — 单元 + 集成（更快更细，E2E 别滥用）
-- `mcc-test-coverage` prompt — 补 unit test 覆盖
-- `mcc-plan` prompt — 先识别要测的关键用户旅程
-- `mcc-review` prompt — 审查测试质量
+- `/tdd` — 单元 + 集成（更快更细，E2E 别滥用）
+- `/test-coverage` — 补 unit test 覆盖
+- `/plan` — 先识别要测的关键用户旅程
+- `/review` — 审查测试质量

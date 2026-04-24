@@ -9,7 +9,7 @@ argument-hint: "[YYYY-MM-DD | path/to/session.tmp]（留空则加载最新）"
 
 ## 核心价值
 
-开启一个新 session 时，通过读上次 `mcc-session-save` prompt 存的文件，把 Claude 的上下文完整恢复：已经做了什么、哪些方法已经试过且失败（关键）、下一步具体做什么。**不自动动手**——展示 briefing 等用户确认。
+开启一个新 session 时，通过读上次 `/session-save` 存的文件，把 Claude 的上下文完整恢复：已经做了什么、哪些方法已经试过且失败（关键）、下一步具体做什么。**不自动动手**——展示 briefing 等用户确认。
 
 ## 何时用
 
@@ -21,13 +21,13 @@ argument-hint: "[YYYY-MM-DD | path/to/session.tmp]（留空则加载最新）"
 ## 用法
 
 ```
-`mcc-session-resume` prompt
+/session-resume
   # 加载 ~/.claude/session-data/ 最新 *-session.tmp
 
-`mcc-session-resume` prompt 2024-01-15
+/session-resume 2024-01-15
   # 加载该日期最新的那份
 
-`mcc-session-resume` prompt ~/.claude/session-data/2024-01-15-abc123de-session.tmp
+/session-resume ~/.claude/session-data/2024-01-15-abc123de-session.tmp
   # 加载指定文件
 ```
 
@@ -43,7 +43,7 @@ argument-hint: "[YYYY-MM-DD | path/to/session.tmp]（留空则加载最新）"
 3. 无文件时告诉用户：
    ```
    No session files found in ~/.claude/session-data/
-   Run `mcc-session-save` prompt at the end of a session to create one.
+   Run /session-save at the end of a session to create one.
    ```
    然后停。
 
@@ -113,7 +113,7 @@ Ready to continue. What would you like to do?
 读并走同样 briefing 流程。格式与来源无关。
 
 **session 文件空或损坏**：
-报告"Session file found but appears empty or unreadable. 需要用 `mcc-session-save` prompt 新建一份。"
+报告"Session file found but appears empty or unreadable. 需要用 /session-save 新建一份。"
 
 ---
 
@@ -156,10 +156,10 @@ Ready to continue. What would you like to do?
 
 - 加载时**绝不修改** session 文件——它是只读历史记录
 - briefing 格式固定，即使某节为空也不要省——"What Not To Retry" 尤其不能省
-- 恢复后，用户可能要 `mcc-session-save` prompt 在新 session 结尾再存一份新的
+- 恢复后，用户可能要 `/session-save` 在新 session 结尾再存一份新的
 
 ## 与其他命令的关系
 
-- 上游：`mcc-session-save` prompt（产出文件）
-- 并行：`mcc-learn` prompt（session 内学到的沉淀 skill）
-- 加载完可直接接 `mcc-implement` prompt / `mcc-tdd` prompt / 其他具体工作命令
+- 上游：`/session-save`（产出文件）
+- 并行：`/learn`（session 内学到的沉淀 skill）
+- 加载完可直接接 `/implement` / `/tdd` / 其他具体工作命令

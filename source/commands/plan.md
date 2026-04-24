@@ -350,7 +350,7 @@ EXPECT: Build succeeds
 - **Risks**: [top risk or "none identified"]
 - **Confidence Score**: [1-10] — 单次通过实施的概率
 
-> Next step: 运行 `/mcc:implement .claude/PRPs/plans/{name}.plan.md` 执行该计划。
+> Next step: 运行 `/implement .claude/PRPs/plans/{name}.plan.md` 执行该计划。
 ```
 
 ---
@@ -372,6 +372,6 @@ EXPECT: Build succeeds
 
 ## 与其他命令的关系
 
-- 上游：`/mcc:prd` 若范围还不清楚，先写 PRD
-- 下游：`/mcc:implement <plan-path>` 执行
-- 平行：`/mcc:session-save` 若 plan 写完要换 session
+- 上游：`/prd` 若范围还不清楚，先写 PRD
+- 下游：`/implement <plan-path>` 执行
+- 平行：`/session-save` 若 plan 写完要换 session

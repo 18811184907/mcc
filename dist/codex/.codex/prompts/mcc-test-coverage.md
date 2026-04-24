@@ -1,5 +1,5 @@
 ---
-description: "分析测试覆盖率，定位低覆盖文件，生成缺失测试到 80%+。新功能请用 `mcc-tdd` prompt，E2E 请用 `mcc-e2e` prompt。"
+description: "分析测试覆盖率，定位低覆盖文件，生成缺失测试到 80%+。新功能请用 /tdd，E2E 请用 /e2e。"
 argument-hint: "[path/to/file 或 module 限定范围（可选）]"
 ---
 
@@ -9,7 +9,7 @@ argument-hint: "[path/to/file 或 module 限定范围（可选）]"
 
 ## 核心价值
 
-分析既有代码的测试覆盖率，为低于 80% 的文件自动补测试到 80%+。**对象是已存在的实现**；新功能应先走 TDD（`mcc-tdd` prompt），这个命令补老债。
+分析既有代码的测试覆盖率，为低于 80% 的文件自动补测试到 80%+。**对象是已存在的实现**；新功能应先走 TDD（`/tdd`），这个命令补老债。
 
 ## Step 1 — 检测测试框架
 
@@ -81,6 +81,6 @@ Overall:                67%     84%  PASS
 
 ## 与其他命令的关系
 
-- 新功能：先 `mcc-tdd` prompt（RED-GREEN-REFACTOR），不要写完再补
-- 用户流：`mcc-e2e` prompt 跑 Playwright
-- 验证通过后：`mcc-verify` prompt 做总闸门
+- 新功能：先 `/tdd`（RED-GREEN-REFACTOR），不要写完再补
+- 用户流：`/e2e` 跑 Playwright
+- 验证通过后：`/verify` 做总闸门

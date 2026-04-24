@@ -258,6 +258,6 @@ Verdict: WARNING — 2 HIGH issues should be resolved before merge.
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `/mcc:code-review`、`/mcc:review` 调用；写完代码后立即自动触发
+- **上游**：被 `/code-review`、`/review` 调用；写完代码后立即自动触发
 - **并行**：`security-reviewer`（安全深度）、`silent-failure-hunter`（静默失败）
 - **下游**：修复交原作者或 `python-pro` / `typescript-pro` / `frontend-developer` 等专家

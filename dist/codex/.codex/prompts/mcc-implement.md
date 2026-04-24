@@ -60,7 +60,7 @@ cat "$ARGUMENTS"
 
 ```
 Error: Plan file not found or invalid.
-Run `mcc-plan` prompt <feature-description> to create a plan first.
+Run /plan <feature-description> to create a plan first.
 ```
 
 **Checkpoint**：plan 已载入，所有段落识别完毕，tasks 提取完毕。
@@ -206,8 +206,8 @@ mkdir -p .claude/PRPs/reports
 |---|---|---|
 
 ## Next Steps
-- [ ] 代码审查：`mcc-review` prompt
-- [ ] 创建 PR：`mcc-pr` prompt
+- [ ] 代码审查：`/review`
+- [ ] 创建 PR：`/pr`
 ```
 
 ### 若输入是 PRD phase
@@ -261,7 +261,7 @@ mv "$ARGUMENTS" .claude/PRPs/plans/completed/
 | Phase 1 | Complete |
 | Phase 2 | Next |
 
-> Next: `mcc-review` prompt 审查改动，或 `mcc-pr` prompt 直接发 PR。
+> Next: `/review` 审查改动，或 `/pr` 直接发 PR。
 ```
 
 ---
@@ -301,7 +301,7 @@ mv "$ARGUMENTS" .claude/PRPs/plans/completed/
 
 ## 与其他命令的关系
 
-- 上游：`mcc-plan` prompt 产出输入
-- 之后：`mcc-review` prompt 审查，然后用 `git commit` 提交（自己写清楚的 commit message）
-- 之后：`mcc-pr` prompt 创建 PR
-- 若 PRD 还有下一个 phase：``mcc-plan` prompt <prd-path>` 自动选下一 phase
+- 上游：`/plan` 产出输入
+- 之后：`/review` 审查，然后用 `git commit` 提交（自己写清楚的 commit message）
+- 之后：`/pr` 创建 PR
+- 若 PRD 还有下一个 phase：`/plan <prd-path>` 自动选下一 phase

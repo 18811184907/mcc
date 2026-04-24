@@ -8,8 +8,8 @@
       "exit_artifacts": [".claude/PRPs/prds/*.md"],
       "required": false,
       "skills": ["product-lens", "brainstorming"],
-      "commands": ["/mcc:prd"],
-      "next_hint": "输出 PRODUCT-BRIEF.md 后，运行 /mcc:prd 生成正式 PRD"
+      "commands": ["/prd"],
+      "next_hint": "输出 PRODUCT-BRIEF.md 后，运行 /prd 生成正式 PRD"
     },
     {
       "id": "2-plan",
@@ -19,8 +19,8 @@
       "required": true,
       "skills": ["architecture-decision-records"],
       "agents": ["planner", "backend-architect"],
-      "commands": ["/mcc:plan"],
-      "next_hint": "PRD 已有但 plans/ 为空 → 运行 /mcc:plan"
+      "commands": ["/plan"],
+      "next_hint": "PRD 已有但 plans/ 为空 → 运行 /plan"
     },
     {
       "id": "3-confidence",
@@ -40,9 +40,9 @@
       "exit_artifacts": [".claude/PRPs/plans/completed/*.md"],
       "required": true,
       "skills": ["coding-standards", "task-management"],
-      "commands": ["/mcc:implement", "/mcc:tdd"],
+      "commands": ["/implement", "/tdd"],
       "agents": ["planner", "backend-architect", "ai-engineer", "python-pro", "typescript-pro", "fastapi-pro"],
-      "next_hint": "plans/<X>.md 未移到 completed/ → /mcc:implement 继续"
+      "next_hint": "plans/<X>.md 未移到 completed/ → /implement 继续"
     },
     {
       "id": "5-verify",
@@ -51,8 +51,8 @@
       "exit_artifacts": [".claude/PRPs/reports/*.md"],
       "required": true,
       "skills": ["verification-loop"],
-      "commands": ["/mcc:verify", "/mcc:test-coverage"],
-      "next_hint": "代码完成 → /mcc:verify 走 6 阶段"
+      "commands": ["/verify", "/test-coverage"],
+      "next_hint": "代码完成 → /verify 走 6 阶段"
     },
     {
       "id": "6-review",
@@ -61,9 +61,9 @@
       "exit_artifacts": [".claude/PRPs/reviews/*.md"],
       "required": true,
       "skills": [],
-      "commands": ["/mcc:review", "/mcc:full-review"],
+      "commands": ["/review", "/full-review"],
       "agents": ["code-reviewer", "security-reviewer"],
-      "next_hint": "verify 通过 → /mcc:full-review 出评审报告"
+      "next_hint": "verify 通过 → /full-review 出评审报告"
     },
     {
       "id": "7-ship",
@@ -72,13 +72,13 @@
       "exit_artifacts": [],
       "required": false,
       "skills": [],
-      "commands": ["/mcc:pr"]
+      "commands": ["/pr"]
     }
   ],
   "anytime": {
     "stuck_debug": {
       "signals": ["错误反复", "debug 超过 30 分钟"],
-      "recommend": ["debugger agent", "/mcc:troubleshoot"]
+      "recommend": ["debugger agent", "/troubleshoot"]
     },
     "research": {
       "signals": ["不知道用什么库", "不确定 API"],
@@ -94,7 +94,7 @@
     },
     "learning": {
       "signals": ["最近犯了同样错误"],
-      "recommend": ["/mcc:learn", "continuous-learning-v2 skill", "docs/mistakes/ 索引"]
+      "recommend": ["/learn", "continuous-learning-v2 skill", "docs/mistakes/ 索引"]
     }
   },
   "fs_scan_rules": {

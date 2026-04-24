@@ -639,6 +639,6 @@ helper1、helper2、step3、pattern4
 
 - `tdd-workflow` —— 方法论基础。先读懂那个，再用本 skill。
 - `anthropic-best-practices.md`（本目录）—— Anthropic 官方 skill 撰写指引，作为本 skill 的补充参考。
-- `continuous-learning-v2` —— hooks 后台观察得到的 instinct，通过 `/mcc:evolve` 可以提升为完整 skill，这时用本 skill 编辑产出。
-- `/mcc:learn` 命令 —— 显式从单次会话提炼 pattern 成 skill，产出用本 skill 校验。
+- `continuous-learning-v2` —— hooks 后台观察得到的 instinct，通过 `/evolve` 可以提升为完整 skill，这时用本 skill 编辑产出。
+- `/learn` 命令 —— 显式从单次会话提炼 pattern 成 skill，产出用本 skill 校验。
 - 产出位置：个人写入 `~/.claude/skills/`，项目写入 `.claude/skills/`，贡献到 MCC 时写入 `mcc-build/final/source/skills/{name}/SKILL.md`。

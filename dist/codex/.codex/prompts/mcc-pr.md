@@ -174,7 +174,7 @@ Artifacts referenced:
 
 Next steps:
   - gh pr view <number> --web   → 浏览器打开
-  - `mcc-review` prompt <number>        → 审查该 PR
+  - /review <number>        → 审查该 PR
   - gh pr merge <number>        → 合并
 ```
 
@@ -192,6 +192,6 @@ Next steps:
 
 ## 与其他命令的关系
 
-- 上游：`mcc-implement` prompt 跑完就能接 `mcc-pr` prompt
+- 上游：`/implement` 跑完就能接 `/pr`
 - 上游：自己手工 commit 后也可直接用
-- 之后：``mcc-review` prompt <PR#>` 对刚开的 PR 做审查
+- 之后：`/review <PR#>` 对刚开的 PR 做审查

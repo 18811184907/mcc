@@ -109,4 +109,4 @@ You: [Fix progress indicators]
 - 安全敏感区（auth / payment / 用户数据）额外派 `security-reviewer` agent
 - Python / Go / Rust / TypeScript 等语言特化需要时派对应的 `*-reviewer` agent（如果项目里装了）
 - 与 `receiving-code-review` 成对：本 skill 负责"发出请求"，那个 skill 负责"接收反馈"
-- `/mcc:code-review`、`/mcc:review-pr`（如果项目装了）可以作为命令层快捷入口，底层还是派 `code-reviewer`
+- `/code-review`、`/review-pr`（如果项目装了）可以作为命令层快捷入口，底层还是派 `code-reviewer`

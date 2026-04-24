@@ -74,6 +74,6 @@ argument-hint: "[build 相关的特定错误或 log 片段（可选）]"
 
 ## 与其他命令的关系
 
-- Build 成功后：`/mcc:verify` 跑完整验证
-- Build 是 bug 症状而非根因：`/mcc:fix-bug`
-- 多域问题（build + runtime + performance）：`/mcc:troubleshoot`
+- Build 成功后：`/verify` 跑完整验证
+- Build 是 bug 症状而非根因：`/fix-bug`
+- 多域问题（build + runtime + performance）：`/troubleshoot`

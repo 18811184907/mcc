@@ -1,5 +1,5 @@
 ---
-description: "把当前 session 的已验证成果、失败路线、下一步 exact action 写入带日期的 session 文件，供 `mcc-session-resume` prompt 恢复。"
+description: "把当前 session 的已验证成果、失败路线、下一步 exact action 写入带日期的 session 文件，供 /session-resume 恢复。"
 argument-hint: "(无参数)"
 ---
 
@@ -164,7 +164,7 @@ Does this look accurate? Anything to correct or add before we close?
 - 每个 session 一个独立文件——**永远不要追加**到上个 session
 - "What Did NOT Work" 是最关键的一节——没它下一 session 会盲目重试
 - 用户在 session 中途要求保存时，保存当前已知内容并明确标 in-progress
-- 文件是只读历史——下一 session 通过 `mcc-session-resume` prompt 读，不改它
+- 文件是只读历史——下一 session 通过 `/session-resume` 读，不改它
 - 用标准全局路径：`~/.claude/session-data/`
 - 新文件一律用 shortid 命名（`YYYY-MM-DD-{shortid}-session.tmp`）
 
@@ -207,6 +207,6 @@ Next.js app 的用户认证系统：register + JWT via httpOnly cookie + middlew
 
 ## 与其他命令的关系
 
-- 下一个 session：`mcc-session-resume` prompt 读最新文件
-- session 中产出的可复用 pattern：`mcc-learn` prompt 转成 learned skill
+- 下一个 session：`/session-resume` 读最新文件
+- session 中产出的可复用 pattern：`/learn` 转成 learned skill
 - 使用 worktree 并行工作时，每个 worktree 单独 session，shortid 带 worktree 名避免混淆

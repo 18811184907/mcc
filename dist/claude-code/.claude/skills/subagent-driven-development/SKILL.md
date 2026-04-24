@@ -262,7 +262,7 @@ Done!
 
 **可复用的 MCC agent：**
 - `code-reviewer` —— 每 task 后的 code quality review 直接派这个
-- `planner` —— 上游产出 plan（通过 `/mcc:plan` 或 `/mcc:prp-plan`）
+- `planner` —— 上游产出 plan（通过 `/plan` 或 `/prp-plan`）
 - `debugger` —— BLOCKED 且涉及具体 bug 时叫他来定位
 - `security-reviewer` —— 触及 auth/支付/用户数据时，spec review 后补一轮安全审查
 
@@ -270,4 +270,4 @@ Done!
 - `tdd-workflow` —— subagent 在每个 task 里按 RED-GREEN-REFACTOR 跑
 
 **上游命令：**
-- `/mcc:plan` 或 `/mcc:prp-plan` 产出 plan → 用本 skill 执行
+- `/plan` 或 `/prp-plan` 产出 plan → 用本 skill 执行

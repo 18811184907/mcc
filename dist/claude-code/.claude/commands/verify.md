@@ -19,6 +19,6 @@ description: "跑完整验证流程：build / type / lint / test / security / di
 
 ## 与其他命令的关系
 
-- `/mcc:implement` 的 Phase 4 会自动委派 verification-loop；直接跑 `/mcc:verify` 适用于"已改完想单独验证一遍"
-- `/mcc:review` 的 Phase 4 也委派同一 skill
-- 验证失败 → 用 `/mcc:build-fix`（build 问题）或 `/mcc:fix-bug`（bug）或 `/mcc:troubleshoot`（多域）
+- `/implement` 的 Phase 4 会自动委派 verification-loop；直接跑 `/verify` 适用于"已改完想单独验证一遍"
+- `/review` 的 Phase 4 也委派同一 skill
+- 验证失败 → 用 `/build-fix`（build 问题）或 `/fix-bug`（bug）或 `/troubleshoot`（多域）

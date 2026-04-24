@@ -12,7 +12,7 @@ description: "需求模糊时切入苏格拉底式对话，把想法变成可落
 - 探索类关键词：brainstorm / explore / discuss / figure out / not sure
 - 不确定性信号：「maybe」、「可能」、「在想」、「能不能……」
 - PRD 的前置条件：在写正式 PRD 之前需要先做需求发现
-- `/mcc:prd` 执行前如需求模糊自动触发
+- `/prd` 执行前如需求模糊自动触发
 - 适合用对话挖掘的交互式发现场景
 - 手动 flag：`--brainstorm`、`--bs`
 
@@ -30,7 +30,7 @@ description: "需求模糊时切入苏格拉底式对话，把想法变成可落
 - 产出可以进入实现阶段的完整 brief
 - 通过前期探索减少后期 scope 扩散
 - 用户愿景和技术实现对齐更好
-- 自然衔接到 `/mcc:prd` 或 `product-lens` skill
+- 自然衔接到 `/prd` 或 `product-lens` skill
 
 ## Examples
 
@@ -60,4 +60,4 @@ Brainstorming: "🔍 Let's explore this together:
 什么时候用哪个？
 - 用户还在"到底要不要做"阶段 → brainstorming mode
 - 用户已经想清楚要做，要把 brief 落成文档交给 engineering → product-lens skill
-- 典型衔接：`brainstorming mode` 聊清楚方向 → 切到 `product-lens skill` 产出 BRIEF → `/mcc:prd` 出正式 PRD
+- 典型衔接：`brainstorming mode` 聊清楚方向 → 切到 `product-lens skill` 产出 BRIEF → `/prd` 出正式 PRD
