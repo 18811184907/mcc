@@ -158,8 +158,8 @@ Ready to continue. What would you like to do?
 - briefing 格式固定，即使某节为空也不要省——"What Not To Retry" 尤其不能省
 - 恢复后，用户可能要 `/session-save` 在新 session 结尾再存一份新的
 
-## 与其他命令的关系
+## 与其他命令 / skill 的关系
 
 - 上游：`/session-save`（产出文件）
-- 并行：`/learn`（session 内学到的沉淀 skill）
+- 并行：说"记下这个 / 沉淀这轮经验" 激活 `continuous-learning-v2` skill
 - 加载完可直接接 `/implement` / `/tdd` / 其他具体工作命令

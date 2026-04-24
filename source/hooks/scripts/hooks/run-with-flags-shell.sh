@@ -15,8 +15,10 @@ if [[ -z "$HOOK_ID" || -z "$REL_SCRIPT_PATH" ]]; then
   exit 0
 fi
 
-# Ask Node helper if this hook is enabled
-ENABLED="$(node "${PLUGIN_ROOT}/scripts/hooks/check-hook-enabled.js" "$HOOK_ID" "$PROFILES_CSV" 2>/dev/null || echo yes)"
+# Ask Node helper if this hook is enabled.
+# Fail-CLOSED policy: if the check itself errors, skip the hook (don't run on unknown state).
+# Stderr is surfaced so a broken check-hook-enabled.js gets noticed instead of silently falling through.
+ENABLED="$(node "${PLUGIN_ROOT}/scripts/hooks/check-hook-enabled.js" "$HOOK_ID" "$PROFILES_CSV" || echo no)"
 if [[ "$ENABLED" != "yes" ]]; then
   printf '%s' "$INPUT"
   exit 0

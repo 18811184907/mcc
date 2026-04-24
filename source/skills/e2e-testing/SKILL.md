@@ -167,3 +167,56 @@ jobs:
 3. 再批量扩展
 
 不要一上来就写 10 条 spec。
+
+---
+
+## 可选扩展（进阶场景，用户明确要求再加）
+
+### 视觉回归测试
+
+```ts
+// 在关键页面稳定后加截图锁定
+test('dashboard 视觉回归', async ({ page }) => {
+  await page.goto('/dashboard');
+  await expect(page).toHaveScreenshot('dashboard.png', {
+    maxDiffPixels: 100,
+    threshold: 0.2,
+  });
+});
+```
+
+首次跑会生成 baseline，CI 自动比对。慎用：需要稳定的设计系统，否则噪音多。
+
+### 可访问性测试（a11y）
+
+```ts
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('首页 WCAG 2.1 AA', async ({ page }) => {
+  await page.goto('/');
+  const results = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa'])
+    .analyze();
+  expect(results.violations).toEqual([]);
+});
+```
+
+需要 `npm i -D @axe-core/playwright`。每个核心页面至少跑一次。
+
+### 性能基准（Core Web Vitals）
+
+```ts
+test('首页 LCP < 2.5s', async ({ page }) => {
+  await page.goto('/');
+  const lcp = await page.evaluate(() => new Promise<number>(r => {
+    new PerformanceObserver(list => {
+      const entries = list.getEntries();
+      r((entries[entries.length - 1] as any).startTime);
+    }).observe({ type: 'largest-contentful-paint', buffered: true });
+  }));
+  expect(lcp).toBeLessThan(2500);
+});
+```
+
+Lighthouse CI（`@lhci/cli`）比手写 PerformanceObserver 更完整，推荐用在主要 landing page。

@@ -1,6 +1,6 @@
 ---
 name: coding-standards
-description: "Python + TS 编码规范带示例教学。与 rules/ 分工：rules 是清单（短），此 skill 是带代码示例的教学（长）。冲突以 rules 为准。"
+description: "Python + TypeScript 编码规范带示例教学（命名、文件组织、错误处理、类型设计、测试写法）。触发：写代码时 Claude 按需引用；用户说'代码风格 / 约定 / best practice'时加载对应 section。与 rules/ 分工：rules 是清单（短、强制），本 skill 是带代码示例的教学（长、说服）。冲突以 rules 为准。本文档较长，按需扫读 Python 或 TS section。"
 ---
 
 # Coding Standards & Best Practices

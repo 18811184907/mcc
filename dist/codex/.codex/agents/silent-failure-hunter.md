@@ -1,6 +1,6 @@
 ---
 name: silent-failure-hunter
-description: 审查代码中的静默失败：吞掉的异常、误导性 fallback、错误传播丢失、缺失的错误处理。生产部署前强烈建议调用。
+description: 静默失败专项猎手：吞掉的异常、空 catch、误导性 fallback、错误传播丢失。与 code-reviewer 的分工：code-reviewer 做全面质量扫描（含错误处理一项），本 agent 做错误处理的纵深挖掘。用法：code-reviewer 通过后 + 生产部署前 / 用户报告间歇性 bug 但日志干净（典型静默失败指征）时派本 agent。
 tools: [read_file, search, list_files, run_shell_command]
 ---
 

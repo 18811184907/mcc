@@ -1,6 +1,6 @@
 ---
 name: test-automator
-description: 测试自动化工程师：编写完整的单元/集成/E2E 测试套件。功能开发期调用。支持 TDD 和 BDD。自动检测项目已有测试框架并跟随约定。
+description: "测试自动化工程师：补写单元/集成/E2E 测试到 80%+ 覆盖率。触发条件：用户说'补测试 / 补覆盖率 / 写测试到 80%'；或 TDD 绿灯后、实现完成后主动派发。支持 TDD 和 BDD，自动检测项目已有测试框架并跟随约定。E2E 场景参考 e2e-testing skill。"
 tools: [read_file, apply_patch, run_shell_command, search, list_files]
 ---
 

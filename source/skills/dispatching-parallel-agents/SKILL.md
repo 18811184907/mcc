@@ -1,6 +1,6 @@
 ---
 name: dispatching-parallel-agents
-description: "遇到 2+ 个独立问题域时并行派 subagent，每个 agent 一个问题域。多文件独立失败、多子系统独立 bug 时触发。"
+description: "并行分发 subagent 处理 2+ 个**独立且无依赖**的问题域（每 agent 一个域）。触发：多文件独立失败、多子系统独立 bug、多维度并行审查（如质量+安全+性能同时过）。对比区分：subagent-driven-development 处理**串行有依赖**的 task 链（plan 驱动）；party-mode 是**辩论**（同问题多视角）；本 skill 是**并行**（多独立问题同时跑）。"
 ---
 
 # Dispatching Parallel Agents

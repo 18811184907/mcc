@@ -1,6 +1,6 @@
 ---
 name: continuous-learning-v2
-description: "长期学习你的编码习惯，沉淀 learned skill 到 ~/.claude/skills/learned/。用户说'记下这个 / 以后别再这样 / 这个模式以后用 / 沉淀一下 / 提炼出约定 / 归纳经验'时激活；修完 bug 或完成重要 refactor 后 Claude 主动提议。默认关闭 observer 需手动启用。"
+description: "**被动沉淀**用户已有的编码习惯（hooks 观察 + Haiku 分析 + 置信度评分，产出 instinct 到 ~/.claude/skills/learned/）。触发：用户说'记下这个 / 以后别再这样 / 沉淀一下 / 归纳经验'；修完 bug 后主动提议是否固化。与 writing-skills 分工：本 skill 是**被动观察积累**（从过往行为里提炼）；writing-skills 是**主动创作**（用户显式要新 skill）。默认关闭 observer 需手动启用。"
 ---
 
 # Continuous Learning v2.1 — 基于 instinct 的后台学习

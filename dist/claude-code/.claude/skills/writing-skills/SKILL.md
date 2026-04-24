@@ -1,6 +1,6 @@
 ---
 name: writing-skills
-description: "创作 skill 的 meta-skill（TDD 写流程文档）。用户说'创建 skill / 写个 skill / 提炼约定 / 从 git 历史抽模式 / 把这个固化成 skill / 建立团队规范'时激活；也处理 /skill-create 被删后的能力。"
+description: "**主动创作** skill 的 meta-skill（TDD 写流程文档）。触发：用户说'建个 skill / 写个 skill / 提炼约定 / 从 git 历史抽模式 / 把这个固化成 skill / 建立团队规范'。与 continuous-learning-v2 分工：本 skill 是**用户显式要求创作新 skill**；continuous-learning-v2 是**后台被动观察自动积累**。本文档较长，按需扫读特定 section（frontmatter 规范 / checklist / 反模式）。"
 ---
 
 # Writing Skills

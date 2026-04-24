@@ -11,7 +11,7 @@ argument-hint: "[PR# | PR URL]（留空则审本地未提交）"
 
 对单点改动做深度审查——要么是本地未提交的改动，要么是一个 GitHub PR。**并行委派 `code-reviewer`（质量/架构）+ `security-reviewer`（安全）** 两个 agent，然后汇总给 CRITICAL/HIGH/MEDIUM/LOW 4 级 finding。
 
-与 `/full-review` 的区别：本命令是单点，范围小、速度快；full-review 是模块或项目级全景审查。
+本命令是**通用审查入口**：默认轻量单点审（本地 diff 或 PR）；若用户说"全面审 / 深度审 / 模块级体检"，本命令自动扩展为 5 阶段模块审（质量+架构 / 安全+性能 / 测试+文档 / 最佳实践 / CI/CD）。深度流程实现细节见 `code-review-workflow` skill。
 
 ---
 
@@ -271,9 +271,9 @@ Next steps:
 - **Diverged branches**：建议 `git fetch origin && git rebase origin/<base>` 再审
 - **大 PR（>50 文件）**：警告审查规模。优先 source → test → config/docs
 
-## 与其他命令的关系
+## 与其他命令 / skill 的关系
 
-- 要求：在 `/implement` 或手工 commit 后运行
-- 配合：`/verify` 单跑验证
-- 更重：`/full-review` 全景审查
+- 前置：在 `/implement` 或手工 commit 后运行
+- 配合：说"验证一下 / 交付前检查" → `verification-loop` skill 自动 6 阶段验证
+- 收到反馈：`code-review-workflow` skill 的 Part 2 处理反应模式
 - 之后：`/pr` 或 `gh pr merge`

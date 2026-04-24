@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "generatedAt": "2026-04-24T07:22:04.392Z",
+  "generatedAt": "2026-04-24T08:00:23.136Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
@@ -61,8 +61,8 @@
     {
       "kind": "agent",
       "dist": ".codex/agents/performance-engineer.md",
-      "size": 12059,
-      "sha256": "5b32f50086a1425c77f0f21dd0961e9b37fe282f4cbf624ca1eb7ffcc37b555d"
+      "size": 12263,
+      "sha256": "66d2f46b791a1bd988953513be0cc3d8b21573f1716ebcaae873abb22d527a43"
     },
     {
       "kind": "agent",
@@ -85,8 +85,8 @@
     {
       "kind": "agent",
       "dist": ".codex/agents/refactor-cleaner.md",
-      "size": 2692,
-      "sha256": "65337ce189a681d0baa95b45c47878b0d9d3e264c1f6ef76e2f4c20dce75fc91"
+      "size": 2833,
+      "sha256": "81652be7309d54c9a8f2857d255e0af63bb5de347fc0f7d1bc01499322669f23"
     },
     {
       "kind": "agent",
@@ -97,14 +97,14 @@
     {
       "kind": "agent",
       "dist": ".codex/agents/silent-failure-hunter.md",
-      "size": 3377,
-      "sha256": "ecc979ba466e1ca53658721e70c439140cbb8aaa983806efe077b4b78ea0444a"
+      "size": 3603,
+      "sha256": "650644955935671ff201c572f39566250285cf73a6345509cd09b1e762f0fbde"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/test-automator.md",
-      "size": 5162,
-      "sha256": "5fe0c865320687bdf9cb113c6ec3ba51acb465798d52a99d6b78537f0cf137d4"
+      "size": 5302,
+      "sha256": "4acdb2a2faab4a496d992897dc8a1eb1d0e228148e7f3cbbbe9a6c1d6502e17b"
     },
     {
       "kind": "agent",
@@ -127,8 +127,8 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-fix-bug.md",
-      "size": 3719,
-      "sha256": "767e9eaf59f50e664ca9a69c1708cbe6363cf7805fc0f06d58a3c4012ae2916a"
+      "size": 4102,
+      "sha256": "40ab7f82a1678cee6b80e0822076915fecba31c3a4c0d5abec02132e203cbb3c"
     },
     {
       "kind": "prompt",
@@ -163,26 +163,26 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-review.md",
-      "size": 6817,
-      "sha256": "2bc486f0a626194864ac53280da2490d7a5ee6fbf32c64a3768e8d96f823186a"
+      "size": 7123,
+      "sha256": "f993b5a7c3c0fc9b8ddd708a92c380ef281651807b5a8450955119fc6699cd80"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-session-resume.md",
-      "size": 5366,
-      "sha256": "57b3e7293169d4e5ccbaf6aef244813bf20be5f5ff836e1a5748f8c80ec82978"
+      "size": 5405,
+      "sha256": "6f642226986811bad34e6f4c0f5729cc46bb37b7bbab383010f8fc6965113eb0"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-session-save.md",
-      "size": 6425,
-      "sha256": "5b94f6ae483e7a16a4682efb531ec9824deef596b3254526a6111978da8579cf"
+      "size": 6487,
+      "sha256": "02a68bf0ccb8680eaceb558becd30d4a16efa891dc9ce752d98f7e02220cde93"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-tdd.md",
-      "size": 3356,
-      "sha256": "c170e2d01fe5b7772921ed3c8da73d44402e648bed49f464ff7611a56d6ddc46"
+      "size": 3549,
+      "sha256": "5df94d428d3dca76aa731433b5689b5e0a1d6b509c73344685cdd5bba04dc863"
     },
     {
       "kind": "rule",
@@ -224,8 +224,8 @@
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 11082,
-      "sha256": "c7c942e6ae21884e30f7c719e7916d20f45441bee2bc107bb7792dd205019822"
+      "size": 13295,
+      "sha256": "b1b149aefb57728d931f5c6498b7336cc6467b492fc5d69aa872576c69e5dd2b"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -258,6 +258,6 @@
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 200266
+    "totalBytes": 204173
   }
 }

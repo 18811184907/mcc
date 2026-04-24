@@ -1,31 +1,25 @@
 ---
 name: code-review-workflow
-description: "代码审查完整流程：派发 code-reviewer subagent + 收到反馈后的反应模式。用户说'审一下 / review / 审代码 / 帮我看看改动对不对 / 收到审查意见怎么回'时激活，或 Claude 写完较大单元代码后主动激活。"
+description: "代码审查完整流程（两端）：Part 1 派发 reviewer、Part 2 收反馈的反应模式。触发：写完 >50 行改动后主动激活 Part 1；用户贴 review 意见问怎么回激活 Part 2。与 verification-loop 分工：本 skill 做**架构/需求合规性**判断；verification-loop 做**技术闸门**（build/test 跑得过）。/review 命令是本 skill 的显式入口。"
 ---
 
 # Code Review Workflow（代码审查两端合一）
 
-一个 skill 覆盖"发起 review"+"收到 review 怎么回应"两端。
+一个 skill 覆盖"发起 review"（Part 1）+"收到 review 怎么回"（Part 2）两端。两端都是为了**外部视角不被会话历史污染**。
 
 **核心原则：**
 1. 早审、常审（别攒到合并前）
-2. 派 subagent 审，别在自己会话里审（避免自我迁就）
-3. 收到反馈：先验证、不表演、不盲从
+2. 派 subagent 审，不在自己会话里审（避免自我迁就）
+3. 收反馈：先验证、不表演、不盲从
 
 ---
 
 ## 自动激活时机
 
-**发起 review：**
-- Claude 刚完成一个较大单元（feature / refactor / bug fix > 50 行改动）
-- 用户说"帮我审 / review 一下 / 审代码 / 看看改动对不对"
-- 合并 main 前
-- 卡壳换视角
-
-**收反馈：**
-- 用户贴 review 意见进来问"怎么回"
-- PR 有 comment 需要处理
-- 任何外部审阅者的反馈
+| Part | 时机 |
+|---|---|
+| **Part 1 · 发起** | Claude 刚完成较大单元（>50 行）/ 用户说"帮我审 / review / 看看对不对" / 合并 main 前 / 卡壳换视角 |
+| **Part 2 · 收反馈** | 用户贴 review 意见进来 / PR 有 comment 需处理 / 外部 subagent reviewer 返回结论 |
 
 ---
 

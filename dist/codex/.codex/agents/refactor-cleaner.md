@@ -82,9 +82,9 @@ ruff check --select F401,F811 src/         # 未用 import + 重复定义
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `/refactor-clean` 调用
-- **前置依赖**：`tdd-guide` 已保证覆盖率 ≥ 80%（否则不要开工）
-- **下游**：清理完成后交 `code-reviewer` 做最后把关
+- **上游**：用户说"清理死代码 / 重构"触发，或 Claude 发现代码腐化主动提议
+- **前置依赖**：`test-automator` agent 或 `tdd-workflow` skill 已保证覆盖率 ≥ 80%（否则不要开工——重构没测试网等于蒙眼走钢丝）
+- **下游**：清理完成后委派 `code-reviewer` 做最后把关
 
 ## 成功指标
 

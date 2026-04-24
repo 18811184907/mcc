@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-24T07:22:04.251Z",
+  "generatedAt": "2026-04-24T08:00:23.000Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -72,8 +72,8 @@
       "kind": "agents",
       "dist": ".claude/agents/performance-engineer.md",
       "install": ".claude/agents/performance-engineer.md",
-      "size": 12050,
-      "sha256": "e62961a2bdd39c2a51d1080a0f88398ca97dbc1070b17369964d58b41b0fdddb"
+      "size": 12252,
+      "sha256": "0164b606ecbe8236078f3b5caadef40073f99115c090e0540b6d444ad0218c26"
     },
     {
       "kind": "agents",
@@ -100,8 +100,8 @@
       "kind": "agents",
       "dist": ".claude/agents/refactor-cleaner.md",
       "install": ".claude/agents/refactor-cleaner.md",
-      "size": 2682,
-      "sha256": "222263cbb75d6505d866f98364f067d880683bbe68580231790e1fb3d169a482"
+      "size": 2823,
+      "sha256": "cdc4f9f1bdd828b7ceee330f4903bd05d04fa9e8d2a0d9bf9c2a047477ecc0ba"
     },
     {
       "kind": "agents",
@@ -114,15 +114,15 @@
       "kind": "agents",
       "dist": ".claude/agents/silent-failure-hunter.md",
       "install": ".claude/agents/silent-failure-hunter.md",
-      "size": 3367,
-      "sha256": "ef624ac7a1a03e0feeac3838186df68dbc3a97b40d7dfe701b45aaa3ebec2ec7"
+      "size": 3593,
+      "sha256": "c0c2d8f9df6a45840ef53c8f294a73b48a86939979c20a37a0816c3040f15f89"
     },
     {
       "kind": "agents",
       "dist": ".claude/agents/test-automator.md",
       "install": ".claude/agents/test-automator.md",
-      "size": 5152,
-      "sha256": "5eceab0f4557c4c4aa82cbda7a8801f4e9fd212d3ef6521f120426b9b6185e05"
+      "size": 5290,
+      "sha256": "111123e4b7ab37dcd081804797e1e33a13242d0cee75e5a1683ed4088c597106"
     },
     {
       "kind": "agents",
@@ -149,8 +149,8 @@
       "kind": "command",
       "dist": ".claude/commands/fix-bug.md",
       "install": ".claude/commands/fix-bug.md",
-      "size": 3719,
-      "sha256": "767e9eaf59f50e664ca9a69c1708cbe6363cf7805fc0f06d58a3c4012ae2916a"
+      "size": 4102,
+      "sha256": "40ab7f82a1678cee6b80e0822076915fecba31c3a4c0d5abec02132e203cbb3c"
     },
     {
       "kind": "command",
@@ -191,29 +191,29 @@
       "kind": "command",
       "dist": ".claude/commands/review.md",
       "install": ".claude/commands/review.md",
-      "size": 6817,
-      "sha256": "2bc486f0a626194864ac53280da2490d7a5ee6fbf32c64a3768e8d96f823186a"
+      "size": 7123,
+      "sha256": "f993b5a7c3c0fc9b8ddd708a92c380ef281651807b5a8450955119fc6699cd80"
     },
     {
       "kind": "command",
       "dist": ".claude/commands/session-resume.md",
       "install": ".claude/commands/session-resume.md",
-      "size": 5366,
-      "sha256": "57b3e7293169d4e5ccbaf6aef244813bf20be5f5ff836e1a5748f8c80ec82978"
+      "size": 5405,
+      "sha256": "6f642226986811bad34e6f4c0f5729cc46bb37b7bbab383010f8fc6965113eb0"
     },
     {
       "kind": "command",
       "dist": ".claude/commands/session-save.md",
       "install": ".claude/commands/session-save.md",
-      "size": 6425,
-      "sha256": "5b94f6ae483e7a16a4682efb531ec9824deef596b3254526a6111978da8579cf"
+      "size": 6487,
+      "sha256": "02a68bf0ccb8680eaceb558becd30d4a16efa891dc9ce752d98f7e02220cde93"
     },
     {
       "kind": "command",
       "dist": ".claude/commands/tdd.md",
       "install": ".claude/commands/tdd.md",
-      "size": 3356,
-      "sha256": "c170e2d01fe5b7772921ed3c8da73d44402e648bed49f464ff7611a56d6ddc46"
+      "size": 3549,
+      "sha256": "5df94d428d3dca76aa731433b5689b5e0a1d6b509c73344685cdd5bba04dc863"
     },
     {
       "kind": "skills",
@@ -226,8 +226,8 @@
       "kind": "skills",
       "dist": ".claude/skills/code-review-workflow/SKILL.md",
       "install": ".claude/skills/code-review-workflow/SKILL.md",
-      "size": 5961,
-      "sha256": "71e36d8f36e94ecf6d83d676b66e95096541d3f65bfcf1beca1c84976ff99667"
+      "size": 6139,
+      "sha256": "068eb29ab958e4bf78025e0a9d23d6d2b534c5920f523109861723028a74610e"
     },
     {
       "kind": "skills",
@@ -240,8 +240,8 @@
       "kind": "skills",
       "dist": ".claude/skills/coding-standards/SKILL.md",
       "install": ".claude/skills/coding-standards/SKILL.md",
-      "size": 13823,
-      "sha256": "35205eb578439c83da72bccca2943e954da95107a3d54b4af8e64fc073285bd4"
+      "size": 14094,
+      "sha256": "9209e68e24eb0c0c3e6ba5508413eab31e638ad0b0e4a54f4776ecf13a9ef0fa"
     },
     {
       "kind": "skills",
@@ -254,8 +254,8 @@
       "kind": "skills",
       "dist": ".claude/skills/continuous-learning-v2/SKILL.md",
       "install": ".claude/skills/continuous-learning-v2/SKILL.md",
-      "size": 8118,
-      "sha256": "157a82c4018c35321fe5d1d6693d3ac067013b73a0108864a51447ee4cf076a0"
+      "size": 8277,
+      "sha256": "015f7b2314f5fa16e3f20d10c98834bacbfc4fddc0a75bbd84e0bffaa2dcee9d"
     },
     {
       "kind": "skills",
@@ -324,15 +324,15 @@
       "kind": "skills",
       "dist": ".claude/skills/dispatching-parallel-agents/SKILL.md",
       "install": ".claude/skills/dispatching-parallel-agents/SKILL.md",
-      "size": 7164,
-      "sha256": "ef5dcdbb89d9bb4ec8704b3a294aede1e9eb0923d5c9cc0feae0497ba5864546"
+      "size": 7446,
+      "sha256": "33a8933c27cf8f415ee8ea910c3ddf12b2c52ee866c4db9102c0d9b4944c325f"
     },
     {
       "kind": "skills",
       "dist": ".claude/skills/e2e-testing/SKILL.md",
       "install": ".claude/skills/e2e-testing/SKILL.md",
-      "size": 4926,
-      "sha256": "92643ada0927707b944401c8c1e1d18a2b922d064ec91679417a3ce5f30e2d9b"
+      "size": 6365,
+      "sha256": "bdb07d63658e16d2224faad7b8450bf88874959b44701966b3008dbdfc5772d2"
     },
     {
       "kind": "skills",
@@ -373,8 +373,8 @@
       "kind": "skills",
       "dist": ".claude/skills/subagent-driven-development/SKILL.md",
       "install": ".claude/skills/subagent-driven-development/SKILL.md",
-      "size": 11518,
-      "sha256": "6fd76fb5272b3545399883f096f68b8635e9d8eace8520e0c047016f4e8788bd"
+      "size": 11721,
+      "sha256": "b73a21ca377c0c49912023aa9f47e9d51f93a2ca43da8e32a3d858bb17e0f866"
     },
     {
       "kind": "skills",
@@ -401,8 +401,8 @@
       "kind": "skills",
       "dist": ".claude/skills/tdd-workflow/SKILL.md",
       "install": ".claude/skills/tdd-workflow/SKILL.md",
-      "size": 10668,
-      "sha256": "d1b7437c0cc385ae0206ac68ba41fdae2fc172efa1df40a1707fcca72a2d35de"
+      "size": 10766,
+      "sha256": "a74e17cbdad42cee0ba2809c33557d704819f663300fc8d0f493c00ce76e7cee"
     },
     {
       "kind": "skills",
@@ -422,15 +422,15 @@
       "kind": "skills",
       "dist": ".claude/skills/verification-loop/SKILL.md",
       "install": ".claude/skills/verification-loop/SKILL.md",
-      "size": 3101,
-      "sha256": "44f7fb00ea8c97a437fff77d03e52ca057c80fd4ec32ced20b3843c9360edeff"
+      "size": 3388,
+      "sha256": "c88c75773a3c77fecac959e994cc426f274fe66a55868ca10c2a3862c728f4af"
     },
     {
       "kind": "skills",
       "dist": ".claude/skills/writing-skills/SKILL.md",
       "install": ".claude/skills/writing-skills/SKILL.md",
-      "size": 20849,
-      "sha256": "e1ca516be05f29d49b24bb8685d5fe645a89c38f02a97fdbde77b9e9cf3e093c"
+      "size": 21061,
+      "sha256": "3b4fefa0d2b889e55c60856c2c9a629fcac662d44f07e74cccce542ec7c3d742"
     },
     {
       "kind": "skills",
@@ -485,8 +485,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/check-console-log.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/check-console-log.js",
-      "size": 1960,
-      "sha256": "5dfc8b4fe4c78d9886ff9711644c8cd1707f1276970f04fb50d8985fdb039068"
+      "size": 2981,
+      "sha256": "b0f53ed8a641411a0f21a6f19c603886551d210ed39ad6ec75203ce95f3624f0"
     },
     {
       "kind": "hooks",
@@ -548,8 +548,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/run-with-flags-shell.sh",
       "install": ".claude/.mcc-hooks/scripts/hooks/run-with-flags-shell.sh",
-      "size": 1139,
-      "sha256": "551945510f0a995935dbb765532d4c622a48d782cb1ab12c50ccb1e98f3b2b87"
+      "size": 1328,
+      "sha256": "01a0c83441749256da888dc616d32c715b6e03cdde7973f62bd1f17f937d542a"
     },
     {
       "kind": "hooks",
@@ -646,8 +646,8 @@
       "kind": "settings-fragment",
       "dist": ".claude/settings.fragment.json",
       "install": ".claude/settings.fragment.json",
-      "size": 4448,
-      "sha256": "f4ea77f18396cd898e0acea5299aec74aadb1f41ace03cdee40a4f3b43537377"
+      "size": 4500,
+      "sha256": "754ae65f41a80698907b322d6ac82f85a522df770a79492465f261d7695b4eda"
     },
     {
       "kind": "mcp-config",
@@ -763,6 +763,6 @@
       "rules": 6,
       "placeholder": 7
     },
-    "totalBytes": 724059
+    "totalBytes": 730140
   }
 }

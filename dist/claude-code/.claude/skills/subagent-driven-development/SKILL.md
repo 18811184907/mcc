@@ -1,6 +1,6 @@
 ---
 name: subagent-driven-development
-description: "同会话内 dispatch 新鲜 subagent 逐 task 实现 + 每 task 两轮 review（spec + code quality）。执行已有 implementation plan 时自动触发。"
+description: "**串行**执行 implementation plan 的 task 链：每 task 派 fresh subagent 实现 + 两轮 review（spec + code quality）。触发：已有 plan（从 /plan 产出）进入执行阶段；/implement 命令的默认工作流。对比：本 skill 处理**串行有依赖**的 task；dispatching-parallel-agents 处理**并行无依赖**的独立问题域。"
 ---
 
 # Subagent-Driven Development

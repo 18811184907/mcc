@@ -1,6 +1,6 @@
 ---
 name: verification-loop
-description: "交付前 6 阶段验证（Build/Type/Lint/Test/Security/Diff）。用户说'验证一下 / 跑一遍检查 / 交付前检查 / 确认没问题'时自动激活。"
+description: "交付前**技术验证**（Build/Type/Lint/Test/Security/Diff 六阶段 gate）。用户说'验证一下 / 跑一遍检查 / 交付前检查 / 确认没问题 / CI 前'时激活。与 code-review-workflow 的分工：本 skill 是**机械可验证的技术闸门**（跑命令看 exit code）；code-review-workflow 是**人类判断的架构/需求符合性**（派 subagent 看是否做对了事）。两者互补：先 verify 过，再 review。"
 ---
 
 # Verification Loop

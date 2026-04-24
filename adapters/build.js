@@ -4,9 +4,42 @@
 
 'use strict';
 
+const fs = require('fs');
 const path = require('path');
 const { adaptToClaudeCode } = require('./adapt-to-claude-code');
 const { adaptToCodex } = require('./adapt-to-codex');
+
+// Minimum expected counts; missed → build fails fast (prevents shipping empty dist/).
+const MIN_AGENTS = 15;
+const MIN_COMMANDS = 8;
+const MIN_SKILLS = 12;
+
+function assertSourceIsHealthy(sourceDir) {
+  if (!fs.existsSync(sourceDir)) {
+    throw new Error(`source/ 目录不存在: ${sourceDir}。请先 clone 完整仓库。`);
+  }
+  const required = ['agents', 'commands', 'skills', 'modes', 'hooks', 'mcp', 'rules'];
+  const missing = required.filter(d => !fs.existsSync(path.join(sourceDir, d)));
+  if (missing.length) {
+    throw new Error(`source/ 缺少必需子目录: ${missing.join(', ')}`);
+  }
+  const agentCount = fs.readdirSync(path.join(sourceDir, 'agents')).filter(f => f.endsWith('.md')).length;
+  const cmdCount = fs.readdirSync(path.join(sourceDir, 'commands')).filter(f => f.endsWith('.md')).length;
+  const skillCount = fs.readdirSync(path.join(sourceDir, 'skills')).filter(f => {
+    return fs.statSync(path.join(sourceDir, 'skills', f)).isDirectory();
+  }).length;
+  if (agentCount < MIN_AGENTS) throw new Error(`source/agents 只有 ${agentCount} 个 .md（期望 ≥${MIN_AGENTS}）`);
+  if (cmdCount < MIN_COMMANDS) throw new Error(`source/commands 只有 ${cmdCount} 个 .md（期望 ≥${MIN_COMMANDS}）`);
+  if (skillCount < MIN_SKILLS) throw new Error(`source/skills 只有 ${skillCount} 个 skill 目录（期望 ≥${MIN_SKILLS}）`);
+}
+
+function assertBuildOutputSane(label, result) {
+  if (!result || typeof result !== 'object') throw new Error(`${label} 产出异常`);
+  const fc = result.filesCount;
+  if (typeof fc !== 'number' || fc < 20) {
+    throw new Error(`${label} 产出文件数 ${fc} 过少，build 可能损坏`);
+  }
+}
 
 async function main() {
   const sourceDir = path.resolve(__dirname, '..', 'source');
@@ -20,14 +53,18 @@ async function main() {
   console.log(`dist:   ${distDir}`);
   console.log('');
 
+  assertSourceIsHealthy(sourceDir);
+
   const t0 = Date.now();
 
   console.log('── Claude Code ─────────────────────');
   const cc = await adaptToClaudeCode(sourceDir, path.join(distDir, 'claude-code'));
+  assertBuildOutputSane('claude-code', cc);
 
   console.log('');
   console.log('── Codex ───────────────────────────');
   const cx = await adaptToCodex(sourceDir, path.join(distDir, 'codex'));
+  assertBuildOutputSane('codex', cx);
 
   const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
 

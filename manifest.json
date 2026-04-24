@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -104,6 +104,25 @@
   },
 
   "version_history": [
+    {
+      "version": "1.6.0",
+      "date": "2026-04-24",
+      "changes": [
+        "v1.6 产品级深度优化：5 轮并行审查员（agent/command/skill/hooks/infra 层）拉出问题清单，批量修复",
+        "CRITICAL 残留引用清零：7 处已删命令在现有 command 里的引用（review.md / tdd.md / session-save.md / session-resume.md）全部替换为 skill 激活描述或新路径",
+        "CRITICAL /fix-bug 强制力一致：Phase 2b 编译诊断从'3 次不成功就停'改为'必找根因、禁止打补丁、同错误改 2 次不降级即停下给证据链'，和 Phase 2 bug 类的强制力对齐",
+        "CRITICAL refactor-cleaner agent 的前置依赖引用从不存在的 tdd-guide 改为 test-automator/tdd-workflow skill",
+        "agent 层优化：test-automator / performance-engineer / silent-failure-hunter 的 description 升级，明确触发条件 + 与其他 agent 的分工",
+        "skill 层 6 个 description 大改：dispatching-parallel-agents / subagent-driven-development / verification-loop / continuous-learning-v2 / writing-skills / tdd-workflow / coding-standards / code-review-workflow — 每个都加了与相邻 skill 的分工表述（并行 vs 串行 / 技术闸门 vs 架构合规 / 被动观察 vs 主动创作）",
+        "e2e-testing skill 加 3 个可选扩展：视觉回归 / a11y（axe-core）/ Core Web Vitals 性能基准",
+        "hooks 层：check-console-log 加 100 文件上限 + 500KB 文件跳过 + 3 秒 watchdog + 第二道 hook timeout 保险（防止大仓库卡死）",
+        "hooks 层：session-start-bootstrap 从无 timeout 改 5 秒（防止永久挂起）",
+        "hooks 层：run-with-flags-shell.sh 改 fail-CLOSED 策略（检查器异常时默认不跑 hook 而不是默认跑）",
+        "infra 层：build.js 加 assertSourceIsHealthy（缺目录 / agent<15 / command<8 / skill<12 即 fail fast）+ assertBuildOutputSane（产出 < 20 文件即拒绝）",
+        "infra 层新增 tests/smoke.js：7 大类 133 项自检（frontmatter / manifest 不谎报 / workflow-map 引用 / hooks 脚本存在 / build 可跑 / version 同步），每次 release 前必跑",
+        "所有修改跑 smoke ✓ 通过"
+      ]
+    },
     {
       "version": "1.5.0",
       "date": "2026-04-24",

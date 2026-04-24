@@ -49,10 +49,14 @@ argument-hint: "<问题描述，留空则 Claude 问>"
 
 ## Phase 2b — 编译诊断（build 类）
 
-- 跑 build 命令收 error
-- 按错误类型分诊（type error / dep missing / config 错）
-- 常见错误自动应用安全修复（不动架构）
-- **3 次同错误不成功就停**，问用户
+**遵循本命令的铁律——必找根因，禁止打补丁**。不是"重试更多次"。
+
+- 跑 build 命令收完整 error（stack + log）
+- 按错误类型分诊（type error / dep missing / config 错 / tooling 版本）
+- 一次只改一处，改完必须验证错误是否变化
+- 如果同错误改了 2 次仍不降级（从 error → warn → gone）**停下**，把证据链给用户
+- 禁止：加 `@ts-ignore`、`eslint-disable`、降低 tsconfig 严格度来"绕过"错误
+- 禁止：随便升级/降级依赖"试试看"——必须先读 changelog 有证据再动
 
 ## Phase 2c — 性能诊断（performance 类）
 

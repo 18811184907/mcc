@@ -43,7 +43,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node ${MCC_HOOKS}/hooks/session-start-bootstrap.js"
+            "command": "node ${MCC_HOOKS}/hooks/session-start-bootstrap.js",
+            "timeout": 5
           }
         ]
       }
@@ -62,7 +63,8 @@
           {
             "type": "command",
             "command": "node -e \"require('${MCC_HOOKS}/hooks/check-console-log.js').run(process.stdin)\"",
-            "async": true
+            "async": true,
+            "timeout": 5
           }
         ]
       }

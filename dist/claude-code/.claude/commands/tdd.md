@@ -85,7 +85,7 @@ npm test <test-file>
 - 外部服务调用
 - 带 hook 的 React component
 
-**E2E Tests** → 用 `/e2e` 单独跑
+**E2E Tests** → 说"写 E2E / Playwright" 触发 `e2e-testing` skill（带 Page Object 模板）
 
 ---
 
@@ -106,15 +106,15 @@ npm test <test-file>
 
 1. 用 `/plan` 明确要造什么
 2. 用 `/tdd` 按 RED-GREEN-REFACTOR 实现
-3. 遇到 build error → `/build-fix`
+3. 遇到 build error / 失败 → `/fix-bug`（自动分诊 build 类）
 4. 跑 `/review` 审查
-5. `/test-coverage` 验证覆盖达标
+5. 说"验证一下 / 补测试到 80%" → `verification-loop` + `test-automator` agent
 
 ---
 
-## 与其他命令的关系
+## 与其他命令 / skill 的关系
 
 - 新功能：先 `/plan`，再 `/tdd`
 - Bug fix：`/fix-bug` 的 Phase 4 会调用 TDD 流程
-- 老代码补测试：`/test-coverage`
+- 老代码补测试：说"补测试到 80%" 让 `test-automator` agent 接管
 - 完成后：`/review`

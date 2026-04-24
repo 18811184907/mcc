@@ -208,5 +208,5 @@ Next.js app 的用户认证系统：register + JWT via httpOnly cookie + middlew
 ## 与其他命令的关系
 
 - 下一个 session：`/session-resume` 读最新文件
-- session 中产出的可复用 pattern：`/learn` 转成 learned skill
+- session 中产出的可复用 pattern：说"记下这个 / 沉淀一下" 激活 `continuous-learning-v2` skill 转成 learned skill
 - 使用 worktree 并行工作时，每个 worktree 单独 session，shortid 带 worktree 名避免混淆
