@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -39,7 +39,7 @@
 
   "components": {
     "agents": 19,
-    "commands": 23,
+    "commands": 20,
     "skills": 16,
     "modes": 3,
     "hooks": 8,
@@ -47,10 +47,7 @@
     "mcp_servers": 5,
     "rules_python": 5,
     "rules_common": 1,
-    "principles_sections": 6,
-    "team_backup_commands": 3,
-    "team_installers": 2,
-    "team_guides": 2
+    "principles_sections": 6
   },
 
   "compatibility": {
@@ -107,6 +104,18 @@
   },
 
   "version_history": [
+    {
+      "version": "1.4.1",
+      "date": "2026-04-24",
+      "changes": [
+        "v1.4.1 团队备份下线：移除 v1.4.0 引入的 /backup /backup-status /backup-off /backup-setup 命令 + team-install.ps1 + team-install.sh + TEAM-MEMBER-GUIDE.md + ADMIN-GUIDE.md",
+        "原因：GitHub 安全模型限制，管理员至少要亲自去网页建一次 PAT，无法做到真正'全托管'。对非技术小团队用户门槛仍高，暂时不适合作为 MCC 主打功能",
+        "MCC 回归纯个人工具定位，保留 v1.3 Hook 减捣乱全部改动",
+        "命令数从 23（用户向）/ 24（含内部）回到 20",
+        "删除 16 个文件 + 2 个 installer + 2 个 guide",
+        "未来可能以 Organization + collaborator 模式重做（每同事自己的 GitHub 账号，不共用 PAT）"
+      ]
+    },
     {
       "version": "1.4.0",
       "date": "2026-04-24",

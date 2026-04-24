@@ -11,8 +11,8 @@
     {
       "name": "mcc",
       "source": "./",
-      "description": "19 agents + 23 commands + 16 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules. 中文主场景，Python + TypeScript + AI 全栈定向优化。v1.1 纳入 obra/superpowers 的 8 个独家 skill。v1.4 加入小团队代码备份（/backup 一键同步到公司 GitHub）。",
-      "version": "1.4.0",
+      "description": "19 agents + 20 commands + 16 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules. 中文主场景，Python + TypeScript + AI 全栈定向优化。v1.1 纳入 obra/superpowers 的 8 个独家 skill。v1.3 Hook 减捣乱。",
+      "version": "1.4.1",
       "author": {
         "name": "MCC"
       },
@@ -31,9 +31,7 @@
         "ai",
         "llm",
         "rag",
-        "chinese",
-        "team-backup",
-        "git"
+        "chinese"
       ],
       "category": "workflow",
       "tags": [

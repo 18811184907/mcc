@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-24T04:32:59.261Z",
+  "generatedAt": "2026-04-24T06:56:26.436Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -137,34 +137,6 @@
       "install": ".claude/agents/vector-database-engineer.md",
       "size": 5246,
       "sha256": "2acaa49b3fd5b55763daf93d11a347208d1beaa1cd9760515dfb0bbc3903b929"
-    },
-    {
-      "kind": "command",
-      "dist": ".claude/commands/backup-off.md",
-      "install": ".claude/commands/backup-off.md",
-      "size": 1978,
-      "sha256": "8491636940b6a0a7ad5a246e06160874091ea4a6f788ed7c4d3fddbf417fa84a"
-    },
-    {
-      "kind": "command",
-      "dist": ".claude/commands/backup-setup.md",
-      "install": ".claude/commands/backup-setup.md",
-      "size": 5726,
-      "sha256": "7c6a42ed82e2ef5e68ee9c4535c687d8ade66b4b700aa36a5d63a4db8bb141f1"
-    },
-    {
-      "kind": "command",
-      "dist": ".claude/commands/backup-status.md",
-      "install": ".claude/commands/backup-status.md",
-      "size": 1964,
-      "sha256": "56aa5ee30a6a127e202e21eb9b3a847a412c25174eb63af6c7728efe3fdc9fe1"
-    },
-    {
-      "kind": "command",
-      "dist": ".claude/commands/backup.md",
-      "install": ".claude/commands/backup.md",
-      "size": 3237,
-      "sha256": "5a440972efa9e1946cf57696e14dc79ac9796bd0d71ef44a5a489860d337abaf"
     },
     {
       "kind": "command",
@@ -841,10 +813,10 @@
   ],
   "notes": [],
   "summary": {
-    "total": 119,
+    "total": 115,
     "byKind": {
       "agents": 19,
-      "command": 24,
+      "command": 20,
       "skills": 32,
       "modes": 3,
       "hooks": 25,
@@ -854,6 +826,6 @@
       "rules": 6,
       "placeholder": 7
     },
-    "totalBytes": 776112
+    "totalBytes": 763207
   }
 }

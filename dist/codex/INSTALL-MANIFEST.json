@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "generatedAt": "2026-04-24T04:32:59.436Z",
+  "generatedAt": "2026-04-24T06:56:26.595Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
@@ -117,30 +117,6 @@
       "dist": ".codex/agents/vector-database-engineer.md",
       "size": 5255,
       "sha256": "8524723f03bb8f3796d7cf8c3ac23e82e10c97f2d543c5f4d2667d9754702f4d"
-    },
-    {
-      "kind": "prompt",
-      "dist": ".codex/prompts/mcc-backup-off.md",
-      "size": 1978,
-      "sha256": "8491636940b6a0a7ad5a246e06160874091ea4a6f788ed7c4d3fddbf417fa84a"
-    },
-    {
-      "kind": "prompt",
-      "dist": ".codex/prompts/mcc-backup-setup.md",
-      "size": 5726,
-      "sha256": "7c6a42ed82e2ef5e68ee9c4535c687d8ade66b4b700aa36a5d63a4db8bb141f1"
-    },
-    {
-      "kind": "prompt",
-      "dist": ".codex/prompts/mcc-backup-status.md",
-      "size": 1964,
-      "sha256": "56aa5ee30a6a127e202e21eb9b3a847a412c25174eb63af6c7728efe3fdc9fe1"
-    },
-    {
-      "kind": "prompt",
-      "dist": ".codex/prompts/mcc-backup.md",
-      "size": 3237,
-      "sha256": "5a440972efa9e1946cf57696e14dc79ac9796bd0d71ef44a5a489860d337abaf"
     },
     {
       "kind": "prompt",
@@ -302,8 +278,8 @@
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 12356,
-      "sha256": "338ba91bf4d21127db7cf1e9e90308e542989dfdd15b5b69b4db022fcd926907"
+      "size": 11851,
+      "sha256": "ab20e880c5b6e8553f354c9bd8bbcbe1fa7f073c12b8f2cb722dba7cc6d7afb9"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -327,15 +303,15 @@
     "Codex 不支持 skill，转为 AGENTS.md 中的场景指引段"
   ],
   "summary": {
-    "total": 52,
+    "total": 48,
     "byKind": {
       "agent": 19,
-      "prompt": 24,
+      "prompt": 20,
       "rule": 6,
       "agents-md": 1,
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 255610
+    "totalBytes": 242200
   }
 }
