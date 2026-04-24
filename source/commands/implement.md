@@ -1,5 +1,5 @@
 ---
-description: "执行 PRP plan 文件：每步立即验证（type / lint / test / build / integration 5 级），失败立停不累积。"
+description: "执行 PRP plan 文件：每步立即验证（verification-loop skill 的 6 阶段 Build/Type/Lint/Test/Security/Diff），失败立停不累积。"
 argument-hint: "<path/to/plan.md>"
 ---
 
@@ -124,25 +124,28 @@ git pull --rebase origin $(git branch --show-current) 2>/dev/null || true
 
 ## Phase 4 — 验证（委派 verification-loop skill）
 
-跑完整 5 级验证。实际执行**委派给 `verification-loop` skill**，它会根据项目类型跑对应命令并按"按级报 verdict / blocker"的格式汇总。
+跑 **6 阶段验证**。实际执行**委派给 `verification-loop` skill**，它会根据项目类型跑对应命令并按"按阶段报 verdict / blocker"的格式汇总。
 
-5 级是：
+6 阶段（与 `verification-loop` skill 的阶段定义一致）：
 
-1. **Static Analysis** — type-check + lint（lint 先 auto-fix，残留手工修）
-2. **Unit Tests** — 按 plan 里 Testing Strategy 写测试，全绿
-3. **Build** — 零错误构建
-4. **Integration Testing**（如适用）— 启服务、调 endpoint、停服务
-5. **Edge Case Testing** — 跑 plan 里的 edge case 清单
+1. **Build** — 零错误构建（JS/TS: `npm run build`；Python 通常跳过）
+2. **Type** — type-check（tsc --noEmit / mypy / pyright）
+3. **Lint** — auto-fix 先行，残留报告
+4. **Test** — unit + integration 全绿（按 plan 里 Testing Strategy 写/扩测试）
+5. **Security** — 依赖审计 + 基础安全扫描（npm audit / bandit / trivy 等）
+6. **Diff** — 改动的逐文件合理性 check（禁 `console.log` / 禁硬编密钥 / 禁 `@ts-ignore` 滑坡）
 
-任一级失败 → 修完再继续，不往下走。
+任一阶段失败 → 修完再继续，不往下走。
 
 ### Integration Testing 注意
 
 本命令不复制 server 启动脚本样板。**委派 `test-automator` agent**（若已装）执行 integration；若未装 agent，降级到简单 curl 本地检测。
 
+**Edge Cases** 也作为 Test 阶段的一部分（按 plan 里 edge case 清单驱动），不单独列成一个阶段。
+
 **Windows 注**：PowerShell 下不要用 `&` 后台运行加 POSIX while 循环，改用 `Start-Process` + polling 或直接让 `test-automator` agent 处理跨平台。
 
-**Checkpoint**：5 级全绿。
+**Checkpoint**：6 阶段全绿。
 
 ---
 

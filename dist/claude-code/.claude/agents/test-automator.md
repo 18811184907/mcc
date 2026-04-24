@@ -141,6 +141,6 @@ async def test_extract_intent():
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `tdd-guide` / `/tdd` / 功能开发流程调用
+- **上游**：被 `/tdd` 命令 / `tdd-workflow` skill / 功能开发完成后主动调用（补测试到 80%）
 - **并行**：与 `python-pro` / `typescript-pro` / `frontend-developer` 协作写实现 + 测试
 - **下游**：覆盖率不足 → 提示补充；被 `refactor-cleaner` 前置依赖（清理前必须覆盖达标）

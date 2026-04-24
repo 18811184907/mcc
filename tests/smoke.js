@@ -104,7 +104,7 @@ assert(manifest.components.skills === realSkills,
 
 // --- 4. workflow-map 引用的命令都存在 ---
 
-const wfMap = readJSON(path.join(src, 'skills', 'mcc-help', 'workflow-map.json'));
+const wfMap = readJSON(path.join(src, 'skills', 'help', 'workflow-map.json'));
 const knownCommands = new Set(listDir(path.join(src, 'commands'))
   .filter(f => f.endsWith('.md')).map(f => '/' + f.replace('.md', '')));
 for (const phase of (wfMap.phases || [])) {

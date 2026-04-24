@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,28 @@
   },
 
   "version_history": [
+    {
+      "version": "1.9.0",
+      "date": "2026-04-24",
+      "changes": [
+        "v1.9 主题：彻查遗留问题（5 审查员并行深审）+ 并行可视化 + mcc-help 改名 help + Python rules 补齐",
+        "改名：mcc-help skill → help（目录 / frontmatter name / 所有引用清零：principles / orchestration-playbook / README / USAGE / tests）",
+        "CRITICAL 修复 1：orchestration-playbook 引用不存在的 engineering-judgment skill → 改为 confidence-check / coding-standards / architecture-decision-records / planner agent 四路分发",
+        "CRITICAL 修复 2：plan.md 重复段落清除（'代码库搜索 8 个类别' 出现两次）",
+        "CRITICAL 修复 3：README.md / USAGE.md 的 '16 个 skill' 全量更新为 17，同时重构 skill 分组展示（核心编排 4 / 工作流 6 / 专项 7）",
+        "CRITICAL 修复 4：ai-engineer.md 的 call_with_fallback 重写——primary retry 3 次 + 单次 fallback，不再双层重试导致 Haiku 被白白重试",
+        "CRITICAL 修复 5：planner.md 引用不存在的 tdd-guide → 改为 test-automator agent + tdd-workflow skill；同步修 test-automator.md / tdd-workflow/SKILL.md",
+        "CRITICAL 修复 6：dispatching-parallel-agents + orchestration-playbook 新增'派发可视化模板'章节——强制 Claude 每次并行派 agent 前输出⚡派发文本、返回后输出✓合流文本，让用户看到真并行",
+        "HIGH 修复 1：统一 verification 术语 5 级 → 6 阶段（implement.md 对齐 verification-loop skill 的 Build/Type/Lint/Test/Security/Diff 定义）",
+        "HIGH 修复 2：build.js MIN_AGENTS 15→17 / MIN_COMMANDS 8→10 / MIN_SKILLS 12→15（接近实际值 19/11/17，防 source 误删但留缓冲）",
+        "HIGH 修复 3：Python rules 补齐到 TS 对等（coding-style 42→170 行 / testing 38→180 行 / security 29→180 行 / patterns 40→210 行 / hooks 20→120 行）",
+        "Python rules 涵盖：ruff + pyright 严格度 / Pydantic 校验 / async 最佳实践 / argon2 密码 / OWASP Top 10 Python 对照 / FastAPI DI / Repository Protocol / AI-LLM 专项 / pre-commit",
+        "skills: 16 → 17（orchestration-playbook 在 v1.8 引入，help 在 v1.9 改名完成）",
+        "dist/claude-code 112 files / dist/codex 44 files（计数稳定）",
+        "smoke 146 checks ✓ 通过，installer-dry-run 12 checks ✓ 通过",
+        "version: 1.8.0 → 1.9.0"
+      ]
+    },
     {
       "version": "1.8.0",
       "date": "2026-04-24",

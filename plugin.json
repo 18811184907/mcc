@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 11 commands + 17 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules（Python + TypeScript）。中文主场景 + Python + TS + AI 全栈。v1.5 少命令多自动。v1.6 修 CRITICAL + smoke 烟测。v1.7 多智能体并行协同。v1.8 4 层架构重构（rules/commands/agents/skills 各司其职）+ mcc-principles 5600→1500 tokens + orchestration-playbook 新 skill。",
   "author": {
     "name": "MCC",

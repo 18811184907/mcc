@@ -1,7 +1,10 @@
 # MCC 核心原则（Principles）
 
-> 每次 session 加载的**最小骨架**（目标 ≤1000 tokens）。
-> 完整方法论下沉到 skill/agent，按需激活。详查 `mcc-help` skill 的主动性映射表和 `dispatching-parallel-agents` skill 的并行决策树。
+> 每次 session 加载的**最小骨架**（目标 ≤1500 tokens）。
+> 完整方法论下沉到 skill/agent，按需激活：
+> - Claude 自查"该派什么 agent / 激活什么 skill" → `orchestration-playbook` skill
+> - 并行决策树 + 场景组合表 + 协作/合流 → `dispatching-parallel-agents` skill
+> - 用户问"我在哪 / 下一步" → `help` skill（纯用户导航）
 
 ---
 
@@ -17,7 +20,7 @@
 
 **完整的「场景 → agent/skill」映射表在 `orchestration-playbook` skill 里**（MCC 的 Claude 编排手册）。当不确定"当前这个场景该派什么 agent / 激活什么 skill"时，激活 `orchestration-playbook`。
 
-用户问"我在哪 / 下一步" 时激活 `mcc-help`（纯用户导航，不是 Claude 自查）。
+用户问"我在哪 / 下一步" 时激活 `help`（纯用户导航，不是 Claude 自查）。
 
 **禁止**：
 - ❌ 等用户敲 slash 命令才激活能力
@@ -89,6 +92,6 @@
 | 主动性（P-1） | `orchestration-playbook`（场景 → agent/skill 映射） |
 | 并行（P-0.5） | `dispatching-parallel-agents`（决策树 + 组合表）/ `party-mode` / `subagent-driven-development` |
 | 核心指令（P0） | `confidence-check` / Context7 MCP |
-| 用户导航 | `mcc-help`（扫 PRPs / docs/mistakes 推进度） |
+| 用户导航 | `help`（扫 PRPs / docs/mistakes 推进度） |
 
 与 `rules/common/coding-style.md` / `development-workflow.md` / `agents.md` 配合，构成完整规则栈。

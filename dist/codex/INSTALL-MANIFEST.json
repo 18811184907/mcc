@@ -1,14 +1,14 @@
 {
   "target": "codex",
-  "generatedAt": "2026-04-24T09:05:46.212Z",
+  "generatedAt": "2026-04-24T12:31:43.372Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
     {
       "kind": "agent",
       "dist": ".codex/agents/ai-engineer.md",
-      "size": 6249,
-      "sha256": "dc6fe189e1a3428706b07ebe2a6b924721d065f5fccbcacfd9e98a43198591dd"
+      "size": 7155,
+      "sha256": "138214bfaa2fe1719d4389ce0d17800a77f186fb98b642f57d5d9008aa7af514"
     },
     {
       "kind": "agent",
@@ -67,8 +67,8 @@
     {
       "kind": "agent",
       "dist": ".codex/agents/planner.md",
-      "size": 7133,
-      "sha256": "17d2abbf0db6dbbf0b6eaeb9d5491f174dc4d2a996ba541ac14a399fd3dbdc3c"
+      "size": 7347,
+      "sha256": "c00d7f0142cae7d0b9d900e453f8506be9a6f4d02f7501101a28b9efca11dd1d"
     },
     {
       "kind": "agent",
@@ -103,8 +103,8 @@
     {
       "kind": "agent",
       "dist": ".codex/agents/test-automator.md",
-      "size": 5302,
-      "sha256": "4acdb2a2faab4a496d992897dc8a1eb1d0e228148e7f3cbbbe9a6c1d6502e17b"
+      "size": 5349,
+      "sha256": "48af9b260e8b9f45220ca8610f4a148cbe22ecd3f2cdedc8c5f687d6e2324ba7"
     },
     {
       "kind": "agent",
@@ -133,8 +133,8 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-implement.md",
-      "size": 7558,
-      "sha256": "43d9a3cab1203b2899a9a3d156a6bf98fb892cc9b51a537e9755556b4e09bee1"
+      "size": 7930,
+      "sha256": "0aa67cd1597112cd868c3819e4f318ad3180b4d8394be5f099bc3211156b89be"
     },
     {
       "kind": "prompt",
@@ -145,8 +145,8 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-plan.md",
-      "size": 11467,
-      "sha256": "f920ea89aecf7cf05a264d710d952946c0931e87d49d15b75272e258e013f7e2"
+      "size": 11429,
+      "sha256": "dd341131c9bcbd1e76097662386235ebcdd0e21b57ba3d90f19f31b5d8ce3b79"
     },
     {
       "kind": "prompt",
@@ -187,32 +187,32 @@
     {
       "kind": "rule",
       "dist": ".codex/rules/python/coding-style.md",
-      "size": 711,
-      "sha256": "f9d6d7a39c5f5ea809579fecac591f390fa9264c088c7e209d464d5244747003"
+      "size": 6372,
+      "sha256": "e2fbf35e567fe74bd292995a032909b5665b5118c711dba8c4de13264ae15273"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/python/hooks.md",
-      "size": 424,
-      "sha256": "7ebd12233f6917905d5653a63afe2361450ed732fd965de55055ed5ffd3c14a7"
+      "size": 3718,
+      "sha256": "4110aaaed1cd6c28753b47559582a3e257cf1b201af05316af9d6c4bf782da3c"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/python/patterns.md",
-      "size": 823,
-      "sha256": "d9cab9b536321ea7efc6180668fd48820deaf571400db732f0ca17bdda92b7d0"
+      "size": 7033,
+      "sha256": "25919e230fcc2af1c13ed1ab40c410b344880a463c1300beb886ddbe1b34cbbc"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/python/security.md",
-      "size": 524,
-      "sha256": "6bbbb6c800cdfef23c3f9a5055ce31096a7724b51f0d528935f6c32970639453"
+      "size": 6520,
+      "sha256": "55e1f269f484efb08b5621309415ac6b4482a51c57108e3c9d2dc577cc5ff297"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/python/testing.md",
-      "size": 581,
-      "sha256": "92655aa5047ee456501ad6605c428680bac6433965f89ce531fe79627004e8c6"
+      "size": 6078,
+      "sha256": "9b10fda0b79c97ac92653cc3fad90c13a1e2462e7ef6756590df470d28e1bc79"
     },
     {
       "kind": "rule",
@@ -247,15 +247,15 @@
     {
       "kind": "rule",
       "dist": ".codex/rules/common/mcc-principles.md",
-      "size": 4486,
-      "sha256": "e5250361e5072f6f3b5d789004ea26b43d83a8e46352a2f62b8a588586bae31c"
+      "size": 4635,
+      "sha256": "cd5193400f3838b2a64c426a4a36310f4c6f05fc76fdf2639129b5a5200ac861"
     },
     {
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 12576,
-      "sha256": "66da64e4ab119389b0af749e44aafbccaf496fbb3737e964fc846e693278d72e"
+      "size": 12593,
+      "sha256": "113a2485914e3cbc8fbe636412716cfc003b05f9a6fa3c55e4815ee0b2ca636c"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -288,6 +288,6 @@
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 217332
+    "totalBytes": 245657
   }
 }

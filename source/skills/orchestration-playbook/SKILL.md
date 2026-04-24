@@ -1,6 +1,6 @@
 ---
 name: orchestration-playbook
-description: "MCC 主动性手册：Claude 遇任务时查'该派什么 agent / 激活什么 skill / 该不该并行'。触发：Claude 自己看到一个新任务但不确定是该硬干、该派 agent、该激活 skill、还是该并行——立即激活本 skill 查 playbook。与 mcc-help 分工：mcc-help 是用户导航（用户问'我在哪'激活）；本 skill 是 Claude 编排参考（Claude 自己查'该派什么'激活）。"
+description: "MCC 主动性手册：Claude 遇任务时查'该派什么 agent / 激活什么 skill / 该不该并行'。触发：Claude 自己看到一个新任务但不确定是该硬干、该派 agent、该激活 skill、还是该并行——立即激活本 skill 查 playbook。与 help 分工：help 是用户导航（用户问'我在哪'激活）；本 skill 是 Claude 编排参考（Claude 自己查'该派什么'激活）。"
 ---
 
 # Orchestration Playbook · Claude 编排手册
@@ -62,8 +62,11 @@ MCC 的执行哲学**落地到具体选择**。不对用户可见——这是 Cl
 | 分支做完要合入 | `finishing-a-development-branch` |
 | 执行已有 plan 的 task 链 | `subagent-driven-development` |
 | 写代码前做产品验证 | `product-lens` |
-| 用户问"我在哪 / 下一步" | `mcc-help`（纯用户导航） |
-| 涉及 SOLID / 证据驱动 / 风险管理等工程判断 | `engineering-judgment`（详见该 skill） |
+| 用户问"我在哪 / 下一步" | `help`（纯用户导航） |
+| 涉及证据驱动 | `confidence-check` skill（5 维度评估） |
+| 涉及 SOLID / 代码风格 | `coding-standards` skill（Python + TS 带示例） |
+| 涉及架构取舍 / 可逆性 | `architecture-decision-records` skill（产出 ADR） |
+| 涉及风险管理 | `planner` agent 的 Risks & Mitigations 段 + `security-reviewer` agent |
 | 写/改代码时想找规范示例 | `coding-standards`（Python + TS 示例） |
 
 ---
@@ -95,12 +98,42 @@ MCC 的执行哲学**落地到具体选择**。不对用户可见——这是 Cl
 
 ---
 
+## 并行派发必须可视化（v1.9 新增 · 让用户看到真并行）
+
+每次并行派 2+ agent 时，**assistant message 必须输出以下可视化格式**，然后紧跟 Task tool call：
+
+**派发前**：
+```
+⚡ 并行派发 N agent（fan-out / 预计 ~X min）
+   ├─ agent1  用途一句话
+   ├─ agent2  用途一句话
+   └─ agent3  用途一句话
+```
+
+**返回后合流**：
+```
+✓ N agent 全部返回（耗时 X.X min）
+   ├─ agent1  X.X min → N findings
+   └─ ...
+
+合流整合：
+  CRITICAL (n): ...
+  HIGH (n): ...
+```
+
+完整模板 + 理由见 `dispatching-parallel-agents` skill 的"派发可视化模板"章节。
+
+**禁止**：不说就派（用户看不到并行证据，怀疑"你是不是只派了 1 个"）。
+
+---
+
 ## 禁止
 
 - ❌ 等用户敲 slash 命令才激活能力（用户不知道你有什么）
 - ❌ 一件小事连串调 skill（改 typo 不要先 confidence-check）
 - ❌ 忽略 agent 直接在会话里硬写（上下文污染，丢失 subagent 隔离优势）
 - ❌ 多 agent 并行时把某 agent 的 full report 直接贴给用户（主 session 做摘要）
+- ❌ 并行派发不加可视化文本（见上节）
 
 ## 底线
 

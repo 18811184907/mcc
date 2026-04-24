@@ -10,9 +10,10 @@ const { adaptToClaudeCode } = require('./adapt-to-claude-code');
 const { adaptToCodex } = require('./adapt-to-codex');
 
 // Minimum expected counts; missed → build fails fast (prevents shipping empty dist/).
-const MIN_AGENTS = 15;
-const MIN_COMMANDS = 8;
-const MIN_SKILLS = 12;
+// 保持略低于实际值（v1.9: agents=19, commands=11, skills=17），避免误杀，但能防"source 被半删光"。
+const MIN_AGENTS = 17;
+const MIN_COMMANDS = 10;
+const MIN_SKILLS = 15;
 
 function assertSourceIsHealthy(sourceDir) {
   if (!fs.existsSync(sourceDir)) {

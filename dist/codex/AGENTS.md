@@ -54,7 +54,7 @@
   - [dispatching-parallel-agents](#dispatching-parallel-agents)
   - [e2e-testing](#e2e-testing)
   - [finishing-a-development-branch](#finishing-a-development-branch)
-  - [mcc-help](#mcc-help)
+  - [help](#help)
   - [orchestration-playbook](#orchestration-playbook)
   - [party-mode](#party-mode)
   - [product-lens](#product-lens)
@@ -157,7 +157,7 @@ Codex 调用：`mcc-xxx`（文件：`.codex/prompts/mcc-xxx.md`）。
 修 bug / 排查问题（合并了 troubleshoot 的多域分诊）。自动判断是代码 bug / build 错 / 性能退化 / 部署故障，走对应流程。强制根因分析，禁止打补丁。
 
 ### mcc-implement
-执行 PRP plan 文件：每步立即验证（type / lint / test / build / integration 5 级），失败立停不累积。
+执行 PRP plan 文件：每步立即验证（verification-loop skill 的 6 阶段 Build/Type/Lint/Test/Security/Diff），失败立停不累积。
 
 ### mcc-init
 为当前项目初始化 CLAUDE.md（如果不存在的话），带栈检测和约定提取
@@ -211,8 +211,8 @@ Playwright E2E 测试模式：page object + 稳定选择器 + CI 集成。用户
 ### finishing-a-development-branch
 实现完成、测试通过、要决定如何合入时使用：先验证测试，再给 4 个清晰选项（本地合并 / PR / 保留 / 丢弃），然后执行并清理。
 
-### mcc-help
-用户导航：扫 .claude/PRPs/* 和 docs/mistakes/* 推断当前进度，给结构化'下一步'建议。
+### help
+MCC 用户导航：扫 .claude/PRPs/* 和 docs/mistakes/* 推断当前进度，给结构化'下一步'建议。
 
 ### orchestration-playbook
 MCC 主动性手册：Claude 遇任务时查'该派什么 agent / 激活什么 skill / 该不该并行'。

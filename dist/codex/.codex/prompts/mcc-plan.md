@@ -101,8 +101,6 @@ So that [benefit].
 
 ### 代码库搜索（8 个类别）
 
-### 代码库搜索（8 个类别）
-
 针对每个类别用 Grep / Glob / Read 直接搜：
 
 1. **Similar Implementations** — 找类似已有功能，类比的 endpoint / component / module

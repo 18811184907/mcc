@@ -58,7 +58,7 @@ model: inherit
 from fastapi import FastAPI, Depends
 from fastapi.responses import StreamingResponse
 from anthropic import AsyncAnthropic
-from tenacity import retry, stop_after_attempt, wait_exponential
+from tenacity import AsyncRetrying, stop_after_attempt, wait_exponential, retry_if_exception_type
 import structlog
 
 log = structlog.get_logger()
@@ -68,26 +68,40 @@ app = FastAPI()
 def get_claude() -> AsyncAnthropic:
     return AsyncAnthropic()  # 依靠 ANTHROPIC_API_KEY env var
 
-@retry(stop=stop_after_attempt(3),
-       wait=wait_exponential(multiplier=1, min=2, max=30))
-async def call_with_fallback(client, messages, model="claude-sonnet-4-6"):
-    try:
-        return await client.messages.create(
-            model=model,
-            max_tokens=4096,
-            messages=messages,
-            # prompt caching: 把 system prompt / 长文档打上 cache_control
-        )
-    except Exception as e:
-        # 429 / 500 时降级到 Haiku
-        log.warning("claude_call_failed", model=model, error=str(e))
-        if model != "claude-haiku-4-5":
+
+# 正确的 retry + fallback 分层:
+#  1) primary (Sonnet): 内层 retry 3 次 (指数退避), 失败再 fallback
+#  2) fallback (Haiku): 外层一次性降级调用, 不再重试 (降级本身就是应对主模型持续失败的)
+# 这样避免 "retry decorator 包 fallback 函数" 导致 Haiku 也被重试 3 次浪费成本
+async def _call_with_retry(client, model: str, messages):
+    """主模型调用带指数退避重试。429 / 5xx / 瞬时网络错误自动重试 3 次。"""
+    async for attempt in AsyncRetrying(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=2, max=30),
+        retry=retry_if_exception_type(Exception),  # 生产建议改成只重试 429/5xx
+        reraise=True,
+    ):
+        with attempt:
             return await client.messages.create(
-                model="claude-haiku-4-5",
+                model=model,
                 max_tokens=4096,
                 messages=messages,
+                # prompt caching: 把 system prompt / 长文档打上 cache_control
             )
-        raise
+
+
+async def call_with_fallback(client, messages, primary="claude-sonnet-4-6", fallback="claude-haiku-4-5"):
+    """primary 重试 3 次仍失败 → 单次 fallback 到 haiku（不再重试）。"""
+    try:
+        return await _call_with_retry(client, primary, messages)
+    except Exception as e:
+        log.warning("claude_primary_failed", model=primary, error=str(e))
+        # fallback 单次调用（不重试——primary 挂 3 次了，继续 retry haiku 意义不大）
+        return await client.messages.create(
+            model=fallback,
+            max_tokens=4096,
+            messages=messages,
+        )
 
 @app.post("/chat")
 async def chat(req: ChatRequest, client=Depends(get_claude)):

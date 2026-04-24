@@ -201,10 +201,10 @@ Stripe Checkout, and webhook events keep subscription status in sync.
 
 ## 与其他 agent 的协同
 
-- **上游**：被 `/plan`、`/implement`、`/feature-dev` 调用
+- **上游**：被 `/plan`、`/implement` 调用（注：`/feature-dev` 已在 v1.5 删除）
 - **下游交接**：
-  - `tdd-guide`：按计划先写测试
+  - `test-automator` agent + `tdd-workflow` skill：按计划先写失败测试
   - `backend-architect`：后端架构细化
   - `ai-engineer`：LLM / RAG / Agent 相关步骤深化
   - `code-explorer`：需要先摸清现状时并行调用
-- **并行**：复杂架构题可同时让 `architect` 做决策评审
+- **并行**（v1.7 并行优先原则）：复杂架构题在 /plan Phase 2 里和 `backend-architect` / `database-optimizer` / `ai-engineer` 等 domain agent 同一 message 并行派发，合流整合后再写 plan

@@ -61,6 +61,49 @@ Q4. 任务很小（<30 行改动）？
 用户说"并行处理这些"           → 直接按独立度拆分
 ```
 
+## 派发可视化模板（v1.9 · 让用户看到真并行）
+
+**规则**：每次并行派 agent，**assistant message 必须在 Task call 前后输出可视化文本**，让用户看到"真的并行了，不是顺序也不是瞎说"。
+
+### 派发前（Task call 之前的同一 message 里）
+
+```
+⚡ 并行派发 3 agent（fan-out 模式 · 预计 ~2 min）
+   ├─ code-reviewer          代码质量审查
+   ├─ security-reviewer      安全扫描
+   └─ silent-failure-hunter  吞错 / 静默失败
+```
+
+（紧接着在**同一条 message** 里发多个 Task tool call —— 这是真并行的关键）
+
+### 返回后（合流时）
+
+```
+✓ 3 agent 全部返回（耗时 2.3 min · 按 max 计）
+   ├─ code-reviewer         2.3 min → 5 findings
+   ├─ security-reviewer     1.8 min → 2 findings
+   └─ silent-failure-hunter 1.1 min → 0 findings
+
+合流整合（去重 + 调矛盾 + 补缺 + 压摘要）：
+  CRITICAL (2): ...
+  HIGH (4): ...
+  MEDIUM (3): ...
+```
+
+### 为什么必须可视化
+
+1. **用户看得见真并行**：3 个 Task 图标同时出现在 UI 里 + 文本"并行派发 3 agent" = 铁证
+2. **用户看得见合流动作**：文本明示"去重/调矛盾/补缺/压摘要"做了哪些，不是生成文字
+3. **成本和效率可 audit**：每 agent 标耗时，用户能估算"3 agent 并行 = 2.3 min，如果串行需 5.2 min"
+
+### 禁止
+
+- ❌ 不说就派：用户看不到并行证据，怀疑"你是不是只派了 1 个"
+- ❌ 只在派发前说不在返回时说：用户不知道 agent 返回什么、合流做了什么
+- ❌ 把每个 agent 的 full report 原封不动贴给用户：必须压成三档摘要
+
+---
+
 ## 协作 4 模式（subagent 之间看不见，主 session 做整合）
 
 Subagent 之间**不能直接通信**（各自 context 独立）。所谓"多 agent 协作"真实发生在 3 个位置：

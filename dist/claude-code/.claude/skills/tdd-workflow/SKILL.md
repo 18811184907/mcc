@@ -373,7 +373,7 @@ Otherwise → not TDD
 ## 与 MCC 生态的关系
 
 - **这是 `/tdd` 命令的 skill 实现。** 命令入口只做参数传递和跑测试命令；方法论、铁律、红旗、合理化借口表都在这里。
-- `tdd-guide` agent：想要一位"专注 TDD 纪律"的 subagent 来引导过程时派他。
+- `test-automator` agent：实现代码后补写测试到 80%+ 覆盖率；本 skill 专注"先写失败测试"的纪律流程。
 - `/implement` 或 `subagent-driven-development`：在 implementer subagent 的 prompt 里明确要求遵循本 skill。
 - `verification-loop` skill：每个 feature 完成后，按本 skill 保证测试覆盖；再进 verification-loop 做集成校验。
 - `confidence-check` skill：动手前先跑一次 confidence-check，过 90% 再进入本 skill 的 RED 阶段。

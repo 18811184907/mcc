@@ -1,6 +1,6 @@
 # MCC Usage · 命令速查
 
-> 11 个命令 + 16 个 skill + 3 个 behavioral mode 的使用手册。
+> 11 个命令 + 17 个 skill + 3 个 behavioral mode 的使用手册。
 > 新手建议先看 [README.md](./README.md) 的"典型工作流"章节。
 >
 > **v1.5 后只留真正高频、产出 artifact、或需要显式触发的命令。冷门能力转 skill 自动激活**（说"验证一下" → verification-loop；说"审一下" → code-review-workflow；说"写 E2E" → e2e-testing；说"记下这个" → continuous-learning-v2）。
@@ -91,11 +91,12 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 
 ---
 
-## 16 个 skill（Claude 自动激活，无需手动调）
+## 17 个 skill（Claude 自动激活，无需手动调）
 
 | Skill | 自动激活关键词 / 时机 |
 |---|---|
-| **mcc-help** | "我该做什么 / 下一步是什么 / /help"。扫 `.claude/PRPs/*` + `docs/mistakes/*` 推断当前阶段 |
+| **help** | 用户问"我该做什么 / 下一步是什么 / 我在哪"。扫 `.claude/PRPs/*` + `docs/mistakes/*` 推断当前阶段 |
+| **orchestration-playbook** | Claude 自查手册：遇任务查"该派什么 agent / 激活什么 skill / 该不该并行"。A 节 agent 派发 / B 节 skill 激活 / C 节并行 Q1-Q4 / D 节任务规模 → 流程深度 |
 | **product-lens** | 写代码前验证"为什么要做"：4 模式诊断 → 产出 `PRODUCT-BRIEF.md` |
 | **confidence-check** | "开工前 / 心里没底 / 信心如何"：5 维度打勾，≥90% 才开工 |
 | **party-mode** | "选不出方案 / 多视角 / 辩论"：真并行 spawn N 个 MCC agent |
@@ -217,7 +218,7 @@ git init
 ### 🗣 方向有分歧
 
 ```
-mcc-help           # 查当前阶段 + 推荐
+help               # 查当前阶段 + 推荐（原 mcc-help，v1.9 简化为 help）
 ```
 
 然后：

@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-24T09:05:46.074Z",
+  "generatedAt": "2026-04-24T12:31:43.190Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -9,8 +9,8 @@
       "kind": "agents",
       "dist": ".claude/agents/ai-engineer.md",
       "install": ".claude/agents/ai-engineer.md",
-      "size": 6239,
-      "sha256": "062b98fb6ab5399e6ae3c1b3b3a53c51022e3ac3d775348ed3dada1539af26a4"
+      "size": 7145,
+      "sha256": "d071fe2d1d64306420d2ebb14cc0fecb54a3071e60d11de1ba543cfc388602df"
     },
     {
       "kind": "agents",
@@ -79,8 +79,8 @@
       "kind": "agents",
       "dist": ".claude/agents/planner.md",
       "install": ".claude/agents/planner.md",
-      "size": 7134,
-      "sha256": "9871c3636365455851a3712229c9297091ae648a7c210bc2f806c72adac3d850"
+      "size": 7348,
+      "sha256": "c0d53fbdc9796973b93e06d403a351f1acf3c33f16b60f5b5b805b6c6e1fb8fa"
     },
     {
       "kind": "agents",
@@ -121,8 +121,8 @@
       "kind": "agents",
       "dist": ".claude/agents/test-automator.md",
       "install": ".claude/agents/test-automator.md",
-      "size": 5290,
-      "sha256": "111123e4b7ab37dcd081804797e1e33a13242d0cee75e5a1683ed4088c597106"
+      "size": 5337,
+      "sha256": "a74ae12242fd0e10fbf10f68aa337604a1e3ab414e5f879ddf8eab652057ec13"
     },
     {
       "kind": "agents",
@@ -156,8 +156,8 @@
       "kind": "command",
       "dist": ".claude/commands/implement.md",
       "install": ".claude/commands/implement.md",
-      "size": 7558,
-      "sha256": "43d9a3cab1203b2899a9a3d156a6bf98fb892cc9b51a537e9755556b4e09bee1"
+      "size": 7930,
+      "sha256": "0aa67cd1597112cd868c3819e4f318ad3180b4d8394be5f099bc3211156b89be"
     },
     {
       "kind": "command",
@@ -170,8 +170,8 @@
       "kind": "command",
       "dist": ".claude/commands/plan.md",
       "install": ".claude/commands/plan.md",
-      "size": 11467,
-      "sha256": "f920ea89aecf7cf05a264d710d952946c0931e87d49d15b75272e258e013f7e2"
+      "size": 11429,
+      "sha256": "dd341131c9bcbd1e76097662386235ebcdd0e21b57ba3d90f19f31b5d8ce3b79"
     },
     {
       "kind": "command",
@@ -324,8 +324,8 @@
       "kind": "skills",
       "dist": ".claude/skills/dispatching-parallel-agents/SKILL.md",
       "install": ".claude/skills/dispatching-parallel-agents/SKILL.md",
-      "size": 12388,
-      "sha256": "81871d73429c60b140a0470af3164d5474968632b9a636b59b83f1a797065463"
+      "size": 14074,
+      "sha256": "1c85f2428dabdb075c60988674ab286c44f7f2420b7789fe9e34fd691a6efb5b"
     },
     {
       "kind": "skills",
@@ -343,15 +343,15 @@
     },
     {
       "kind": "skills",
-      "dist": ".claude/skills/mcc-help/SKILL.md",
-      "install": ".claude/skills/mcc-help/SKILL.md",
+      "dist": ".claude/skills/help/SKILL.md",
+      "install": ".claude/skills/help/SKILL.md",
       "size": 4602,
-      "sha256": "d08dcb4d8b1ace059d197c8f6e0adc93a0e4b374fe4098af5bca7c820db60ae6"
+      "sha256": "ed497191a73704a827b63c40f28e6d5dc22a64e7e0b14c7d2aa36943db00b8ae"
     },
     {
       "kind": "skills",
-      "dist": ".claude/skills/mcc-help/workflow-map.json",
-      "install": ".claude/skills/mcc-help/workflow-map.json",
+      "dist": ".claude/skills/help/workflow-map.json",
+      "install": ".claude/skills/help/workflow-map.json",
       "size": 4735,
       "sha256": "92176e1d15dea79a26de391bc8252a9b10657ba2267f6b30b35bd4c8662d530d"
     },
@@ -359,8 +359,8 @@
       "kind": "skills",
       "dist": ".claude/skills/orchestration-playbook/SKILL.md",
       "install": ".claude/skills/orchestration-playbook/SKILL.md",
-      "size": 5863,
-      "sha256": "ed425a6dd1e1760327e1c12c5f059dd309b449cad0039b6bb1abb08c9e5443e4"
+      "size": 6911,
+      "sha256": "fdaaae9053378904577e3348977a9d4a529a728c5a20fcb5c0a87846309ec547"
     },
     {
       "kind": "skills",
@@ -408,8 +408,8 @@
       "kind": "skills",
       "dist": ".claude/skills/tdd-workflow/SKILL.md",
       "install": ".claude/skills/tdd-workflow/SKILL.md",
-      "size": 10766,
-      "sha256": "a74e17cbdad42cee0ba2809c33557d704819f663300fc8d0f493c00ce76e7cee"
+      "size": 10802,
+      "sha256": "81638a21849b17737e77a518d3aa5456f00d2fea1cdfb82dbf11e426648e7fb2"
     },
     {
       "kind": "skills",
@@ -667,43 +667,43 @@
       "kind": "rules",
       "dist": ".claude/rules/common/mcc-principles.md",
       "install": ".claude/rules/common/mcc-principles.md",
-      "size": 4486,
-      "sha256": "e5250361e5072f6f3b5d789004ea26b43d83a8e46352a2f62b8a588586bae31c"
+      "size": 4635,
+      "sha256": "cd5193400f3838b2a64c426a4a36310f4c6f05fc76fdf2639129b5a5200ac861"
     },
     {
       "kind": "rules",
       "dist": ".claude/rules/python/coding-style.md",
       "install": ".claude/rules/python/coding-style.md",
-      "size": 711,
-      "sha256": "f9d6d7a39c5f5ea809579fecac591f390fa9264c088c7e209d464d5244747003"
+      "size": 6372,
+      "sha256": "e2fbf35e567fe74bd292995a032909b5665b5118c711dba8c4de13264ae15273"
     },
     {
       "kind": "rules",
       "dist": ".claude/rules/python/hooks.md",
       "install": ".claude/rules/python/hooks.md",
-      "size": 424,
-      "sha256": "7ebd12233f6917905d5653a63afe2361450ed732fd965de55055ed5ffd3c14a7"
+      "size": 3718,
+      "sha256": "4110aaaed1cd6c28753b47559582a3e257cf1b201af05316af9d6c4bf782da3c"
     },
     {
       "kind": "rules",
       "dist": ".claude/rules/python/patterns.md",
       "install": ".claude/rules/python/patterns.md",
-      "size": 823,
-      "sha256": "d9cab9b536321ea7efc6180668fd48820deaf571400db732f0ca17bdda92b7d0"
+      "size": 7033,
+      "sha256": "25919e230fcc2af1c13ed1ab40c410b344880a463c1300beb886ddbe1b34cbbc"
     },
     {
       "kind": "rules",
       "dist": ".claude/rules/python/security.md",
       "install": ".claude/rules/python/security.md",
-      "size": 524,
-      "sha256": "6bbbb6c800cdfef23c3f9a5055ce31096a7724b51f0d528935f6c32970639453"
+      "size": 6520,
+      "sha256": "55e1f269f484efb08b5621309415ac6b4482a51c57108e3c9d2dc577cc5ff297"
     },
     {
       "kind": "rules",
       "dist": ".claude/rules/python/testing.md",
       "install": ".claude/rules/python/testing.md",
-      "size": 581,
-      "sha256": "92655aa5047ee456501ad6605c428680bac6433965f89ce531fe79627004e8c6"
+      "size": 6078,
+      "sha256": "9b10fda0b79c97ac92653cc3fad90c13a1e2462e7ef6756590df470d28e1bc79"
     },
     {
       "kind": "rules",
@@ -805,6 +805,6 @@
       "rules": 11,
       "placeholder": 7
     },
-    "totalBytes": 756224
+    "totalBytes": 787302
   }
 }
