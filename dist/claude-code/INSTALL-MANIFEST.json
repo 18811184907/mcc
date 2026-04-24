@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-24T23:03:46.343Z",
+  "generatedAt": "2026-04-24T23:14:49.558Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -163,22 +163,22 @@
       "kind": "command",
       "dist": ".claude/commands/index-repo.md",
       "install": ".claude/commands/index-repo.md",
-      "size": 5852,
-      "sha256": "e95e27365edb078598ed68f2642ecd75b058e83cceeab9ebedff1c6c9b5d2d78"
+      "size": 6278,
+      "sha256": "891fa6ab991e4ef9792df9dd430650d218ac590da0fe0c6ce02c48ed0e0a36a2"
     },
     {
       "kind": "command",
       "dist": ".claude/commands/init.md",
       "install": ".claude/commands/init.md",
-      "size": 4369,
-      "sha256": "2f579b6bd5e6f7ab671f2c81e7b58f26e09995c4f27acf79fbef9e59f1a46810"
+      "size": 5059,
+      "sha256": "08d7d6d864f9ff3b79ef66a625b20049c485d6c3c020f591549a3c2221662650"
     },
     {
       "kind": "command",
       "dist": ".claude/commands/onboard.md",
       "install": ".claude/commands/onboard.md",
-      "size": 4499,
-      "sha256": "b31a00fd59eb91a8ae2c873b606b915931dedea1e874aed88f5e8cbde1142477"
+      "size": 4646,
+      "sha256": "31002456ec3a70597fdd8eb86f2d78bbe643ff446145980b7ea3d47f91d24766"
     },
     {
       "kind": "command",
@@ -366,8 +366,8 @@
       "kind": "skills",
       "dist": ".claude/skills/help/workflow-map.json",
       "install": ".claude/skills/help/workflow-map.json",
-      "size": 5859,
-      "sha256": "c1a5ca193335977c8adefd615288bbef81df9a38ea6500a12b14fb73d6bd6924"
+      "size": 5842,
+      "sha256": "145842adc522ed343d16d41a195dfada683a64bbdf23e47929670525bcfcdfbe"
     },
     {
       "kind": "skills",
@@ -394,8 +394,8 @@
       "kind": "skills",
       "dist": ".claude/skills/project-onboarding/SKILL.md",
       "install": ".claude/skills/project-onboarding/SKILL.md",
-      "size": 10952,
-      "sha256": "7dd34dbe1ae80a23094c9d732055b1675b5e385d0a62f977129b2f9407b4433e"
+      "size": 12346,
+      "sha256": "6ca8570f9dfc7637d0022bc84946c88cd019510ba27059b012d85f26bf9155b7"
     },
     {
       "kind": "skills",
@@ -833,6 +833,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 820088
+    "totalBytes": 822728
   }
 }

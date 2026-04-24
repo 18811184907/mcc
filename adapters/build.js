@@ -11,9 +11,9 @@ const { adaptToCodex } = require('./adapt-to-codex');
 
 // Minimum expected counts; missed → build fails fast (prevents shipping empty dist/).
 // 保持略低于实际值（v2.0: agents=19, commands=13, skills=18），避免误杀，但能防"source 被半删光"。
-const MIN_AGENTS = 17;
-const MIN_COMMANDS = 12;   // v2.0: +/onboard +/index-repo
-const MIN_SKILLS = 16;     // v2.0: +project-onboarding
+const MIN_AGENTS = 18;     // 实际 19，缓冲 1
+const MIN_COMMANDS = 12;   // 实际 13，缓冲 1
+const MIN_SKILLS = 17;     // 实际 18，缓冲 1（v2.0.1: 一致缓冲策略）
 
 function assertSourceIsHealthy(sourceDir) {
   if (!fs.existsSync(sourceDir)) {

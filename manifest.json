@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,26 @@
   },
 
   "version_history": [
+    {
+      "version": "2.0.1",
+      "date": "2026-04-25",
+      "changes": [
+        "v2.0.1 主题：v2.0 定版前 5 审查员交叉审计 + CRITICAL 4 + HIGH 6 全清零 → 稳定版",
+        "CRITICAL · workflow-map.json phase 1-discover 引用不存在的 brainstorming skill → 删除",
+        "CRITICAL · onboard.md Phase 0 'find CLAUDE.md -mtime' 命令语法错（找不到文件名形式）→ 改为 find . -maxdepth 1 -name CLAUDE.md -mtime",
+        "CRITICAL · /init file_count 用 find 没排 dist/build/.next 等导致新 npm 项目误判已有 → 优先 git ls-files；fallback 排除 12 种 build/cache 目录",
+        "CRITICAL · /init has_src 检查只看目录存在性 → 改为同时检查目录非空（防止 src/ 但内容空被误判为'已有项目'）",
+        "HIGH · /onboard SKILL Phase 4 落盘环节缺派发可视化（v1.9 强制要求每 phase 都有 ⚡/✓）→ 补完整模板",
+        "HIGH · Phase 4 加 CLAUDE.md ≤100 行强制校验代码（wc -l + 超长重写指引），不再只是文档建议",
+        "HIGH · Phase 2 agent 派发加 5 min timeout 降级策略（卡 agent 不等，已返回的先合流，缺失维度记录到报告）",
+        "HIGH · /index-repo ROI 数字诚实化：'2K 投入省 50K+/session' → 实际 '~10-15K/session，5 个 session 后 ROI 5-7x'（避免营销虚高）",
+        "HIGH · build.js MIN_AGENTS 17→18 / MIN_SKILLS 16→17（统一缓冲 1 策略）",
+        "HIGH · install.ps1 ConvertFrom-Json catch 静默 → 加显式 yellow warning（找不到/解析失败时用户能看到原因）",
+        "审查员 D 实证 Codex 侧 build 0 unmappedWarnings ✓ AGENTS.md TOC 含 18 skills 含 project-onboarding ✓",
+        "smoke 154 checks ✓ 通过；下一步：写面向最终用户的精简安装+使用文档",
+        "version: 2.0.0 → 2.0.1（稳定版定版前修复）"
+      ]
+    },
     {
       "version": "2.0.0",
       "date": "2026-04-25",

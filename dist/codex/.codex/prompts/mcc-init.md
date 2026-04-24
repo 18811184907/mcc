@@ -22,8 +22,34 @@ if [ -f CLAUDE.md ]; then
 fi
 
 # 2. 这是空项目还是已有项目？
-file_count=$(find . -type f -not -path './.git/*' -not -path './node_modules/*' -not -path './.claude/*' 2>/dev/null | wc -l)
-has_src=$([ -d src ] || [ -d app ] || [ -d lib ] || [ -d packages ] && echo yes || echo no)
+# 优先用 git ls-files（自动尊重 .gitignore，跨平台稳定）；fallback 到 find 时排除常见 build/cache 目录
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  file_count=$(git ls-files | wc -l)
+else
+  file_count=$(find . -type f \
+    -not -path './.git/*' \
+    -not -path './node_modules/*' \
+    -not -path './.claude/*' \
+    -not -path './dist/*' \
+    -not -path './build/*' \
+    -not -path './.next/*' \
+    -not -path './.nuxt/*' \
+    -not -path './target/*' \
+    -not -path './venv/*' \
+    -not -path './.venv/*' \
+    -not -path './__pycache__/*' \
+    -not -path './.pytest_cache/*' \
+    -not -path './coverage/*' \
+    2>/dev/null | wc -l)
+fi
+# 检测 src 目录里的实际内容（不只是空目录存在）
+has_src=no
+for d in src app lib packages; do
+  if [ -d "$d" ] && [ "$(ls -A "$d" 2>/dev/null | head -1)" ]; then
+    has_src=yes
+    break
+  fi
+done
 
 if [ "$has_src" = "yes" ] && [ "$file_count" -gt 50 ]; then
   echo "检测到已有项目（src/ 等目录有内容，$file_count 个文件）。"

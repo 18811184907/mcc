@@ -194,7 +194,7 @@ Codex 调用：`mcc-xxx`（文件：`.codex/prompts/mcc-xxx.md`）。
 执行 PRP plan 文件：每步立即验证（verification-loop skill 的 6 阶段 Build/Type/Lint/Test/Security/Diff），失败立停不累积。
 
 ### mcc-index-repo
-为大型项目生成 token-efficient 索引（PROJECT_INDEX.md + .json）。一次投入 ~2K tokens 生成，后续每 session Claude 优先读索引而非全代码，节省 50K+ tokens / session（适合 >1k 文件项目）。
+为大型项目生成 token-efficient 索引（PROJECT_INDEX.md + .json）。
 
 ### mcc-init
 为项目初始化 MCC：探测栈 + 生成 CLAUDE.md。空项目走轻量初始化；已有大项目（src/ 满）自动建议跑 /onboard 做 4 阶段深度接手。

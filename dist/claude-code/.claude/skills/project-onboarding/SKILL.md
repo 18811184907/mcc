@@ -92,6 +92,11 @@ Phase 1 侦察发现：[贴 recon-summary]
    └─ database-optimizer  X.X min → 含 N 张表 / N 个 migration / 发现 N 处 N+1 风险
 ```
 
+**Timeout 降级（v2.0.1 加）**：每个 agent 心里设 5 min 软超时。如果某个 agent 5 min 还没回来：
+- 主 session **不等**——用已返回的 agent 结果先合流
+- 缺失维度记录在 onboard 报告的"未完成扫描"段，建议用户后续手动跑（如 `database-optimizer` 卡住 → 报告里说"DB 层未扫，建议后续 /fix-bug 触发"）
+- 不要重派同一 agent（卡的原因通常是项目大，重派也会卡）
+
 ---
 
 ### Phase 3 · Convention Detection（规范检测） · ~1 min · 并行扫
@@ -113,6 +118,34 @@ Phase 1 侦察发现：[贴 recon-summary]
 ---
 
 ### Phase 4 · Output（产出） · ~1 min · 落盘
+
+**派发可视化**（v1.9 强制 · phase 末尾也保留 ⚡/✓ 符号）：
+
+```
+⚡ Phase 4 落盘产物（顺序写 2 文件 / ~1 min）
+   ├─ .claude/PRPs/onboarding/{date}-onboard-report.md   详细报告（无行数限制）
+   └─ CLAUDE.md（≤100 行 · 强制截断）                   每次 session 自动加载
+```
+
+**强制行数校验**（避免 CLAUDE.md 超长 = 没人读）：
+
+```bash
+# 写完 CLAUDE.md 后立即校验
+lines=$(wc -l < CLAUDE.md)
+if [ "$lines" -gt 100 ]; then
+  echo "⚠ CLAUDE.md 超过 100 行（$lines 行）→ 必须删减"
+  echo "建议删除顺序：1) 已知风险 2) 接手后第一件事 3) 不要做"
+  # Claude 必须重写一次直到 ≤100 行
+fi
+```
+
+返回后：
+
+```
+✓ Phase 4 完成（X.X min）
+   ├─ onboard-report.md  写入 .claude/PRPs/onboarding/  N 行
+   └─ CLAUDE.md          写入项目根                    N 行（≤100 强制 ✓）
+```
 
 **关键纪律**（借鉴 ECC 经验）：**CLAUDE.md ≤ 100 行**。信息密度高，不冗余。Detail 进 onboard 报告。
 

@@ -19,7 +19,7 @@
       "entry_artifacts": [],
       "exit_artifacts": [".claude/PRPs/prds/*.md"],
       "required": false,
-      "skills": ["product-lens", "brainstorming"],
+      "skills": ["product-lens"],
       "commands": ["/prd"],
       "next_hint": "输出 PRODUCT-BRIEF.md 后，运行 /prd 生成正式 PRD"
     },

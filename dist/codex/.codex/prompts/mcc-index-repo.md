@@ -1,5 +1,5 @@
 ---
-description: "为大型项目生成 token-efficient 索引（PROJECT_INDEX.md + .json）。一次投入 ~2K tokens 生成，后续每 session Claude 优先读索引而非全代码，节省 50K+ tokens / session（适合 >1k 文件项目）。"
+description: "为大型项目生成 token-efficient 索引（PROJECT_INDEX.md + .json）。~2K tokens 一次投入，每 session 省 ~10-15K tokens（文件定位 / subagent briefing），多次 session 摊平 ROI 5-7x。适合 >1k 文件、反复访问的项目。"
 argument-hint: "[--refresh | --json-only | --md-only]"
 ---
 
@@ -11,15 +11,22 @@ argument-hint: "[--refresh | --json-only | --md-only]"
 
 ## 核心价值
 
-借鉴 SuperClaude `/sc:index-repo` 的思路：
+借鉴 SuperClaude `/sc:index-repo` 思路。**ROI 数字按真实开发场景诚实评估**（不抄营销数字）：
 
-| 场景 | 不带索引 | 带 PROJECT_INDEX |
-|---|---|---|
-| Claude 每次 session 理解项目 | 读全代码 ~58K tokens | 读 INDEX ~3K tokens |
-| 找"做 X 的代码在哪" | Grep 全仓库 | 查 INDEX 直跳文件 |
-| 派 subagent 时给上下文 | 大量文件名 + 代码 | 一段 INDEX 片段 |
+| 场景 | 不带索引 | 带 PROJECT_INDEX | 节省 |
+|---|---|---|---|
+| 文件定位"做 X 的在哪" | Grep + ls + 抽样 read | 查 INDEX 直跳 | ~5-10K |
+| 给 subagent 写 briefing 上下文 | 列大量文件名 + 部分内容 | 贴 INDEX 片段 | ~5-10K |
+| Claude 起手"这是啥项目" | 抽样读多文件 | 读 INDEX 头部 | ~2-5K |
 
-**ROI**：2K 投入 → 后续每 session 省 50K+ tokens。**适合 >1k 文件、反复访问的项目**。小项目（<200 文件）用 `/onboard` 的 CLAUDE.md 就够，不需要 index。
+**真实 ROI**：
+- 投入：**~2K tokens**（5 路 Glob + 提取导出名 + 合流）
+- 单次节省：**~10-15K tokens / session**（**不是 50K+**——那种数字假设"完全不读源码"，但开发还是要跳进文件读）
+- 回本点：**1-2 个 session** 后净赚
+- **5 个 session 后 ROI ~5-7x**
+
+**适合**：>1k 文件、反复访问 >5 次的项目。
+**不适合**：<200 文件的小项目（overhead > 收益）；只看一眼试试的；纯文档仓库。
 
 ---
 

@@ -90,10 +90,17 @@ Write-Host ""
 Write-Host "====================================" -ForegroundColor Cyan
 # 动态读取 manifest.json 的 version，不再硬编（防版本漂移）
 $mccVersion = "(unknown)"
-try {
-  $manifest = Get-Content (Join-Path $PSScriptRoot "manifest.json") -Raw | ConvertFrom-Json
-  if ($manifest.version) { $mccVersion = $manifest.version }
-} catch { }
+$manifestPath = Join-Path $PSScriptRoot "manifest.json"
+if (Test-Path $manifestPath) {
+  try {
+    $manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
+    if ($manifest.version) { $mccVersion = $manifest.version }
+  } catch {
+    Write-Host "  ⚠ manifest.json 解析失败，version 显示 (unknown)。错误: $($_.Exception.Message)" -ForegroundColor Yellow
+  }
+} else {
+  Write-Host "  ⚠ 找不到 manifest.json（应在 $manifestPath）" -ForegroundColor Yellow
+}
 Write-Host "  MCC Installer v$mccVersion" -ForegroundColor Cyan
 Write-Host "====================================" -ForegroundColor Cyan
 Write-Host ""
