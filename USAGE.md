@@ -1,6 +1,6 @@
 # MCC Usage · 命令速查
 
-> 20 个命令 + 8 个 skill + 3 个 behavioral mode 的使用手册。
+> 23 个命令 + 16 个 skill + 3 个 behavioral mode 的使用手册。
 > 新手建议先看 [README.md](./README.md) 的"典型工作流"章节。
 
 ---
@@ -13,7 +13,7 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 
 ---
 
-## 20 个命令按类型
+## 23 个命令按类型
 
 ### 🎯 PRP 流水线（4 个）· 中小功能的主力流
 
@@ -90,9 +90,23 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 | `/init` | 新项目首次入场：探测栈 + 提取约定 + 生成 `CLAUDE.md` |
 | `/explain` | 用中文详细解释代码/函数/模块/概念（假设懂基础，补领域知识） |
 
+### ☁ Team Backup（3 个）· v1.4 新 · 小团队代码备份
+
+适合 1-10 人非技术小团队，把代码默默推到管理员个人 GitHub。不用 Organization。
+
+| 命令 | 场景 |
+|---|---|
+| `/backup "说明"` | 日常一键同步 = add + commit + push。首次自动进入 setup（问姓名/邮箱/项目名 → 建 `{项目}-backup` private repo → 装 post-commit hook → 首推） |
+| `/backup-status` | 看当前项目的备份状态：远程 URL / 身份 / 待推送 commit 数 / 最近 3 次 commit / hook 是否装了 |
+| `/backup-off` | 关闭当前项目备份（可逆）：删 `.mcc/backup-state.json` + `.git/hooks/post-commit`，保留 git remote + 远程代码 |
+
+**同事第一次用**：管理员发 `team-install.ps1` / `team-install.sh`（已内嵌 PAT），双击运行 → 装好 MCC → 敲 `/backup "xxx"`。
+
+**管理员**：参照 [ADMIN-GUIDE.md](./ADMIN-GUIDE.md) 建 fine-grained PAT（3 个月过期），填脚本顶部的 `TEAM_PAT`。
+
 ---
 
-## 8 个 skill（Claude 自动激活，无需手动调）
+## 16 个 skill（Claude 自动激活，无需手动调）
 
 | Skill | 触发时机 |
 |---|---|

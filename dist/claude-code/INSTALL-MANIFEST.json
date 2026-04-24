@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-24T01:34:50.635Z",
+  "generatedAt": "2026-04-24T04:32:59.261Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -137,6 +137,34 @@
       "install": ".claude/agents/vector-database-engineer.md",
       "size": 5246,
       "sha256": "2acaa49b3fd5b55763daf93d11a347208d1beaa1cd9760515dfb0bbc3903b929"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/backup-off.md",
+      "install": ".claude/commands/backup-off.md",
+      "size": 1978,
+      "sha256": "8491636940b6a0a7ad5a246e06160874091ea4a6f788ed7c4d3fddbf417fa84a"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/backup-setup.md",
+      "install": ".claude/commands/backup-setup.md",
+      "size": 5726,
+      "sha256": "7c6a42ed82e2ef5e68ee9c4535c687d8ade66b4b700aa36a5d63a4db8bb141f1"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/backup-status.md",
+      "install": ".claude/commands/backup-status.md",
+      "size": 1964,
+      "sha256": "56aa5ee30a6a127e202e21eb9b3a847a412c25174eb63af6c7728efe3fdc9fe1"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/backup.md",
+      "install": ".claude/commands/backup.md",
+      "size": 3237,
+      "sha256": "5a440972efa9e1946cf57696e14dc79ac9796bd0d71ef44a5a489860d337abaf"
     },
     {
       "kind": "command",
@@ -702,15 +730,15 @@
       "kind": "hooks-config",
       "dist": ".claude/.mcc-hooks/hooks.json",
       "install": ".claude/.mcc-hooks/hooks.json",
-      "size": 3585,
-      "sha256": "bb3c3e397e99f86b00891403de97d0af14415bdf30f23ab5e89363dc958ab3e8"
+      "size": 4117,
+      "sha256": "4c698ce6c307b240cf6e20e5e6d4294e12df213f34b14cb22f37b835c814fe72"
     },
     {
       "kind": "settings-fragment",
       "dist": ".claude/settings.fragment.json",
       "install": ".claude/settings.fragment.json",
-      "size": 3208,
-      "sha256": "ccd8a95ed3661fd9089ae0b35764e90233ddffe67cf103510c857193e8cc3f79"
+      "size": 4448,
+      "sha256": "f4ea77f18396cd898e0acea5299aec74aadb1f41ace03cdee40a4f3b43537377"
     },
     {
       "kind": "mcp-config",
@@ -813,10 +841,10 @@
   ],
   "notes": [],
   "summary": {
-    "total": 115,
+    "total": 119,
     "byKind": {
       "agents": 19,
-      "command": 20,
+      "command": 24,
       "skills": 32,
       "modes": 3,
       "hooks": 25,
@@ -826,6 +854,6 @@
       "rules": 6,
       "placeholder": 7
     },
-    "totalBytes": 761435
+    "totalBytes": 776112
   }
 }

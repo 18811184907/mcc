@@ -16,6 +16,8 @@
       "matcher": "Write|Edit|MultiEdit",
       "timeout_ms": 5000,
       "async": false,
+      "default_enabled": false,
+      "v1_3_note": "v1.3 起默认关：误判改 tsconfig 为放宽规则，易拦合法改动。手动开见 settings.fragment.json",
       "profile": ["standard", "strict"],
       "description": "阻止 Claude 修改配置来绕过 lint/security 规则（独家）",
       "command": "node ${MCC_HOOKS}/hooks/plugin-hook-bootstrap.js run-with-flags.js pre:config-protection scripts/hooks/config-protection.js standard,strict"
@@ -26,6 +28,8 @@
       "matcher": "*",
       "timeout_ms": 300000,
       "async": false,
+      "default_enabled": false,
+      "v1_3_note": "v1.3 起默认关：大项目 tsc 30-60 秒拖慢响应。手动开见 settings.fragment.json",
       "description": "响应结束时批量跑 format + typecheck（不是每次 edit 跑，显著降成本）",
       "command": "node -e \"require('${MCC_HOOKS}/hooks/stop-format-typecheck.js').run(process.stdin)\""
     },
@@ -59,6 +63,8 @@
       "event": "PreToolUse",
       "matcher": "Bash",
       "async": false,
+      "default_enabled": false,
+      "v1_3_note": "v1.3 起默认关：内部 6 个子检查（tmux 等）Windows 下白噪音，易误伤 rm -rf node_modules 类合法操作。手动开见 settings.fragment.json",
       "description": "Bash 安全/质量/tmux/push 预检（dispatcher 串联 6 个子检查）",
       "command": "node ${MCC_HOOKS}/hooks/pre-bash-dispatcher.js"
     },

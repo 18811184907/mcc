@@ -4,7 +4,7 @@
 > 中文主场景，Python + TypeScript + AI 应用全栈定向优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-1.1.0-blue)
+![Version](https://img.shields.io/badge/version-1.4.0-blue)
 ![Target](https://img.shields.io/badge/target-Claude_Code_%2B_Codex-purple)
 
 ---
@@ -20,7 +20,7 @@
 | 维度 | 内容 |
 |---|---|
 | **19 个角色 agent** | planner / code-reviewer / debugger / security-reviewer / ai-engineer / python-pro / typescript-pro / fastapi-pro / frontend-developer / backend-architect / database-optimizer / performance-engineer / …… |
-| **20 个 slash 命令** | `/prd` `/plan` `/implement` `/pr`（PRP 四件套流水线）、`/full-stack`（9 步全栈）、`/review` `/full-review`（两档审查）、`/tdd` `/e2e` `/test-coverage`（测试三路）、`/fix-bug` `/troubleshoot` `/build-fix`（诊断三档）、`/session-save` `/session-resume`（跨 session 持久化）…… |
+| **23 个 slash 命令** | `/prd` `/plan` `/implement` `/pr`（PRP 四件套流水线）、`/full-stack`（9 步全栈）、`/review` `/full-review`（两档审查）、`/tdd` `/e2e` `/test-coverage`（测试三路）、`/fix-bug` `/troubleshoot` `/build-fix`（诊断三档）、`/session-save` `/session-resume`（跨 session 持久化）、**`/backup`** `/backup-status` `/backup-off`（v1.4 团队代码备份三件套）…… |
 | **16 个 skill** | **v1.0 基础（8）**：`product-lens`（产品诊断）、`confidence-check`（5 维度开工门槛）、`party-mode`（真并行多 agent 辩论）、`mcc-help`（扫 FS 推当前阶段+建议下一步）、`architecture-decision-records`、`coding-standards`、`verification-loop`、`continuous-learning-v2`<br><br>**v1.1 Superpowers 增量（8）**：`subagent-driven-development`（每任务 fresh subagent + 两阶段 review）、`tdd-workflow`（含 testing-anti-patterns，`/tdd` 的 skill 实现体）、`writing-skills`（创作 skill 的 meta-skill + Anthropic 最佳实践）、`using-git-worktrees`、`finishing-a-development-branch`、`requesting-code-review` + `receiving-code-review`（审查两端）、`dispatching-parallel-agents`（和 party-mode 辩论互补：一个分发一个辩论） |
 | **3 个 behavioral mode** | `brainstorming` · `task-management` · `token-efficiency`（按关键词/上下文自动激活） |
 | **8 条 hook** | `pre:config-protection` 独家（阻止 Claude 修改 config 绕过 lint/security）、`stop:format-typecheck`（批量 lint+tsc，不每次 edit 跑）、`pre:bash:safety`（破坏性命令拦截）等 |
@@ -200,7 +200,33 @@ mcc-help → 查看当前阶段 + 推荐 skill
 今天开始：/session-resume → 秒懂昨天做到哪了、什么没跑通、下一步 exact action
 ```
 
-完整 20 个命令速查见 [USAGE.md](./USAGE.md)。
+完整 23 个命令速查见 [USAGE.md](./USAGE.md)。
+
+### 场景 5（v1.4 新）：小团队代码备份到公司 GitHub
+
+**一次性设置**（管理员做一次）：参照 [ADMIN-GUIDE.md](./ADMIN-GUIDE.md) 建 PAT → 填 `team-install.ps1` / `team-install.sh` → 发给同事。
+
+**同事平时只要敲一条命令**：
+
+```
+/backup "改了首页按钮颜色"
+```
+
+第一次会自动问姓名 + 邮箱（一次性），然后就完成：
+- 在管理员 GitHub 账号下建 `{项目名}-backup` 私有仓库
+- 装 post-commit hook（以后 commit 自动推）
+- 首次推送完成
+
+之后每天：写完代码敲 `/backup "xxx"` = `git add + git commit + git push` 一条龙。
+
+**管理命令**：
+
+```
+/backup-status   # 看备份状态、远程位置、待推送 commit 数
+/backup-off      # 关闭当前项目备份（可逆，远程代码保留）
+```
+
+详见 [TEAM-MEMBER-GUIDE.md](./TEAM-MEMBER-GUIDE.md)（同事看）和 [ADMIN-GUIDE.md](./ADMIN-GUIDE.md)（管理员看）。
 
 ---
 
@@ -292,13 +318,40 @@ mcc-help → 查看当前阶段 + 推荐 skill
 - [x] 文档全量更新（README / USAGE / ARCHITECTURE 所有 `/mcc:xxx` → `/xxx`）
 - [x] Codex 侧保持 `mcc-` prefix 不变（Codex 生态里防 prompt 撞）
 
-### v1.3+ · 待定（按社区反馈）
+### v1.3 · 2026-04-24 Hook 减捣乱 ✅
 
+- [x] **3 个捣乱王默认关**（脚本保留，可手动启用）：
+  - `pre:config-protection`：误判改 tsconfig 为放宽规则
+  - `stop:format-typecheck`：大项目 tsc 30-60 秒拖慢响应
+  - `pre:bash:safety`：内部 6 个子检查 Windows 下白噪音，易误伤 `rm -rf node_modules`
+- [x] **默认保留的 3 个轻量 hook**：
+  - `session:start`（恢复上次 session）
+  - `stop:session-end`（持久化，async）
+  - `stop:check-console-log`（扫 console.log，async）
+- [x] `settings.fragment.json` 重构：每个可选 hook 带 `_reason_off` 和 `_enable_put_into` 字段，便于手动启用
+- [x] README 加 "Hook 开关" 章节说明如何手动开关
+
+### v1.4 · 2026-04-24 Team Backup ✅
+
+小团队代码备份解决方案。不用 Organization、不用学 GitHub，同事双击脚本 → 敲 `/backup "xxx"` 就能把代码默默推到管理员账号下。
+
+- [x] **3 个新命令**：`/backup "msg"`（日常一键同步，首次自动 setup）、`/backup-status`（看备份状态）、`/backup-off`（关闭当前项目备份，可逆）
+- [x] **一次性 setup 流程**（隐藏在 `/backup` 里）：检测 gh 认证 → 问姓名/邮箱/项目名 → 创建 `{项目名}-backup` 私有仓库 → 配 remote → 装 post-commit hook → 首次推送
+- [x] **`team-install.ps1` + `team-install.sh`**：跨平台一键装机脚本，管理员把 PAT 填到顶部后发给同事。自动装 Node + git + gh → 用 PAT 登录 → clone MCC → `install.sh --exclusive`
+- [x] **双份指南**：[`TEAM-MEMBER-GUIDE.md`](./TEAM-MEMBER-GUIDE.md)（同事的 1 页速查）+ [`ADMIN-GUIDE.md`](./ADMIN-GUIDE.md)（管理员 PAT 建 + 3 个月换 + 权限边界）
+- [x] **post-commit hook**：commit 时自动触发 push 到 backup remote（async，不挡开发）
+- [x] **`.mcc/backup-state.json`**：本项目备份状态（project / owner / created_at），避免每次重问
+- [x] **适合场景**：1-10 人非技术小团队、没钱开 Organization、不会用 GitHub 的同事，统一把代码备份到 leader 个人账号
+
+### v1.5+ · 待定（按社区反馈）
+
+- [ ] `install.ps1 -Minimal` 最小 MCP 模式（只装 Context7 + Sequential，省 7-11k tokens）
 - [ ] `doc-updater` agent（ECC 有但当前没装）
 - [ ] 更多语言 rules（Go / Rust 等按需）
 - [ ] Cursor / Gemini CLI 支持（按需）
 - [ ] MCC 自检测试套件
 - [ ] e2e-testing skill（当前 `/e2e` 是内联版）
+- [ ] Organization 版 team backup（每同事自己的 GitHub + collaborator，不共用 PAT）
 
 ---
 
