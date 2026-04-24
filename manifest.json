@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -40,7 +40,7 @@
   "components": {
     "agents": 19,
     "commands": 20,
-    "skills": 8,
+    "skills": 16,
     "modes": 3,
     "hooks": 8,
     "hook_scripts": 25,
@@ -105,6 +105,22 @@
 
   "version_history": [
     {
+      "version": "1.1.0",
+      "date": "2026-04-24",
+      "changes": [
+        "v1.1 增量：纳入 obra/superpowers 的 8 个 skill（去源 + 中文化 + 融入 MCC 生态）",
+        "新增 subagent-driven-development skill：每任务 fresh subagent + 两阶段 review（spec → quality）",
+        "新增 tdd-workflow skill（原 test-driven-development 改名）：填补 v1.0 /mcc:tdd 的 skill 实现体，含 testing-anti-patterns",
+        "新增 writing-skills：创作 skill 的 meta-skill，含 Anthropic 官方最佳实践参考资料",
+        "新增 using-git-worktrees：worktree 隔离并行开发",
+        "新增 finishing-a-development-branch：分支收尾（merge/PR/cleanup）",
+        "新增 requesting-code-review + receiving-code-review：代码审查两端流程",
+        "新增 dispatching-parallel-agents：独立任务并行分发（和 party-mode 辩论互补）",
+        "skills 从 8 扩展到 16",
+        "LICENSE 加 obra/superpowers 第 5 源 attribution"
+      ]
+    },
+    {
       "version": "1.0.0",
       "date": "2026-04-24",
       "changes": [
@@ -123,14 +139,14 @@
 
   "roadmap": [
     {
-      "version": "1.1.0",
+      "version": "1.2.0",
       "planned": true,
-      "theme": "Superpowers 增量",
+      "theme": "按社区反馈扩展",
       "items": [
-        "纳入 obra/superpowers 的 subagent-driven-development 机制",
-        "纳入 using-git-worktrees skill",
-        "纳入 writing-skills（meta-skill）",
-        "纳入 requesting-code-review / receiving-code-review 双 skill"
+        "根据用户使用反馈补齐缺失 skill/command",
+        "可能加入更多语言 rules（Go / Rust）",
+        "可能支持 Cursor / Gemini CLI 作为第三/第四目标",
+        "加入 MCC 自检测试套件"
       ]
     }
   ]

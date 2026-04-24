@@ -29,5 +29,17 @@ This project incorporates materials from the following MIT-licensed projects
   - SuperClaude-Org/SuperClaude_Framework  https://github.com/SuperClaude-Org/SuperClaude_Framework
   - wshobson/agents                      https://github.com/wshobson/agents
   - bmad-code-org/BMAD-METHOD           https://github.com/bmad-code-org/BMAD-METHOD
+  - obra/superpowers                     https://github.com/obra/superpowers   (v1.1 新增：8 skill)
 
 各原项目的版权归其原作者。融合版本的新增内容归 MCC Contributors。
+
+v1.1 从 obra/superpowers 纳入（去源 + 中文化 + 融入 MCC 生态）：
+  - subagent-driven-development
+  - tdd-workflow（原 test-driven-development，改名对齐 MCC 命名）
+  - writing-skills
+  - using-git-worktrees
+  - finishing-a-development-branch
+  - requesting-code-review
+  - receiving-code-review
+  - dispatching-parallel-agents
+  以及 writing-skills/anthropic-best-practices.md 作为参考资料保留。

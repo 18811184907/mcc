@@ -4,7 +4,7 @@
 > 中文主场景，Python + TypeScript + AI 应用全栈定向优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
 ![Target](https://img.shields.io/badge/target-Claude_Code_%2B_Codex-purple)
 
 ---
@@ -13,7 +13,7 @@
 
 **单一源 × 双目标分发**。一套精心打磨的 AI 编码配置，自动适配 Claude Code 和 Codex 两种工具。
 
-从 4 个开源项目（Anthropic `everything-claude-code` / `SuperClaude` / `wshobson/agents` / `BMAD-METHOD`）里挑精华、去冗余、融合改写，不是简单拼接。
+从 5 个开源项目（`everything-claude-code` / `SuperClaude` / `wshobson/agents` / `BMAD-METHOD` / `obra/superpowers`）里挑精华、去冗余、融合改写，不是简单拼接。
 
 ### 装完你会拥有
 
@@ -21,7 +21,7 @@
 |---|---|
 | **19 个角色 agent** | planner / code-reviewer / debugger / security-reviewer / ai-engineer / python-pro / typescript-pro / fastapi-pro / frontend-developer / backend-architect / database-optimizer / performance-engineer / …… |
 | **20 个 slash 命令** | `/mcc:prd` `/mcc:plan` `/mcc:implement` `/mcc:pr`（PRP 四件套流水线）、`/mcc:full-stack`（9 步全栈）、`/mcc:review` `/mcc:full-review`（两档审查）、`/mcc:tdd` `/mcc:e2e` `/mcc:test-coverage`（测试三路）、`/mcc:fix-bug` `/mcc:troubleshoot` `/mcc:build-fix`（诊断三档）、`/mcc:session-save` `/mcc:session-resume`（跨 session 持久化）…… |
-| **8 个 skill** | `product-lens`（产品诊断）、`confidence-check`（5 维度开工门槛）、`party-mode`（真并行多 agent 辩论）、`mcc-help`（扫 FS 推当前阶段+建议下一步）、`architecture-decision-records`、`coding-standards`、`verification-loop`、`continuous-learning-v2` |
+| **16 个 skill** | **v1.0 基础（8）**：`product-lens`（产品诊断）、`confidence-check`（5 维度开工门槛）、`party-mode`（真并行多 agent 辩论）、`mcc-help`（扫 FS 推当前阶段+建议下一步）、`architecture-decision-records`、`coding-standards`、`verification-loop`、`continuous-learning-v2`<br><br>**v1.1 Superpowers 增量（8）**：`subagent-driven-development`（每任务 fresh subagent + 两阶段 review）、`tdd-workflow`（含 testing-anti-patterns，`/mcc:tdd` 的 skill 实现体）、`writing-skills`（创作 skill 的 meta-skill + Anthropic 最佳实践）、`using-git-worktrees`、`finishing-a-development-branch`、`requesting-code-review` + `receiving-code-review`（审查两端）、`dispatching-parallel-agents`（和 party-mode 辩论互补：一个分发一个辩论） |
 | **3 个 behavioral mode** | `brainstorming` · `task-management` · `token-efficiency`（按关键词/上下文自动激活） |
 | **8 条 hook** | `pre:config-protection` 独家（阻止 Claude 修改 config 绕过 lint/security）、`stop:format-typecheck`（批量 lint+tsc，不每次 edit 跑）、`pre:bash:safety`（破坏性命令拦截）等 |
 | **5 个 MCP 服务器** | Serena（语义记忆）、Context7（实时查文档）、GitHub、Sequential（深推理）、Playwright |
@@ -264,7 +264,7 @@ artifacts 都落 `.claude/PRPs/{prds,plans,reports,reviews}/`。
 
 ## Roadmap
 
-### v1.0 · 当前版本
+### v1.0 · 2026-04-24 首发
 
 - [x] 19 agents（含 5 融合型）+ 20 commands + 8 skills + 3 modes
 - [x] 8 hooks + 5 MCPs + Python rules + mcc-principles
@@ -272,20 +272,25 @@ artifacts 都落 `.claude/PRPs/{prds,plans,reports,reviews}/`。
 - [x] installer / uninstaller 支持 global/project/hybrid scope
 - [x] 幂等 build + 备份 + 回滚
 
-### v1.1 · 计划（Superpowers 增量）
+### v1.1 · 2026-04-24 Superpowers 增量 ✅
 
-- [ ] 纳入 [obra/superpowers](https://github.com/obra/superpowers) 的 `subagent-driven-development` 机制
-- [ ] 纳入 `using-git-worktrees` skill（worktree 并行开发）
-- [ ] 纳入 `writing-skills`（meta skill）
-- [ ] 纳入 `requesting-code-review` / `receiving-code-review` 双 skill
-- [ ] 和 party-mode 对比，选优合并
+- [x] 纳入 [obra/superpowers](https://github.com/obra/superpowers) 8 个独家 skill
+- [x] **subagent-driven-development**：每任务 fresh subagent + 两阶段 review（spec → quality）
+- [x] **tdd-workflow**（改名自 test-driven-development）：填补 `/mcc:tdd` 的 skill 实现体，含 testing-anti-patterns
+- [x] **writing-skills**：创作 skill 的 meta-skill + Anthropic 官方最佳实践参考
+- [x] **using-git-worktrees**：worktree 隔离并行开发
+- [x] **finishing-a-development-branch**：分支收尾（merge/PR/cleanup）
+- [x] **requesting-code-review** + **receiving-code-review**：代码审查两端流程
+- [x] **dispatching-parallel-agents**：独立任务并行分发（和 party-mode 辩论互补）
+- [x] skills 从 8 扩展到 **16**
 
-### v1.2+ · 待定
+### v1.2+ · 待定（按社区反馈）
 
-- [ ] `tdd-workflow` / `e2e-testing` skill（现在 `/mcc:tdd` / `/mcc:e2e` 是内联 fallback 版）
 - [ ] `doc-updater` agent（ECC 有但 v1 没装）
 - [ ] 更多语言 rules（Go / Rust 等按需）
 - [ ] Cursor / Gemini CLI 支持（按需）
+- [ ] MCC 自检测试套件
+- [ ] e2e-testing skill（v1 `/mcc:e2e` 是内联版）
 
 ---
 
@@ -298,6 +303,7 @@ MIT. 详见 [LICENSE](./LICENSE)。
 - [SuperClaude-Org/SuperClaude_Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework)
 - [wshobson/agents](https://github.com/wshobson/agents)
 - [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD)
+- [obra/superpowers](https://github.com/obra/superpowers) （v1.1 新增：8 个独家 skill）
 
 ---
 

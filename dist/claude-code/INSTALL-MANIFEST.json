@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-23T23:04:32.653Z",
+  "generatedAt": "2026-04-24T00:49:21.838Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -371,6 +371,20 @@
     },
     {
       "kind": "skills",
+      "dist": ".claude/skills/dispatching-parallel-agents/SKILL.md",
+      "install": ".claude/skills/dispatching-parallel-agents/SKILL.md",
+      "size": 7164,
+      "sha256": "ef5dcdbb89d9bb4ec8704b3a294aede1e9eb0923d5c9cc0feae0497ba5864546"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/finishing-a-development-branch/SKILL.md",
+      "install": ".claude/skills/finishing-a-development-branch/SKILL.md",
+      "size": 4353,
+      "sha256": "7cd58fa16485a4f4276ec45b687eac0f17184c6ba0bba87c91c740d2aa44a320"
+    },
+    {
+      "kind": "skills",
       "dist": ".claude/skills/mcc-help/SKILL.md",
       "install": ".claude/skills/mcc-help/SKILL.md",
       "size": 4394,
@@ -399,10 +413,94 @@
     },
     {
       "kind": "skills",
+      "dist": ".claude/skills/receiving-code-review/SKILL.md",
+      "install": ".claude/skills/receiving-code-review/SKILL.md",
+      "size": 6417,
+      "sha256": "77d31bd7dde612c53ff9146f94bd5a02c29a8a80c7cd8881196e7346c354d639"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/requesting-code-review/SKILL.md",
+      "install": ".claude/skills/requesting-code-review/SKILL.md",
+      "size": 3562,
+      "sha256": "57da28b773529cb65ff3f082dbe9f9a2817d13d9fbb5f631009ac21eb9283f76"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/requesting-code-review/code-reviewer.md",
+      "install": ".claude/skills/requesting-code-review/code-reviewer.md",
+      "size": 3531,
+      "sha256": "942ad4ea9988344259821289134daaf91484207322dd981bd6611d28b13a6c6c"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/subagent-driven-development/SKILL.md",
+      "install": ".claude/skills/subagent-driven-development/SKILL.md",
+      "size": 11534,
+      "sha256": "ac5f186f9e91b107668ecf24ba168f4161094121fc7cf9e4f8b3fe85aae22571"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/subagent-driven-development/code-quality-reviewer-prompt.md",
+      "install": ".claude/skills/subagent-driven-development/code-quality-reviewer-prompt.md",
+      "size": 1426,
+      "sha256": "83bddb7ee2aad6a4d9de2eb2baf5380b5cb757d5f42b3f0b35b61e97baa2f1f6"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/subagent-driven-development/implementer-prompt.md",
+      "install": ".claude/skills/subagent-driven-development/implementer-prompt.md",
+      "size": 4331,
+      "sha256": "f9e04388667301b7a5b810f30eee0eb9bca187d0fb8540244d71ff6e94184aba"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/subagent-driven-development/spec-reviewer-prompt.md",
+      "install": ".claude/skills/subagent-driven-development/spec-reviewer-prompt.md",
+      "size": 2001,
+      "sha256": "321234f1e371324f78d66821a5a0e7fc5b033149dd4250a590e3604fc51eb790"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/tdd-workflow/SKILL.md",
+      "install": ".claude/skills/tdd-workflow/SKILL.md",
+      "size": 10572,
+      "sha256": "ec24d67e904cb7d05c2efc5cf0b89c216adf2853ea94d24863c560237a2928d3"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/tdd-workflow/testing-anti-patterns.md",
+      "install": ".claude/skills/tdd-workflow/testing-anti-patterns.md",
+      "size": 8109,
+      "sha256": "5f92adb51252e8ae2db502c4ae106fccb8ada38c986855d7d634801139aa6cd0"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/using-git-worktrees/SKILL.md",
+      "install": ".claude/skills/using-git-worktrees/SKILL.md",
+      "size": 5455,
+      "sha256": "8723d05b033e2bb07c19d919dd40fe0e203b46c86eefbb409d6955067804474b"
+    },
+    {
+      "kind": "skills",
       "dist": ".claude/skills/verification-loop/SKILL.md",
       "install": ".claude/skills/verification-loop/SKILL.md",
       "size": 3010,
       "sha256": "cf7c5dc77ed23c5cab3c1b70ce42a72d2bd139e4e84c774332a78a6e50157375"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/writing-skills/SKILL.md",
+      "install": ".claude/skills/writing-skills/SKILL.md",
+      "size": 20768,
+      "sha256": "34863111253c52aa32e3003a708e0d7aaf825a8d851f8ee2cfcdc80dd1febe25"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/writing-skills/anthropic-best-practices.md",
+      "install": ".claude/skills/writing-skills/anthropic-best-practices.md",
+      "size": 45820,
+      "sha256": "20914c2fda31670c75fe91710e18a53d413ce0d00b5102acfa251d75c9226e3f"
     },
     {
       "kind": "modes",
@@ -715,11 +813,11 @@
   ],
   "notes": [],
   "summary": {
-    "total": 101,
+    "total": 115,
     "byKind": {
       "agents": 19,
       "command": 20,
-      "skills": 18,
+      "skills": 32,
       "modes": 3,
       "hooks": 25,
       "hooks-config": 1,
@@ -728,6 +826,6 @@
       "rules": 6,
       "placeholder": 7
     },
-    "totalBytes": 627550
+    "totalBytes": 762593
   }
 }

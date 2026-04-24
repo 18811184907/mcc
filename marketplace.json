@@ -11,8 +11,8 @@
     {
       "name": "mcc",
       "source": "./",
-      "description": "19 agents + 20 commands + 8 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules. 中文主场景，Python + TypeScript + AI 全栈定向优化。",
-      "version": "1.0.0",
+      "description": "19 agents + 20 commands + 16 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules. 中文主场景，Python + TypeScript + AI 全栈定向优化。v1.1 纳入 obra/superpowers 的 8 个独家 skill。",
+      "version": "1.1.0",
       "author": {
         "name": "MCC"
       },
