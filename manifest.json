@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -48,7 +48,7 @@
     "rules_python": 5,
     "rules_typescript": 5,
     "rules_common": 1,
-    "principles_sections": 8
+    "principles_sections": 3
   },
 
   "compatibility": {
@@ -105,6 +105,27 @@
   },
 
   "version_history": [
+    {
+      "version": "1.10.0",
+      "date": "2026-04-25",
+      "changes": [
+        "v1.10 主题：5 审查员交叉审计后清零所有遗留（CRITICAL + HIGH 全修）+ Codex 伪并行 + ECC onboard 调研（v2.0 准备）",
+        "CRITICAL · session-start-bootstrap.js timeout 30s→5s（对齐 hook 设的 5s，防 Claude Code 杀进程后 Node 仍等 25s）",
+        "CRITICAL · session-end.js stdin 1MB 静默截断改为显式 stderr WARNING + 走 fallback（之前 .substring 切 JSON 中途 parse 失败但用户察觉不到）",
+        "CRITICAL · build.js assertSourceIsHealthy 扩展：必查 rules/{common,python,typescript} 三子目录 + 每子目录 ≥1 .md（防半空提交）",
+        "HIGH · uninstaller 不清 rules/typescript 修复：log + skipped 列表显式提及（v1.7 起加入但漏了）",
+        "HIGH · install.ps1 / install.sh 头部硬编版本号（1.2.0 / 1.0.0）改为运行时从 manifest.json 读取，永不漂移",
+        "HIGH · manifest.principles_sections 8→3（v1.9 重构后 mcc-principles 只剩 3 元规则但 manifest 没同步）",
+        "Cross-target · /fix-bug Phase 2 / /plan Phase 2 / /pr Phase 2.5 / /review Phase 2 全部加 ⚡派发 + ✓合流可视化具体模板（不只是说'要可视化'，而是给出每 command 该输出的实际格式）",
+        "Cross-target · adapt-to-codex.js 的 buildAgentsMd 加'Codex 伪并行方案'章节：Codex 没有 Task tool，给出'1 次回复扮多角色'的结构化输出格式",
+        "Python↔TS · TS rules/coding-style.md 补 AI/LLM 章节（PromptTemplate / retry+fallback 分层 / streaming / token 埋点）",
+        "Python↔TS · TS rules/security.md 的 OWASP Top 10 从 5 项补到 11 项（A02 加密失败 / A04 不安全设计 / A06 易损组件 / A09 日志监控 / A10 SSRF），并补 SSRF 具体防御代码",
+        "ECC 竞品调研完成（背景 agent）：v2.0 设计参考——ECC 4 阶段 codebase-onboarding / SuperClaude /sc:index-repo 的 token 节省（2K 投入省 55K/session）/ wshobson 多维并行扫描 / 显式命令而非隐式触发",
+        "无新增 / 删除 skill 或 agent；纯遗留清零 + cross-target 对齐 + AI/LLM 补全",
+        "smoke 146 checks ✓ 通过；build 双侧产出文件数对齐",
+        "version: 1.9.0 → 1.10.0"
+      ]
+    },
     {
       "version": "1.9.0",
       "date": "2026-04-24",

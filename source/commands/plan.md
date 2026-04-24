@@ -97,7 +97,25 @@ So that [benefit].
 
 **每个 agent 的 briefing 必须自包含**：要实现的 feature 描述 + 相关栈位置 + 希望它输出的具体清单（命名模式 / 风险点 / 现有类比实现）。
 
-**主 session 合流**：把多 agent 产出的要点汇总到下面的"代码库搜索 + 代码库追踪"两表，不要贴 agent 原文。
+**派发可视化（v1.9 强制）**：
+
+派发前：
+```
+⚡ 并行派发 N domain agent 探索代码库（fan-out / 预计 ~3 min）
+   ├─ code-explorer         扫现有路由 / service / 类比实现
+   ├─ backend-architect     后端架构建议（/ ai-engineer / frontend-developer 按栈选）
+   └─ database-optimizer    （如涉数据）schema / 查询模式
+```
+
+返回后：
+```
+✓ N agent 全部返回（耗时 X.X min）
+   ├─ code-explorer       X.X min → 发现 N 处类比实现 / 命名模式
+   ├─ backend-architect   X.X min → 推荐架构方案 + N 个风险点
+   └─ database-optimizer  X.X min → schema 建议 / N 个查询陷阱
+
+合流：把要点汇总到下面"代码库搜索 + 代码库追踪"两表（不贴 agent 原文）
+```
 
 ### 代码库搜索（8 个类别）
 

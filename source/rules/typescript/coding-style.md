@@ -146,9 +146,85 @@ const env = z.object({
 }).parse(process.env);
 ```
 
+## AI / LLM 特定（MCC 定位）
+
+- **Prompt 不要硬编在函数内**，用模板模块或常量
+- **LLM 调用必须有超时 + 重试**（用 SDK 内置或包一层）
+- **token 成本埋点**：每次 call 记 `model` / `inputTokens` / `outputTokens` / `latencyMs`
+- **响应 JSON parse 必须 try/catch**（模型偶尔输出非 JSON）
+- **streaming 响应必须明确发 `[DONE]` 信号**（前端才能知道结束）
+
+```typescript
+import Anthropic from '@anthropic-ai/sdk';
+import { logger } from './logger';
+
+const client = new Anthropic();
+
+// 主调用 retry 3 次 + 单次 fallback 到 haiku（不在 fallback 上再 retry）
+async function callWithRetry(model: string, messages: Anthropic.MessageParam[]) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      return await client.messages.create({ model, max_tokens: 4096, messages });
+    } catch (e) {
+      if (attempt === 3) throw e;
+      await new Promise(r => setTimeout(r, 1000 * 2 ** attempt));
+    }
+  }
+}
+
+export async function callWithFallback(
+  messages: Anthropic.MessageParam[],
+  primary = 'claude-sonnet-4-6',
+  fallback = 'claude-haiku-4-5',
+) {
+  const t0 = Date.now();
+  try {
+    const resp = await callWithRetry(primary, messages);
+    logger.info('llm_call', {
+      model: primary,
+      input_tokens: resp.usage.input_tokens,
+      output_tokens: resp.usage.output_tokens,
+      latency_ms: Date.now() - t0,
+    });
+    return resp;
+  } catch (e) {
+    logger.warn('llm_primary_failed', { model: primary, error: String(e) });
+    return await client.messages.create({ model: fallback, max_tokens: 4096, messages });
+  }
+}
+```
+
+**streaming 模板**（Next.js Server Action / Route Handler）：
+
+```typescript
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+
+  const stream = await client.messages.stream({
+    model: 'claude-sonnet-4-6',
+    max_tokens: 4096,
+    messages,
+  });
+
+  return new Response(
+    new ReadableStream({
+      async start(controller) {
+        for await (const text of stream.textStream) {
+          controller.enqueue(`data: ${JSON.stringify({ text })}\n\n`);
+        }
+        controller.enqueue('data: [DONE]\n\n');
+        controller.close();
+      },
+    }),
+    { headers: { 'Content-Type': 'text/event-stream' } },
+  );
+}
+```
+
 ## 引用
 
 - 教学版带完整代码示例：`coding-standards` skill 的 TypeScript section
 - 架构/设计模式：`patterns.md`（本目录）
 - 测试：`testing.md`（本目录）
 - 安全：`security.md`（本目录）
+- AI agent 实现：`ai-engineer` agent / `prompt-engineer` agent / `vector-database-engineer` agent

@@ -79,16 +79,30 @@ git diff origin/<base>..HEAD --name-only
 
 ## Phase 2.5 — **并行预检**（v1.7 新增）
 
-推送前**并行派 3 路检查**，防止 PR 里有显而易见的问题：
+推送前**并行派 3 路检查**，防止 PR 里有显而易见的问题。**派发可视化（v1.9 强制）**：
 
+派发前：
 ```
-一条 message 同时派：
-  Task 1: verification-loop skill（跑 build / typecheck / lint / test 6 阶段）
-  Task 2: code-reviewer agent（扫 diff，给 CRITICAL/HIGH 清单）
-  Task 3: security-reviewer agent（扫敏感代码路径 / 密钥 / 注入风险）
+⚡ 并行派发 3 路 PR 预检（fan-out / 预计 ~2 min · 串行需 ~6 min）
+   ├─ verification-loop skill   build / typecheck / lint / test / security / diff 6 阶段
+   ├─ code-reviewer agent       扫 diff CRITICAL/HIGH 清单
+   └─ security-reviewer agent   敏感路径 / 密钥 / 注入
 ```
 
-**并行耗时 ~2 min**（串行要 ~6 min）。
+（同一条 message 里 3 个 Task call —— 这是真并行）
+
+返回后：
+```
+✓ 3 路全部返回（X.X min）
+   ├─ verification-loop  X.X min → 6 阶段 [全绿 | 阶段 N 卡住]
+   ├─ code-reviewer      X.X min → N CRITICAL / N HIGH / N MEDIUM
+   └─ security-reviewer  X.X min → N 高危 / N 中危
+
+合流（去重 / 调矛盾 / 压摘要）：
+  PR 预检结论：[GO | HOLD]
+  阻塞项（必修）：...
+  警告项（可发但 PR body 列出）：...
+```
 
 **合流规则**：
 - 任一返回 CRITICAL → 停止 push，让用户决定修 or 仍发

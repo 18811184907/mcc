@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "generatedAt": "2026-04-24T12:31:43.372Z",
+  "generatedAt": "2026-04-24T22:51:20.984Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
@@ -127,8 +127,8 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-fix-bug.md",
-      "size": 5191,
-      "sha256": "69753066cb695f4eaf707cfb86fa67c19aaa6584ed276684e4bac01aac085e30"
+      "size": 5978,
+      "sha256": "5e52fb3257b7ab025557a4d077c72ed4148ae4cda14214e07193396626a02290"
     },
     {
       "kind": "prompt",
@@ -145,14 +145,14 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-plan.md",
-      "size": 11429,
-      "sha256": "dd341131c9bcbd1e76097662386235ebcdd0e21b57ba3d90f19f31b5d8ce3b79"
+      "size": 12077,
+      "sha256": "d33a2e082150c6da4cacc635cc0083327bcc9c119be18c8365851fcf72eea077"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-pr.md",
-      "size": 5300,
-      "sha256": "1e92ba157b2a3f207201eb2d574d3851f65d072fdde953df65f2d4b3b8922385"
+      "size": 5836,
+      "sha256": "87852c4b6cf0bcbe0376e7317fae44434535fba5f7d5527ab0f572300037509e"
     },
     {
       "kind": "prompt",
@@ -163,8 +163,8 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-review.md",
-      "size": 7123,
-      "sha256": "f993b5a7c3c0fc9b8ddd708a92c380ef281651807b5a8450955119fc6699cd80"
+      "size": 7770,
+      "sha256": "06f9c7bf3980ded7b04dc292fefd09037abb5da1552cca625361975205937581"
     },
     {
       "kind": "prompt",
@@ -217,8 +217,8 @@
     {
       "kind": "rule",
       "dist": ".codex/rules/typescript/coding-style.md",
-      "size": 4892,
-      "sha256": "3da35ca4ddde5320ce9942858bc99a8b1c85103936b8a08e51659fdc667aaf34"
+      "size": 7296,
+      "sha256": "9b39b468014fb37d7bc14f2ccaafcf19e536643b689fcc925450630e4ce9bbc8"
     },
     {
       "kind": "rule",
@@ -235,8 +235,8 @@
     {
       "kind": "rule",
       "dist": ".codex/rules/typescript/security.md",
-      "size": 3999,
-      "sha256": "001881acc8cbf786ac5153ca2f774cb772a4c1ac616295fc1402ffedd9181227"
+      "size": 6096,
+      "sha256": "9d1f55512b4e0ed8232cb7cff6ec1f3532cb9808b6b566a2ca96a33f270372dd"
     },
     {
       "kind": "rule",
@@ -254,8 +254,8 @@
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 12593,
-      "sha256": "113a2485914e3cbc8fbe636412716cfc003b05f9a6fa3c55e4815ee0b2ca636c"
+      "size": 13751,
+      "sha256": "916ac97a2c83a5ec1decefc861b26f845efc60b521dea0c0439820fba566b8b4"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -288,6 +288,6 @@
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 245657
+    "totalBytes": 253934
   }
 }

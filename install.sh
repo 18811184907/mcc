@@ -71,7 +71,12 @@ fi
 
 echo ""
 echo "===================================="
-echo "  MCC Installer v1.0.0"
+# 动态读取 manifest.json 的 version
+MCC_VERSION="(unknown)"
+if [ -f "$ROOT/manifest.json" ]; then
+  MCC_VERSION=$(node -e "console.log(require('$ROOT/manifest.json').version)" 2>/dev/null || echo "(unknown)")
+fi
+echo "  MCC Installer v$MCC_VERSION"
 echo "===================================="
 echo ""
 

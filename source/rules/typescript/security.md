@@ -114,11 +114,39 @@ pnpm audit
 
 | OWASP | TS/JS 最常见表现 | 防 |
 |---|---|---|
-| A01 Broken Access Control | 服务端漏检权限，仅靠客户端隐藏 | 每 endpoint 服务端 guard |
-| A03 Injection | SQL / NoSQL / command injection | 参数化、白名单校验 |
-| A05 Security Misconfiguration | 默认 `.env` 进 git、CORS `*` | env 校验 + CORS 允许名单 |
-| A07 Auth Failures | 弱密码、明文 token、JWT secret 短 | argon2 + 强 JWT secret + refresh token |
-| A08 Data Integrity | 依赖未锁版本、npm 供应链 | lockfile + audit + 慎选新包 |
+| A01 Broken Access Control | 服务端漏检权限，仅靠客户端隐藏 UI；Next.js 不在 Server Action 里 guard | 每 endpoint / Server Action 服务端 `getSession()` + RBAC 检查 |
+| A02 Cryptographic Failures | crypto-js 弱算法（MD5/SHA1）、JWT 用 `none` 算法、HS256 secret 短 | bcrypt / argon2 / Web Crypto API；JWT secret ≥32 字节 + 验签强制 |
+| A03 Injection | SQL string concat / NoSQL `$where`：`eval`、command injection | 参数化（Prisma/Drizzle）+ 白名单校验 + `child_process.execFile` 不用 shell |
+| A04 Insecure Design | 没限流就开放 / 没风控就允许批量删 / 业务流缺审计 | 限流（@upstash/ratelimit）+ 风险阈值 + 关键操作审计日志 |
+| A05 Security Misconfiguration | 默认 `.env` 进 git；CORS `*`；console 暴露 stack trace；DEBUG=true 上线 | `.gitignore` + CORS allowlist + 生产 error 不带 stack + env 分环境 |
+| A06 Vulnerable Components | 依赖未锁、`npm audit` 不跑、用了已弃 lib | lockfile 进 git + CI 跑 audit + Snyk/Socket.dev |
+| A07 Auth Failures | 弱密码、明文 token、JWT secret 短、session fixation | argon2id + JWT secret ≥32 字节 + refresh token 轮换 + 登录后换 sessionId |
+| A08 Software/Data Integrity | 供应链：恶意 npm 包、CDN 无 SRI、Webhook 不验签 | npm audit + SRI + Webhook HMAC 签名验证 |
+| A09 Logging/Monitoring | 不记关键事件 / 记 PII 明文 / 没告警 | 结构化日志（pino）+ 脱敏（邮箱 / 手机 / token）+ Sentry / Datadog 告警 |
+| A10 SSRF | `fetch(userUrl)` 无 host allowlist；图片/PDF 服务从用户 URL 拉资源 | URL 解析 + 内网 IP 黑名单（127.0.0.0/8、169.254.0.0/16、10.0.0.0/8、private） + 域名 allowlist |
+
+## SSRF 具体防御代码
+
+```typescript
+import { URL } from 'node:url';
+import dns from 'node:dns/promises';
+
+const ALLOWLIST_HOSTS = ['api.example.com', 'cdn.example.com'];
+const PRIVATE_RANGES = [
+  /^10\./, /^127\./, /^192\.168\./, /^172\.(1[6-9]|2\d|3[01])\./,
+  /^169\.254\./, /^::1$/, /^fc/, /^fd/,
+];
+
+export async function safeFetch(userUrl: string): Promise<Response> {
+  const u = new URL(userUrl);
+  if (!['http:', 'https:'].includes(u.protocol)) throw new Error('protocol not allowed');
+  if (!ALLOWLIST_HOSTS.includes(u.hostname)) throw new Error('host not in allowlist');
+  // resolve DNS 后再次校验（防 DNS rebinding）
+  const { address } = await dns.lookup(u.hostname);
+  if (PRIVATE_RANGES.some(re => re.test(address))) throw new Error('private IP blocked');
+  return fetch(userUrl, { signal: AbortSignal.timeout(5000) });
+}
+```
 
 ## 引用
 

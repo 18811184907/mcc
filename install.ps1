@@ -88,7 +88,13 @@ if ($Verbose)   { $installerArgs += '--verbose' }
 
 Write-Host ""
 Write-Host "====================================" -ForegroundColor Cyan
-Write-Host "  MCC Installer v1.2.0" -ForegroundColor Cyan
+# 动态读取 manifest.json 的 version，不再硬编（防版本漂移）
+$mccVersion = "(unknown)"
+try {
+  $manifest = Get-Content (Join-Path $PSScriptRoot "manifest.json") -Raw | ConvertFrom-Json
+  if ($manifest.version) { $mccVersion = $manifest.version }
+} catch { }
+Write-Host "  MCC Installer v$mccVersion" -ForegroundColor Cyan
 Write-Host "====================================" -ForegroundColor Cyan
 Write-Host ""
 

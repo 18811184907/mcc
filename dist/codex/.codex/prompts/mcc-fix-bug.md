@@ -49,7 +49,29 @@ argument-hint: "<问题描述，留空则 Claude 问>"
 
 **派发姿势**：一条 assistant message 里发多个 Task call，不要一个一个排队。
 
-每个 agent 的 briefing **必须自包含**：stack trace + 复现步骤 + 用户描述 + docs/mistakes/ 历史（如果有相关条目）。agent 之间看不到彼此。
+**派发可视化（v1.9 强制）**：派发前后必须输出可视化文本，让用户看到真并行。
+
+派发前：
+```
+⚡ 并行派发 N agent 做 bug 盲诊（fan-out / 预计 ~2 min）
+   ├─ debugger              代码逻辑 / stack trace / 调用链
+   ├─ performance-engineer  性能维度盲诊
+   └─ database-optimizer    （如涉数据）查询 / N+1 / schema
+```
+
+返回后：
+```
+✓ N agent 全部返回（耗时 X.X min）
+   ├─ debugger              X.X min → 找到 N 处 candidate 根因
+   ├─ performance-engineer  X.X min → 性能维度无异常 / 找到 N 个瓶颈
+   └─ database-optimizer    X.X min → ...
+
+合流（去重 / 调矛盾 / 补缺 / 压摘要）：
+  主根因（高置信）：...
+  备选（中置信）：...
+```
+
+每个 agent 的 briefing **必须自包含**：stack trace + 复现步骤 + 用户描述 + docs/mistakes/ 历史（如有相关条目）。agent 之间看不到彼此。
 
 每个 agent 产出：**根因假设 + 证据链 + 置信度**。
 

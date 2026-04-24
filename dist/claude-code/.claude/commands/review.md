@@ -37,6 +37,16 @@ git diff --name-only HEAD
 
 ### Phase 2 — REVIEW（并行委派）
 
+**派发可视化（v1.9 强制）**：
+
+```
+⚡ 并行派发 2 reviewer（fan-out / 预计 ~1 min）
+   ├─ code-reviewer       质量 / 架构 / 大小 / 错误处理 / 测试
+   └─ security-reviewer   硬编码密钥 / SQL 注入 / XSS / 路径遍历
+
+[深度审或大改动加：silent-failure-hunter + performance-engineer]
+```
+
 **一次回复里发两个 Task，并行运行**：
 
 ```
@@ -66,6 +76,18 @@ Task (parallel x2):
 ```
 
 两个 agent 读每个改动文件**完整内容**（不只是 diff hunk），给出：severity + file:line + 描述 + 建议修复。
+
+**返回后合流可视化**：
+```
+✓ 2 reviewer 全部返回（X.X min）
+   ├─ code-reviewer       X.X min → N CRITICAL / N HIGH / N MEDIUM
+   └─ security-reviewer   X.X min → N CRITICAL / N HIGH
+
+合流（去重 / 调矛盾 / 压摘要）：
+  CRITICAL: ...
+  HIGH: ...
+  MEDIUM: ...
+```
 
 ### Phase 3 — VALIDATE（委派 verification-loop skill）
 

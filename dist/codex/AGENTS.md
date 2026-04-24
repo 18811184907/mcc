@@ -85,6 +85,37 @@
 - 架构规划 → `planner` + 栈相关 domain agent
 - 完整 10 种组合见 `dispatching-parallel-agents` skill
 
+### Codex 模式下的"伪并行"方案（v1.10 新增）
+
+Codex CLI **没有 Task tool**——无法真·并行派 subagent。建议采用以下"伪并行"格式让 Claude 模拟多视角分诊：
+
+**触发**：用户问"帮我审 / 排查 / 全面体检"等。
+
+**输出格式**（一次性回复里串行扮演多个角色，但**结构上模仿并行**）：
+
+```
+⚡ 多视角分析（Codex 模式 · 伪并行 · 1 次回复 3 视角）
+
+### 视角 1: code-reviewer（质量）
+[以 code-reviewer 角色给 finding，2-5 条 CRITICAL/HIGH]
+
+### 视角 2: security-reviewer（安全）
+[以 security-reviewer 角色给 finding]
+
+### 视角 3: silent-failure-hunter（吞错）
+[以该角色给 finding]
+
+### 合流
+CRITICAL (n): ...
+HIGH (n): ...
+MEDIUM (n): ...
+```
+
+和真·并行（Claude Code）的差异：
+- Codex 串行扮演多角色 → 单 agent 上下文 / 速度等于串行
+- 但**结构上**仍按"3 视角分别 finding + 合流"组织，最终输出对用户来讲和并行一样可读
+- 视角之间可能受同一 context 影响（不像真 subagent 完全隔离），所以**故意角色化** + **明确 finding 不复用**是关键
+
 ## 角色（Agents）
 
 对应场景自动以该角色视角工作。描述后附触发条件；完整 prompt 在 `.codex/agents/{name}.md`。

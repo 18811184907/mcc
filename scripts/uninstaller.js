@@ -149,11 +149,12 @@ async function uninstallClaudeCode(targetDir, args) {
   // - skills/*（同上）
   // - modes/*（同上）
   // - rules/python/*（用户可能改过）
+  // - rules/typescript/*（同上，v1.7 起加入）
   // - PRPs/**/*（用户工作产物，绝不碰）
   // - session-data/*
   // - skills/learned/*
-  log('info', 'agents / skills / modes / rules/python 由用户自行决定是否删除（可能已改动）');
-  summary.skipped.push('agents/', 'skills/', 'modes/', 'rules/python/');
+  log('info', 'agents / skills / modes / rules/python / rules/typescript 由用户自行决定是否删除（可能已改动）');
+  summary.skipped.push('agents/', 'skills/', 'modes/', 'rules/python/', 'rules/typescript/');
 
   return summary;
 }

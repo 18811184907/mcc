@@ -111,15 +111,25 @@ function extractSessionSummary(transcriptPath) {
 }
 
 // Read hook input from stdin (Claude Code provides transcript_path via stdin JSON)
+// v1.10: 不再静默截断超过 1MB 的输入——超过即记录 warning + 用 fallback 路径（env / 默认）。
+// 原版 .substring() 会在 JSON 中途切断，后续 parse 失败但不留痕，用户察觉不到数据丢失。
 const MAX_STDIN = 1024 * 1024;
 let stdinData = '';
+let stdinTruncated = false;
 process.stdin.setEncoding('utf8');
 
 process.stdin.on('data', chunk => {
-  if (stdinData.length < MAX_STDIN) {
-    const remaining = MAX_STDIN - stdinData.length;
-    stdinData += chunk.substring(0, remaining);
+  if (stdinTruncated) return;
+  if (stdinData.length + chunk.length > MAX_STDIN) {
+    process.stderr.write(
+      `[SessionEnd] WARNING: stdin 超过 1MB（${stdinData.length + chunk.length} bytes），` +
+      `丢弃后续输入并走 fallback。如果 transcript_path 在 stdin 头部已读到，session 可正常持久化；` +
+      `否则会用 CLAUDE_TRANSCRIPT_PATH env 或当前 cwd 推断。\n`
+    );
+    stdinTruncated = true;
+    return;
   }
+  stdinData += chunk;
 });
 
 process.stdin.on('end', () => {

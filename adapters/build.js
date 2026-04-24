@@ -24,6 +24,14 @@ function assertSourceIsHealthy(sourceDir) {
   if (missing.length) {
     throw new Error(`source/ 缺少必需子目录: ${missing.join(', ')}`);
   }
+  // v1.10: rules 子目录必须包含 common / python / typescript（v1.7 起结构）
+  const requiredRulesSubdirs = ['common', 'python', 'typescript'];
+  const missingRulesSubdirs = requiredRulesSubdirs.filter(d =>
+    !fs.existsSync(path.join(sourceDir, 'rules', d))
+  );
+  if (missingRulesSubdirs.length) {
+    throw new Error(`source/rules/ 缺少必需子目录: ${missingRulesSubdirs.join(', ')}`);
+  }
   const agentCount = fs.readdirSync(path.join(sourceDir, 'agents')).filter(f => f.endsWith('.md')).length;
   const cmdCount = fs.readdirSync(path.join(sourceDir, 'commands')).filter(f => f.endsWith('.md')).length;
   const skillCount = fs.readdirSync(path.join(sourceDir, 'skills')).filter(f => {
@@ -32,6 +40,13 @@ function assertSourceIsHealthy(sourceDir) {
   if (agentCount < MIN_AGENTS) throw new Error(`source/agents 只有 ${agentCount} 个 .md（期望 ≥${MIN_AGENTS}）`);
   if (cmdCount < MIN_COMMANDS) throw new Error(`source/commands 只有 ${cmdCount} 个 .md（期望 ≥${MIN_COMMANDS}）`);
   if (skillCount < MIN_SKILLS) throw new Error(`source/skills 只有 ${skillCount} 个 skill 目录（期望 ≥${MIN_SKILLS}）`);
+  // 每个 rules 子目录至少 1 个 .md（防止半空提交）
+  for (const sub of requiredRulesSubdirs) {
+    const cnt = fs.readdirSync(path.join(sourceDir, 'rules', sub)).filter(f => f.endsWith('.md')).length;
+    if (cnt === 0) {
+      throw new Error(`source/rules/${sub} 没有任何 .md 文件`);
+    }
+  }
 }
 
 function assertBuildOutputSane(label, result) {

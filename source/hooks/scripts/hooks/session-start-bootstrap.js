@@ -127,7 +127,9 @@ if (fs.existsSync(script)) {
       encoding: 'utf8',
       env: process.env,
       cwd: process.cwd(),
-      timeout: 30000,
+      // v1.10: 和 settings.fragment.json 的 SessionStart timeout=5 对齐（5s）。
+      // 之前是 30000ms，会让 Claude Code 杀掉子进程后 Node 还要等 25s 才察觉，导致挂起。
+      timeout: 5000,
     }
   );
 
