@@ -183,15 +183,64 @@ function backupDir(dir, timestamp, dryRun) {
     log('info', `(dry-run) 备份 ${dir} → ${backup}`);
     return backup;
   }
-  // 跨驱动器 rename 失败，fallback copy
+  // 先尝试 renameSync（同盘符原子）
   try {
     fs.renameSync(dir, backup);
-  } catch {
-    copyDirRecursive(dir, backup);
-    fs.rmSync(dir, { recursive: true, force: true });
+    log('ok', `备份 ${dir} → ${backup}`);
+    return backup;
+  } catch (err) {
+    if (err.code !== 'EXDEV' && err.code !== 'EPERM') throw err;
+    // EXDEV 跨盘符 / EPERM Windows 常见 → 走原子 copy-then-delete 策略
+    return backupDirAtomicCrossDevice(dir, backup);
   }
-  log('ok', `备份 ${dir} → ${backup}`);
-  return backup;
+}
+
+// 跨盘符"原子"备份：先 copy 到 backup.tmp → 校验完整 → rename 为 backup → 删原目录。
+// 任一步失败都不会让 src 和 backup 同时存在冲突状态。
+function backupDirAtomicCrossDevice(src, finalBackup) {
+  const tmpBackup = finalBackup + '.tmp';
+  try {
+    // 清理旧残留（上次异常中断留下的）
+    if (pathExists(tmpBackup)) fs.rmSync(tmpBackup, { recursive: true, force: true });
+
+    // 1) copy 到 tmp
+    copyDirRecursive(src, tmpBackup);
+
+    // 2) 验证完整：文件数 + 总大小对齐
+    const srcStats = collectDirStats(src);
+    const tmpStats = collectDirStats(tmpBackup);
+    if (srcStats.fileCount !== tmpStats.fileCount || srcStats.totalSize !== tmpStats.totalSize) {
+      // 失败：留下 src 不动，删除不完整的 tmp
+      fs.rmSync(tmpBackup, { recursive: true, force: true });
+      throw new Error(
+        `备份校验失败（文件数 ${srcStats.fileCount}→${tmpStats.fileCount}，字节 ${srcStats.totalSize}→${tmpStats.totalSize}）。源目录未动，请检查磁盘空间 / 权限`,
+      );
+    }
+
+    // 3) rename tmp → final（同盘符，原子）
+    fs.renameSync(tmpBackup, finalBackup);
+
+    // 4) 验证通过后才删源
+    fs.rmSync(src, { recursive: true, force: true });
+    log('ok', `跨盘符备份 ${src} → ${finalBackup}（copy+verify+rename+rm）`);
+    return finalBackup;
+  } catch (err) {
+    // 保证失败时 src 仍存活
+    log('err', `备份失败: ${err.message}`);
+    throw err;
+  }
+}
+
+function collectDirStats(dir) {
+  let fileCount = 0;
+  let totalSize = 0;
+  for (const rel of walkFiles(dir)) {
+    fileCount++;
+    try {
+      totalSize += fs.statSync(path.join(dir, rel)).size;
+    } catch (_) { /* 跳过读失败的项（link broken 等） */ }
+  }
+  return { fileCount, totalSize };
 }
 
 function copyDirRecursive(src, dst) {
@@ -392,6 +441,8 @@ async function installClaudeCode(distDir, scope, options) {
   const timestamp = makeBackupTimestamp();
 
   // v1.2: 独占模式 — 备份并清空 agents/commands/skills/modes（保留 rules/settings.json）
+  // v1.7: fallback 走 backupDirAtomicCrossDevice（copy + verify + rename + rm），
+  //       中途失败不会让用户数据半空半满。
   if (options.exclusive && pathExists(targetDir)) {
     const ccDirs = ['agents', 'commands', 'skills', 'modes'];
     const excBackupRoot = `${targetDir}.exclusive-backup-${timestamp}`;
@@ -402,8 +453,12 @@ async function installClaudeCode(distDir, scope, options) {
       const toDir = path.join(excBackupRoot, d);
       if (!options.dryRun) {
         ensureDir(path.dirname(toDir));
-        try { fs.renameSync(fromDir, toDir); }
-        catch { copyDirRecursive(fromDir, toDir); fs.rmSync(fromDir, { recursive: true, force: true }); }
+        try {
+          fs.renameSync(fromDir, toDir);
+        } catch (err) {
+          if (err.code !== 'EXDEV' && err.code !== 'EPERM') throw err;
+          backupDirAtomicCrossDevice(fromDir, toDir);
+        }
       }
       log('ok', `  ✓ ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
     }

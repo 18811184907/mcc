@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "generatedAt": "2026-04-24T08:00:23.136Z",
+  "generatedAt": "2026-04-24T08:37:59.886Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
@@ -127,8 +127,8 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-fix-bug.md",
-      "size": 4102,
-      "sha256": "40ab7f82a1678cee6b80e0822076915fecba31c3a4c0d5abec02132e203cbb3c"
+      "size": 5191,
+      "sha256": "69753066cb695f4eaf707cfb86fa67c19aaa6584ed276684e4bac01aac085e30"
     },
     {
       "kind": "prompt",
@@ -145,14 +145,14 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-plan.md",
-      "size": 10165,
-      "sha256": "22e42b6ad838e86bedf766e6914ad3df5d6f74dbdda258656933acedff204111"
+      "size": 11467,
+      "sha256": "f920ea89aecf7cf05a264d710d952946c0931e87d49d15b75272e258e013f7e2"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-pr.md",
-      "size": 4539,
-      "sha256": "1829beb383c3d472dfabae8a3a3e066040185dfcf93e77f5fbfdfe442bef083f"
+      "size": 5300,
+      "sha256": "1e92ba157b2a3f207201eb2d574d3851f65d072fdde953df65f2d4b3b8922385"
     },
     {
       "kind": "prompt",
@@ -216,9 +216,39 @@
     },
     {
       "kind": "rule",
+      "dist": ".codex/rules/typescript/coding-style.md",
+      "size": 4892,
+      "sha256": "3da35ca4ddde5320ce9942858bc99a8b1c85103936b8a08e51659fdc667aaf34"
+    },
+    {
+      "kind": "rule",
+      "dist": ".codex/rules/typescript/hooks.md",
+      "size": 1775,
+      "sha256": "1322d39d333a384680c783b2c3e5f1309664ed5f24aadcb7b64e9a208a776d01"
+    },
+    {
+      "kind": "rule",
+      "dist": ".codex/rules/typescript/patterns.md",
+      "size": 4544,
+      "sha256": "d9a6200a11bbb9cdb2c9a6c14c9fc51d96b2c36c86421f7799591e251fc133ec"
+    },
+    {
+      "kind": "rule",
+      "dist": ".codex/rules/typescript/security.md",
+      "size": 3999,
+      "sha256": "001881acc8cbf786ac5153ca2f774cb772a4c1ac616295fc1402ffedd9181227"
+    },
+    {
+      "kind": "rule",
+      "dist": ".codex/rules/typescript/testing.md",
+      "size": 3624,
+      "sha256": "112bad54a52f4b8c1d1174bba5765612210644d01cdb89d4f4d2aaad1dacd9d5"
+    },
+    {
+      "kind": "rule",
       "dist": ".codex/rules/common/mcc-principles.md",
-      "size": 12594,
-      "sha256": "18a456aedb4c860dadc531bf027ae5e13a1cb902fba4e9f48def70477fc845f8"
+      "size": 18818,
+      "sha256": "6927b76c8957b11418378f4b6d4fb882e181cc259b6c4ee4faba24cc6adf4a8c"
     },
     {
       "kind": "agents-md",
@@ -249,15 +279,15 @@
     "Codex 不支持 skill，转为 AGENTS.md 中的场景指引段"
   ],
   "summary": {
-    "total": 39,
+    "total": 44,
     "byKind": {
       "agent": 19,
       "prompt": 11,
-      "rule": 6,
+      "rule": 11,
       "agents-md": 1,
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 204173
+    "totalBytes": 232383
   }
 }

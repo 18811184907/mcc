@@ -11,8 +11,8 @@
     {
       "name": "mcc",
       "source": "./",
-      "description": "19 agents + 11 commands + 16 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules. 中文主场景，Python + TypeScript + AI 全栈定向优化。v1.5 少命令多自动（20→11）。v1.6 产品级深度优化：5 轮审查 + 批量修复 CRITICAL + tests/smoke 烟测 + hooks 防卡死。",
-      "version": "1.6.0",
+      "description": "19 agents + 11 commands + 16 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules（Python + TypeScript）。中文主场景 + Python + TS + AI 全栈定向优化。v1.5 少命令多自动（20→11）。v1.6 5 轮审查修 CRITICAL + smoke 烟测。v1.7 多智能体自动并行协同（并行优先原则 + 3 核心命令默认并行派发）。",
+      "version": "1.7.0",
       "author": {
         "name": "MCC"
       },

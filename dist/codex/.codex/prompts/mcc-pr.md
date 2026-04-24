@@ -77,6 +77,28 @@ git diff origin/<base>..HEAD --name-only
 
 ---
 
+## Phase 2.5 — **并行预检**（v1.7 新增）
+
+推送前**并行派 3 路检查**，防止 PR 里有显而易见的问题：
+
+```
+一条 message 同时派：
+  Task 1: verification-loop skill（跑 build / typecheck / lint / test 6 阶段）
+  Task 2: code-reviewer agent（扫 diff，给 CRITICAL/HIGH 清单）
+  Task 3: security-reviewer agent（扫敏感代码路径 / 密钥 / 注入风险）
+```
+
+**并行耗时 ~2 min**（串行要 ~6 min）。
+
+**合流规则**：
+- 任一返回 CRITICAL → 停止 push，让用户决定修 or 仍发
+- 只有 HIGH/MEDIUM → 继续 push，但在 PR body 的"已知缺陷"段列出
+- 全绿 → 直接进 Phase 3
+
+**跳过条件**：小改动（diff < 30 行）或用户明确加 `--skip-prechecks` flag。
+
+---
+
 ## Phase 3 — 推送
 
 ```bash

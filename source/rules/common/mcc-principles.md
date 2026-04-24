@@ -45,6 +45,109 @@
 
 ---
 
+## -0.5 并行优先（Parallel-First Orchestration）· 自动 · 协作 · 效率
+
+**默认并行，不要默认串行**。每次接手任务，第 1 秒自问：
+
+```
+Q1: 这个任务能拆成 2+ 个独立子任务吗？（能 → 并行派发）
+Q2: 多个 agent 视角会给不同答案吗？（会 → 并行辩论 party-mode）
+Q3: 我自己在会话里硬干 vs 派 subagent，后者更好吗？（几乎总是 → 派）
+```
+
+**数字**：串行派 3 agent ≈ 3× 延迟 + 3× 主 session context 污染；并行 3 agent ≈ 1× 延迟 + 0 污染（各 subagent 独立 context）。这是 MCC 效率的**最大杠杆**。
+
+### 自动触发并行派发的典型场景 · 必须记住这张表
+
+| 情境 | 并行派这些 agent | 为什么不单派 |
+|---|---|---|
+| **代码审查**（`/review` / 写完 >50 行改动） | `code-reviewer` + `security-reviewer`（必装）+ 涉及 I/O 加 `silent-failure-hunter` + 涉及性能加 `performance-engineer` | 质量 / 安全 / 静默失败 / 性能是**正交维度**，单 agent 扫不全 |
+| **问题诊断**（用户报 bug 但不确定类型） | `debugger`（代码逻辑）+ `performance-engineer`（是否是性能退化）+ 涉及数据加 `database-optimizer`（查询问题） | 盲诊：不知道是 bug 还是 perf 还是查询，三路同时分诊定位更快 |
+| **架构规划**（`/plan` 较大功能） | `planner` + 栈相关 domain agent（后端: `backend-architect` + `database-optimizer` / AI: `ai-engineer` + `prompt-engineer` / 前端: `frontend-developer`）| 单 planner 会忽略 domain 专业细节（如 DB schema / embedding 策略 / 前端性能） |
+| **深度全面审查**（模块级 / 项目级） | `code-reviewer` + `security-reviewer` + `silent-failure-hunter` + `performance-engineer` + `refactor-cleaner` | 5 维度并行出 5 份报告，合流整合，1 分钟出整体健康度 |
+| **技术选型有分歧** | `party-mode` skill 派 4 个视角（如 `backend-architect` + `security-reviewer` + `ai-engineer` + `planner`）辩论 | 单视角会偏；多视角辩论出权衡 |
+| **前端 bug 不确定是 UI 还是性能** | `frontend-developer` + `performance-engineer` | UI bug 和 layout thrashing 肉眼难分 |
+| **数据管道慢** | `database-optimizer` + `performance-engineer` + `backend-architect` | 慢可能在 DB 查询、应用层代码、架构设计任一环 |
+| **新项目初始化** | `code-explorer`（扫现有结构）+ `planner`（给建议） | 一个看现状，一个定未来 |
+
+### 不要并行的场景
+
+- **小改动** < 30 行 / 一个函数 / 改文案：直接做，并行反而开销大于收益
+- **强依赖链**：plan → implement → review 是时序关系，不能并行
+- **只有 1 个 agent 能做**：比如一个纯 Python 重构任务，并行派其他 agent 只会返回空回答
+- **context 已经很多**：主 session 已接近 context 上限时，生成大量并行 agent 会失去空间装它们返回的 report
+
+### 派发正确姿势（一条消息多个 Task call）
+
+**正确**：一条 assistant 消息里包含多个 `Task` tool call —— Claude Code 会真并行跑。
+
+**错误**：多轮对话里一个一个派 —— 等于串行。
+
+### 协作模式（subagent 之间看不见，主 session 做整合）
+
+Subagent 之间**不能直接通信**（各自 context 完全独立）。所谓"多 agent 协作"真实发生在 **3 个位置**：
+
+**模式 A · 一次 fan-out，一次整合**（最常见）
+```
+[主 session]
+   ├─ Task: agent1 ─┐
+   ├─ Task: agent2 ─┼─ 并行返回 ──→ [主 session 整合]
+   └─ Task: agent3 ─┘
+```
+适用：代码审查（质量+安全+性能）、问题诊断（bug/perf/DB）、架构规划。
+
+**模式 B · 接力（A → B → C，每步主 session 整合一次）**
+```
+Task: code-explorer（探索现有代码）
+   → 主 session 读 report 提炼 "关键文件"
+Task: planner + domain agent（基于文件写 plan）
+   → 主 session 审 plan
+Task: 执行 subagent 按 plan 实现
+```
+适用：/plan / /implement 工作流。每步都有**真实依赖**，不能并行。
+
+**模式 C · 辩论（同问题多视角 → 合流出权衡）**
+```
+Task: party-mode spawn 4 agents 同题不同角
+   → 每 agent 独立回答 → 主 session 做权衡矩阵
+```
+适用：技术选型、架构决策。见 `party-mode` skill。
+
+**模式 D · 混合（fan-out → 某一路发现新问题 → 补派一次）**
+```
+Task: code-reviewer + security-reviewer 并行
+   主 session 看：reviewer 说 "有静默失败风险"
+   → Task: silent-failure-hunter 补派
+```
+适用：深度审查、跨域问题。
+
+### 合流整合的 4 个动作（必做）
+
+每次 subagent 并行返回后，主 session 做：
+
+1. **去重** — 多个 agent 报了同一个问题，合并为 1 条
+2. **调矛盾** — A 说"该这样"、B 说"该那样"：判断是**真矛盾**还是**不同优先级**，给出最终决策
+3. **补缺** — 某 agent 跳过了某维度（如 reviewer 没碰数据库）：自觉补 database-optimizer
+4. **压摘要** — **禁止**把每个 agent 的 full report 都贴给用户，主 session 压成 **CRITICAL / HIGH / MEDIUM 三档 + 每档 ≤3 条** 的摘要
+
+### 并行的成本控制与效率
+
+- **上限 4 并行**：再多主 session 合流难度指数增长
+- **完整 briefing**：每个 agent 收到的 prompt 必须**自包含**（说清 goal / context / deliverable / output format）；不要说"和另一个 agent 一起看"——subagent 看不到彼此
+- **模型选择**：
+  - 轻量扫描型（格式检查 / lint / 简单事实查询）用 **Haiku**，省成本
+  - 深度判断型（架构决策 / 安全审查 / 复杂 bug）用 **Sonnet/Opus**
+  - 混合派发时明确标：`code-reviewer(sonnet) + silent-failure-hunter(haiku)`
+- **超时**：每个 subagent 心里设 timeout（大 PR 审查 ≤5 分钟），超时不返回主 session 不等，用已返回的先整合
+
+### 相关 skill
+
+- **`dispatching-parallel-agents`**：并行独立问题域分发方法论（见该 skill 的 Auto-dispatch 决策树）
+- **`party-mode`**：并行辩论（同问题多视角）
+- **`subagent-driven-development`**：串行 task 链（plan 驱动）
+
+---
+
 ## 0. 核心指令（Core Directive）
 
 3 条优先级不可妥协。顺序即权重：

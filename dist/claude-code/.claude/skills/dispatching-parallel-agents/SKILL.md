@@ -13,6 +13,54 @@ description: "并行分发 subagent 处理 2+ 个**独立且无依赖**的问题
 
 **核心原则：** 每个独立问题域派一个 agent，让他们并发工作。
 
+## Auto-Dispatch 决策树（每次接手任务先跑一遍）
+
+这是 MCC v1.7 的核心升级：**并行默认发生，不等用户提**。每次接手任务前 5 秒自问这 4 个问题：
+
+```
+Q1. 任务能拆成 2+ 个互不依赖的子任务吗？
+  YES → 并行派发（走下面"场景 → agent 组合"表）
+  NO  → 跳 Q2
+
+Q2. 有多个专家视角会给不同建议吗？（比如技术选型 / 架构决策 / 性能 vs 安全权衡）
+  YES → 走 party-mode skill 辩论式并行
+  NO  → 跳 Q3
+
+Q3. 任务是串行但每步依赖前一步？
+  YES → 走 subagent-driven-development（串行 task 链）
+  NO  → 跳 Q4
+
+Q4. 任务很小（<30 行改动）？
+  YES → 直接做，不派 agent
+  NO  → 派单 agent（比派多 agent 整合简单）
+```
+
+## 场景 → Agent 组合速查表（熟记）
+
+| 场景 | 并行派（同一条 message） | 典型耗时 |
+|---|---|---|
+| **全面代码审查** | `code-reviewer` + `security-reviewer` + `silent-failure-hunter` + `performance-engineer` | 各 1-2 min，总 ~2 min |
+| **快速 PR 审查** | `code-reviewer` + `security-reviewer` | ~1 min |
+| **Bug 盲诊**（不确定类型） | `debugger` + `performance-engineer` | ~2 min |
+| **Bug 盲诊**（涉及数据） | `debugger` + `performance-engineer` + `database-optimizer` | ~2-3 min |
+| **前端问题**（UI 还是性能） | `frontend-developer` + `performance-engineer` | ~2 min |
+| **新功能规划**（后端栈） | `planner` + `backend-architect` + `database-optimizer` | ~3 min |
+| **新功能规划**（AI 栈） | `planner` + `ai-engineer` + `prompt-engineer` + `vector-database-engineer` | ~3 min |
+| **新功能规划**（全栈） | `planner` + `backend-architect` + `frontend-developer` | ~3 min |
+| **多测试文件失败** | 每个失败文件派 1 个 `debugger` | 各 1-2 min |
+| **多模块重构** | 每个模块派 1 个 `refactor-cleaner` | 各 2-3 min |
+
+### 用户意图 → 组合快速映射
+
+```
+用户说"审代码 / review"       → code-reviewer + security-reviewer（并行）
+用户说"全面体检 / 深度审"      → 加上 silent-failure-hunter + performance-engineer
+用户说"bug / 报错 / 慢"        → debugger + performance-engineer（盲诊）
+用户说"做个 xxx 功能"          → planner + 对应栈 domain agent
+用户说"两个方案选哪个"         → party-mode（辩论）
+用户说"并行处理这些"           → 直接按独立度拆分
+```
+
 ## 何时使用
 
 ```dot

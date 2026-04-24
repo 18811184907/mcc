@@ -33,13 +33,31 @@ argument-hint: "<问题描述，留空则 Claude 问>"
 
 ---
 
-## Phase 2 — 根因调查（bug 类）
+## Phase 2 — 根因调查（bug 类）· **默认并行分诊**
 
-**委派 `debugger` agent** 做深度调查：
-- 读相关代码，跟踪调用链
-- 查日志、错误信息
-- 检查同类模式的历史实现（`docs/mistakes/`）
-- 产出"根因假设 + 证据链 + 置信度"
+**符合 MCC v1.7 并行优先原则**：不要只派一个 agent。如果用户描述里有性能 / 数据库 / 前端等附加信号，**同一条 message 并行派多个 agent 盲诊**：
+
+```
+必派: debugger（代码逻辑 / stack trace / 调用链）
+
+附加信号触发的并行派发:
+  • "慢 / 卡 / 延迟" → + performance-engineer
+  • "查询 / DB / N+1" → + database-optimizer
+  • "UI 错 / 白屏 / 布局" → + frontend-developer
+  • 不确定类型 → + performance-engineer（盲诊保底）
+```
+
+**派发姿势**：一条 assistant message 里发多个 Task call，不要一个一个排队。
+
+每个 agent 的 briefing **必须自包含**：stack trace + 复现步骤 + 用户描述 + docs/mistakes/ 历史（如果有相关条目）。agent 之间看不到彼此。
+
+每个 agent 产出：**根因假设 + 证据链 + 置信度**。
+
+**主 session 合流整合**（4 动作）：
+1. 去重：多 agent 报了同一根因 → 合并为 1 条，标高置信度
+2. 调矛盾：A 说"是性能"、B 说"是逻辑 bug" → 用证据强度决定，或请用户确认
+3. 补缺：某路没涉及的维度（比如都没查 DB）自觉补 database-optimizer
+4. 压摘要：给用户 1 条主根因 + 最多 2 条备选，不要贴每个 agent 的全文
 
 **禁止**：
 - ❌ "重试试试"

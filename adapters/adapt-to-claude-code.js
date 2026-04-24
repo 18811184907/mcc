@@ -129,6 +129,13 @@ async function adaptToClaudeCode(sourceDir, distDir) {
     filter: (f) => f.endsWith('.md'),
   });
 
+  // 10b) rules/typescript/ → .claude/rules/typescript/（v1.7 新增，项目定位关键）
+  const rulesTsSrc = path.join(sourceDir, 'rules', 'typescript');
+  const rulesTsDst = path.join(claudeRoot, 'rules', 'typescript');
+  copySimpleDir(rulesTsSrc, rulesTsDst, 'rules/typescript', manifest, log, {
+    filter: (f) => f.endsWith('.md'),
+  });
+
   // 11) 空占位目录（给 commands 产出物落地）
   const prpBase = path.join(claudeRoot, 'PRPs');
   const placeholders = [

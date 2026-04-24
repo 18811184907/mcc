@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -46,8 +46,9 @@
     "hook_scripts": 25,
     "mcp_servers": 5,
     "rules_python": 5,
+    "rules_typescript": 5,
     "rules_common": 1,
-    "principles_sections": 7
+    "principles_sections": 8
   },
 
   "compatibility": {
@@ -104,6 +105,26 @@
   },
 
   "version_history": [
+    {
+      "version": "1.7.0",
+      "date": "2026-04-24",
+      "changes": [
+        "v1.7 主题：多智能体自动并行协同（Automatic Multi-Agent Orchestration）",
+        "核心：让并行派发 subagent 默认主动发生，不等用户提；定义协作模式 + 效率控制",
+        "mcc-principles 新增 P-0.5 '并行优先'章节（P-1 之后）：8 条自动并行决策表、4 种协作模式（fan-out / 接力 / 辩论 / 混合）、4 个合流整合动作、模型分级（Haiku/Sonnet）、上限 4 并发",
+        "dispatching-parallel-agents skill 加 Auto-dispatch 决策树（Q1-Q4 每次接手任务前跑一遍）+ 场景→agent 组合速查表（10 种典型组合）+ 用户意图→组合快速映射",
+        "/fix-bug Phase 2 改并行分诊：debugger + 附加信号触发的 performance-engineer / database-optimizer / frontend-developer（盲诊保底）",
+        "/plan Phase 2 加默认并行 domain agent 派发：按栈类型（后端 / 前端 / AI / 全栈）选 2-3 个 agent 并行探索",
+        "/pr 新增 Phase 2.5 并行预检：同时派 verification-loop + code-reviewer + security-reviewer（~2min 完成 3 路检查，串行需 ~6min）",
+        "补 rules/typescript/（5 个文件：coding-style / testing / security / patterns / hooks）—— 项目定位是 Python + TS + AI 全栈，之前只有 Python 是长期缺口",
+        "adapt-to-claude-code.js + adapt-to-codex.js 都加 rules/typescript 转译",
+        "TOOLS_MAP 扩展 WebSearch / NotebookEdit；未映射 tool 从静默穿透改为 unmappedWarnings.Map 记录并 build warn",
+        "installer 跨盘符 fallback 从 'copy 再 rm' 改为原子版：copy → 校验文件数+总字节 → rename → rm，任一步失败源目录都完好",
+        "exclusive 模式的备份也走同一套原子 fallback",
+        "dist/claude-code 从 106 → 111 files（+5 TS rules），dist/codex 从 39 → 44 files",
+        "tests/smoke.js 随 TS rules 自动扩充检查集（manifest.rules 计数一致性）"
+      ]
+    },
     {
       "version": "1.6.0",
       "date": "2026-04-24",

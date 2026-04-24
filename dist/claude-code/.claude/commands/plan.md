@@ -80,7 +80,26 @@ So that [benefit].
 
 ---
 
-## Phase 2 — 探索（抓取代码库情报）
+## Phase 2 — 探索（抓取代码库情报）· **默认并行派发 domain agent**
+
+**符合 MCC v1.7 并行优先原则**：复杂度 Medium 或以上的 plan，**不要让 planner 自己干全套**。先**并行派多个 domain agent** 收集各自视角的要点，再由 planner 整合成 plan。
+
+### 按栈类型的并行派发组合
+
+根据任务涉及的栈，一条 message 里并行派以下 agent：
+
+| 栈类型 | 并行派的 agent |
+|---|---|
+| **后端 API** | `code-explorer`（扫现有路由 / service） + `backend-architect`（给架构建议） + `database-optimizer`（如涉及数据） |
+| **前端** | `code-explorer`（扫组件树） + `frontend-developer`（UI 约定） + `performance-engineer`（预算） |
+| **AI 应用** | `ai-engineer`（LLM 集成模式） + `prompt-engineer`（prompt 结构） + `vector-database-engineer`（如有 RAG） |
+| **全栈 feature** | `code-explorer` + `backend-architect` + `frontend-developer`（不超过 4 个） |
+
+**每个 agent 的 briefing 必须自包含**：要实现的 feature 描述 + 相关栈位置 + 希望它输出的具体清单（命名模式 / 风险点 / 现有类比实现）。
+
+**主 session 合流**：把多 agent 产出的要点汇总到下面的"代码库搜索 + 代码库追踪"两表，不要贴 agent 原文。
+
+### 代码库搜索（8 个类别）
 
 ### 代码库搜索（8 个类别）
 

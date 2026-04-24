@@ -28,6 +28,10 @@ const {
 } = require('./_lib');
 
 // MCC Canonical §5 tools 重命名表（Claude Code → Codex）
+// 覆盖 MCC agents 实际用到的 8 个 Claude Code tool。其它 Claude-only tool
+// （Monitor / Skill / TaskStop / PushNotification / RemoteTrigger / Agent 等）
+// 是 main session-only 的，agent 本不该声明。若 agent 真的声明了未映射 tool，
+// 下面的转译会落到 unmappedWarnings 并让 build 明显提示。
 const TOOLS_MAP = {
   Read: 'read_file',
   Grep: 'search',
@@ -37,7 +41,11 @@ const TOOLS_MAP = {
   Write: 'apply_patch',
   MultiEdit: 'apply_patch',
   WebFetch: 'fetch_url',
+  WebSearch: 'search_web',
+  NotebookEdit: 'apply_patch',
 };
+
+const unmappedWarnings = new Map(); // tool -> [agent file list]
 
 async function adaptToCodex(sourceDir, distDir) {
   const log = makeLogger('codex');
@@ -82,11 +90,18 @@ async function adaptToCodex(sourceDir, distDir) {
       continue;
     }
 
-    // 转译 tools
+    // 转译 tools；未映射的 tool 记录 warn（不静默穿透，否则 Codex 侧 agent tools 字段可能不识别）
     const toolsTranslated = [];
     if (Array.isArray(frontmatter.tools)) {
       for (const t of frontmatter.tools) {
-        toolsTranslated.push(TOOLS_MAP[t] || t);
+        if (TOOLS_MAP[t]) {
+          toolsTranslated.push(TOOLS_MAP[t]);
+        } else {
+          toolsTranslated.push(t); // 仍保留，但记录 warn
+          const list = unmappedWarnings.get(t) || [];
+          list.push(rel);
+          unmappedWarnings.set(t, list);
+        }
       }
     }
     frontmatter.tools = [...new Set(toolsTranslated)]; // 去重（Edit/Write 都映射到 apply_patch）
@@ -136,6 +151,20 @@ async function adaptToCodex(sourceDir, distDir) {
       copyFile(srcPath, dstPath);
       recordFile(manifest, srcPath, dstPath, distDir, 'rule');
       log.step(`rules/python: ${rel}`);
+    }
+  }
+
+  // ── 3b) rules/typescript → .codex/rules/typescript/（v1.7 新增）
+  const tsSrc = path.join(sourceDir, 'rules', 'typescript');
+  const tsDst = path.join(codexRoot, 'rules', 'typescript');
+  if (pathExists(tsSrc)) {
+    ensureDir(tsDst);
+    for (const rel of walkFiles(tsSrc)) {
+      const srcPath = path.join(tsSrc, rel);
+      const dstPath = path.join(tsDst, rel);
+      copyFile(srcPath, dstPath);
+      recordFile(manifest, srcPath, dstPath, distDir, 'rule');
+      log.step(`rules/typescript: ${rel}`);
     }
   }
 
@@ -202,12 +231,22 @@ async function adaptToCodex(sourceDir, distDir) {
   writeText(manifestPath, JSON.stringify(manifest, null, 2));
   log.info(`INSTALL-MANIFEST.json  (${manifest.files.length} 项)`);
 
+  // 未映射 tool 报告
+  if (unmappedWarnings.size) {
+    log.warn('下列 Claude Code tool 在 TOOLS_MAP 里未映射，Codex 侧原样保留可能不识别：');
+    for (const [tool, files] of unmappedWarnings) {
+      log.warn(`  • ${tool}  ← 出现在: ${files.join(', ')}`);
+    }
+    log.warn('  若是 MCC agent 确实需要，补到 adapters/adapt-to-codex.js 的 TOOLS_MAP');
+  }
+
   return {
     target: 'codex',
     distDir,
     filesCount: manifest.files.length,
     summary: manifest.summary,
     manifestPath,
+    unmappedTools: [...unmappedWarnings.keys()],
   };
 }
 
