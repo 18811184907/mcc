@@ -33,11 +33,13 @@
   - [test-automator](#test-automator)
   - [typescript-pro](#typescript-pro)
   - [vector-database-engineer](#vector-database-engineer)
-- [工作流 Prompts（11）](#工作流-prompts)
+- [工作流 Prompts（13）](#工作流-prompts)
   - [mcc-explain](#mcc-explain)
   - [mcc-fix-bug](#mcc-fix-bug)
   - [mcc-implement](#mcc-implement)
+  - [mcc-index-repo](#mcc-index-repo)
   - [mcc-init](#mcc-init)
+  - [mcc-onboard](#mcc-onboard)
   - [mcc-plan](#mcc-plan)
   - [mcc-pr](#mcc-pr)
   - [mcc-prd](#mcc-prd)
@@ -45,7 +47,7 @@
   - [mcc-session-resume](#mcc-session-resume)
   - [mcc-session-save](#mcc-session-save)
   - [mcc-tdd](#mcc-tdd)
-- [Skill 场景指引（17）](#skill-场景指引)
+- [Skill 场景指引（18）](#skill-场景指引)
   - [architecture-decision-records](#architecture-decision-records)
   - [code-review-workflow](#code-review-workflow)
   - [coding-standards](#coding-standards)
@@ -58,6 +60,7 @@
   - [orchestration-playbook](#orchestration-playbook)
   - [party-mode](#party-mode)
   - [product-lens](#product-lens)
+  - [project-onboarding](#project-onboarding)
   - [subagent-driven-development](#subagent-driven-development)
   - [tdd-workflow](#tdd-workflow)
   - [using-git-worktrees](#using-git-worktrees)
@@ -190,8 +193,14 @@ Codex 调用：`mcc-xxx`（文件：`.codex/prompts/mcc-xxx.md`）。
 ### mcc-implement
 执行 PRP plan 文件：每步立即验证（verification-loop skill 的 6 阶段 Build/Type/Lint/Test/Security/Diff），失败立停不累积。
 
+### mcc-index-repo
+为大型项目生成 token-efficient 索引（PROJECT_INDEX.md + .json）。一次投入 ~2K tokens 生成，后续每 session Claude 优先读索引而非全代码，节省 50K+ tokens / session（适合 >1k 文件项目）。
+
 ### mcc-init
-为当前项目初始化 CLAUDE.md（如果不存在的话），带栈检测和约定提取
+为项目初始化 MCC：探测栈 + 生成 CLAUDE.md。空项目走轻量初始化；已有大项目（src/ 满）自动建议跑 /onboard 做 4 阶段深度接手。
+
+### mcc-onboard
+接手已有项目（brownfield）：4 阶段并行扫架构 / 数据 / 安全 / 约定，产出 onboarding 报告 + ≤100 行 CLAUDE.md。让 Claude 几分钟内理解陌生代码库。
 
 ### mcc-plan
 生成自包含 PRP 实施计划：抓取所有代码模式和 mandatory reading，让实现期间零提问、零二次搜索。
@@ -253,6 +262,9 @@ MCC 主动性手册：Claude 遇任务时查'该派什么 agent / 激活什么 s
 
 ### product-lens
 写代码前先做 4 模式产品诊断（诊断/创始人审查/用户旅程/优先级），输出 PRODUCT-BRIEF.md。
+
+### project-onboarding
+接手已有项目（brownfield）的 4 阶段方法论：Reconnaissance → Architecture Mapping → Convention Detection → Output。
 
 ### subagent-driven-development
 **串行**执行 implementation plan 的 task 链：每 task 派 fresh subagent 实现 + 两轮 review（spec + code quality）。

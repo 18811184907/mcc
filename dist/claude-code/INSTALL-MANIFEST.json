@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-24T22:51:20.810Z",
+  "generatedAt": "2026-04-24T23:03:46.343Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -161,10 +161,24 @@
     },
     {
       "kind": "command",
+      "dist": ".claude/commands/index-repo.md",
+      "install": ".claude/commands/index-repo.md",
+      "size": 5852,
+      "sha256": "e95e27365edb078598ed68f2642ecd75b058e83cceeab9ebedff1c6c9b5d2d78"
+    },
+    {
+      "kind": "command",
       "dist": ".claude/commands/init.md",
       "install": ".claude/commands/init.md",
-      "size": 2369,
-      "sha256": "d7fa0da5453e7dff4d04ed17819dc549918134e442fc77fb6e00c1eb5b9fd65c"
+      "size": 4369,
+      "sha256": "2f579b6bd5e6f7ab671f2c81e7b58f26e09995c4f27acf79fbef9e59f1a46810"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/onboard.md",
+      "install": ".claude/commands/onboard.md",
+      "size": 4499,
+      "sha256": "b31a00fd59eb91a8ae2c873b606b915931dedea1e874aed88f5e8cbde1142477"
     },
     {
       "kind": "command",
@@ -352,15 +366,15 @@
       "kind": "skills",
       "dist": ".claude/skills/help/workflow-map.json",
       "install": ".claude/skills/help/workflow-map.json",
-      "size": 4735,
-      "sha256": "92176e1d15dea79a26de391bc8252a9b10657ba2267f6b30b35bd4c8662d530d"
+      "size": 5859,
+      "sha256": "c1a5ca193335977c8adefd615288bbef81df9a38ea6500a12b14fb73d6bd6924"
     },
     {
       "kind": "skills",
       "dist": ".claude/skills/orchestration-playbook/SKILL.md",
       "install": ".claude/skills/orchestration-playbook/SKILL.md",
-      "size": 6911,
-      "sha256": "fdaaae9053378904577e3348977a9d4a529a728c5a20fcb5c0a87846309ec547"
+      "size": 7333,
+      "sha256": "274dc770c9133199a406317e9cfddc4e078872c4b5e87310dd1a90057d59c927"
     },
     {
       "kind": "skills",
@@ -375,6 +389,13 @@
       "install": ".claude/skills/product-lens/SKILL.md",
       "size": 3085,
       "sha256": "03cae7e89fb90cee901bc2765b710b99c3d1c3b7c4a5ec5a80a23abd841d5575"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/project-onboarding/SKILL.md",
+      "install": ".claude/skills/project-onboarding/SKILL.md",
+      "size": 10952,
+      "sha256": "7dd34dbe1ae80a23094c9d732055b1675b5e385d0a62f977129b2f9407b4433e"
     },
     {
       "kind": "skills",
@@ -788,23 +809,30 @@
       "size": 0,
       "sha256": null,
       "install": ".claude/PRPs/features/"
+    },
+    {
+      "kind": "placeholder",
+      "dist": ".claude/PRPs/onboarding/.gitkeep",
+      "size": 0,
+      "sha256": null,
+      "install": ".claude/PRPs/onboarding/"
     }
   ],
   "notes": [],
   "summary": {
-    "total": 112,
+    "total": 116,
     "byKind": {
       "agents": 19,
-      "command": 11,
-      "skills": 33,
+      "command": 13,
+      "skills": 34,
       "modes": 3,
       "hooks": 25,
       "hooks-config": 1,
       "settings-fragment": 1,
       "mcp-config": 1,
       "rules": 11,
-      "placeholder": 7
+      "placeholder": 8
     },
-    "totalBytes": 795239
+    "totalBytes": 820088
   }
 }

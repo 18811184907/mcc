@@ -1,6 +1,18 @@
 {
-  "version": "1.1",
+  "version": "1.2",
   "phases": [
+    {
+      "id": "0-onboard",
+      "name": "接手已有项目（仅 brownfield）",
+      "entry_artifacts": ["src/**/* OR app/**/* 等 >50 文件"],
+      "exit_artifacts": [".claude/PRPs/onboarding/*-onboard-report.md", "CLAUDE.md"],
+      "required": false,
+      "applies_when": "已有项目（src/ 满 + 没 .claude/PRPs/）",
+      "skills": ["project-onboarding"],
+      "commands": ["/onboard", "/index-repo"],
+      "agents": ["code-explorer", "backend-architect", "database-optimizer", "ai-engineer"],
+      "next_hint": "已有项目第一步：跑 /onboard 做 4 阶段深度接手；大项目随后跑 /index-repo 省 token"
+    },
     {
       "id": "1-discover",
       "name": "需求发现",
@@ -76,6 +88,10 @@
     }
   ],
   "anytime": {
+    "onboarding_existing": {
+      "signals": ["刚 clone 老项目", "不熟这个代码库", "怎么接手", "从哪开始读", "项目有 src/ 但没 CLAUDE.md"],
+      "recommend": ["/onboard 命令（4 阶段深度接手）", "project-onboarding skill", "/index-repo（>1k 文件项目）"]
+    },
     "stuck_debug": {
       "signals": ["错误反复", "debug 超过 30 分钟", "不知道问题类型"],
       "recommend": ["/fix-bug 一键入口（自动 4 域分诊）", "debugger agent"]
@@ -107,6 +123,7 @@
   },
   "fs_scan_rules": {
     "current_phase_inference": [
+      { "if": "src/ OR app/ OR lib/ has >50 files AND no CLAUDE.md AND .claude/PRPs/onboarding/ is empty", "then": "0-onboard", "note": "已有项目但没 onboard 过" },
       { "if": ".claude/PRPs/prds/ is empty", "then": "1-discover" },
       { "if": ".claude/PRPs/prds/ has files AND .claude/PRPs/plans/ is empty", "then": "2-plan" },
       { "if": ".claude/PRPs/plans/ has files AND .claude/PRPs/plans/completed/ is empty", "then": "4-implement" },

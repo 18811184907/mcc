@@ -1,18 +1,41 @@
 ---
-description: 为当前项目初始化 CLAUDE.md（如果不存在的话），带栈检测和约定提取
+description: "为项目初始化 MCC：探测栈 + 生成 CLAUDE.md。空项目走轻量初始化；已有大项目（src/ 满）自动建议跑 /onboard 做 4 阶段深度接手。"
 argument-hint: (无参数)
 ---
 
 # Init Project
 
-为当前目录初始化一份符合本项目风格的 `CLAUDE.md`。
+为当前目录初始化 MCC 协作基线。**根据项目大小路由两种模式**：
 
-## Phase 0 — 检查
+- **空项目 / 极小项目** → 本命令（轻量 CLAUDE.md，~30 行）
+- **已有项目（src/ 有内容、>50 文件）** → 建议转 `/onboard`（4 阶段深度，产出详细报告 + ≤100 行 CLAUDE.md）
+
+## Phase 0 — 检查 + 路由
 
 ```bash
+# 1. 已有 CLAUDE.md？
 if [ -f CLAUDE.md ]; then
-  # 文件已存在 → 不要覆盖，改为建议补充
-  echo "CLAUDE.md 已存在，将产出补充建议"
+  echo "CLAUDE.md 已存在。"
+  echo "  - 改为补充模式（在已有内容上加缺失项）"
+  echo "  - 或跑 /onboard 重新做完整 4 阶段（推荐项目有变化时）"
+  echo "继续？(y/N)"
+fi
+
+# 2. 这是空项目还是已有项目？
+file_count=$(find . -type f -not -path './.git/*' -not -path './node_modules/*' -not -path './.claude/*' 2>/dev/null | wc -l)
+has_src=$([ -d src ] || [ -d app ] || [ -d lib ] || [ -d packages ] && echo yes || echo no)
+
+if [ "$has_src" = "yes" ] && [ "$file_count" -gt 50 ]; then
+  echo "检测到已有项目（src/ 等目录有内容，$file_count 个文件）。"
+  echo ""
+  echo "推荐改用 /onboard——它会做 4 阶段深度接手："
+  echo "  Phase 1 并行侦察栈 / 入口 / 配置 / 测试 / 文档 (~30s)"
+  echo "  Phase 2 并行派 code-explorer + domain agent 摸架构 (~2 min)"
+  echo "  Phase 3 并行扫团队约定 (~1 min)"
+  echo "  Phase 4 产出 onboarding 报告 + CLAUDE.md (~1 min)"
+  echo ""
+  echo "选择: 1) 跑 /onboard（推荐）  2) 仍用本 /init 轻量模式  3) 取消"
+  # 等用户选
 fi
 ```
 
@@ -88,13 +111,23 @@ fi
 ## Phase 4 — 汇报
 
 ```
-CLAUDE.md 初始化完成
+✓ CLAUDE.md 初始化完成（轻量模式）
 
 - 栈：[探测到的]
 - 约定：[提取的]
 - TBD 项：[你要补的]
 
-建议的下一步：
+建议下一步：
 1. 审阅并补充 TBD 项
-2. 如项目复杂，用 /prd 写一份初始 PRD
+2. 已有项目想要更深度接手 → /onboard（4 阶段并行扫，产出详细 onboarding 报告）
+3. 大项目反复操作 → /index-repo（生成 PROJECT_INDEX，每 session 省 50K+ tokens）
+4. 想做新功能 → /prd（PRD）→ /plan → /implement
 ```
+
+## 与 onboard 的分工
+
+| 命令 | 适合场景 | 耗时 | 产出 |
+|---|---|---|---|
+| `/init` | 空项目 / 小项目 / 第一次开 Claude Code | ~1 min | CLAUDE.md（轻量 ~30 行） |
+| `/onboard` | 已有大项目 / brownfield / 接手陌生代码库 | ~5 min | onboarding 报告（详细）+ CLAUDE.md（≤100 行） |
+| `/index-repo` | 大项目（>1k 文件）反复操作 | ~1 min | PROJECT_INDEX.md + .json（token 节省） |

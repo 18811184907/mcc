@@ -1,6 +1,6 @@
 # MCC Usage · 命令速查
 
-> 11 个命令 + 17 个 skill + 3 个 behavioral mode 的使用手册。
+> 13 个命令 + 18 个 skill + 3 个 behavioral mode 的使用手册。
 > 新手建议先看 [README.md](./README.md) 的"典型工作流"章节。
 >
 > **v1.5 后只留真正高频、产出 artifact、或需要显式触发的命令。冷门能力转 skill 自动激活**（说"验证一下" → verification-loop；说"审一下" → code-review-workflow；说"写 E2E" → e2e-testing；说"记下这个" → continuous-learning-v2）。
@@ -15,7 +15,7 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 
 ---
 
-## 11 个命令按类型
+## 13 个命令按类型
 
 ### 🎯 PRP 流水线（4 个）· 中小功能的主力流
 
@@ -70,8 +70,15 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 
 | 命令 | 场景 |
 |---|---|
-| `/init` | 新项目首次入场：探测栈 + 提取约定 + 生成 `CLAUDE.md` |
+| `/init` | **空项目 / 小项目**初始化：探测栈 + 生成轻量 CLAUDE.md（~30 行）。已有项目会自动建议改用 `/onboard` |
 | `/explain` | 用中文详细解释代码/函数/模块/概念 |
+
+### 🌍 接手已有项目（2 个 · v2.0 旗舰）
+
+| 命令 | 场景 |
+|---|---|
+| `/onboard` | **接手陌生大代码库**（brownfield）：4 阶段并行扫架构/数据/约定/危险信号，~5 min 产出 onboarding 报告 + ≤100 行 CLAUDE.md。借鉴 ECC `codebase-onboarding`。带 `--quick` 模式跳到 ~1 min。 |
+| `/index-repo` | **大项目（>1k 文件）token 节省索引**：生成 `PROJECT_INDEX.md` + `.json`，2K 投入 → 每 session 省 50K+ tokens（27.5x ROI）。借鉴 SuperClaude `/sc:index-repo`。 |
 
 ---
 

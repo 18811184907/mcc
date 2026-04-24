@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "1.10.0",
+  "version": "2.0.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -39,8 +39,8 @@
 
   "components": {
     "agents": 19,
-    "commands": 11,
-    "skills": 17,
+    "commands": 13,
+    "skills": 18,
     "modes": 3,
     "hooks": 8,
     "hook_scripts": 25,
@@ -105,6 +105,26 @@
   },
 
   "version_history": [
+    {
+      "version": "2.0.0",
+      "date": "2026-04-25",
+      "changes": [
+        "v2.0 主题：接手已有项目（brownfield onboarding）—— 装上 MCC 后让 Claude 几分钟内理解陌生大代码库",
+        "新增命令 /onboard：4 阶段并行扫已有项目（Reconnaissance → Architecture Mapping → Convention Detection → Output），借鉴 affaan-m/ECC 的 codebase-onboarding，~5 min 完成",
+        "新增命令 /index-repo：生成 PROJECT_INDEX.md（人读 ~3KB）+ PROJECT_INDEX.json（机读 ~10KB），借鉴 SuperClaude /sc:index-repo 的 token 节省思路（2K 投入 → 每 session 省 50K+ tokens）",
+        "新增 skill project-onboarding：4 阶段方法论的实现体（Phase 1 5 路并行 Glob 侦察 / Phase 2 3 agent 并行架构映射 / Phase 3 4 路并行规范检测 / Phase 4 落盘 onboarding 报告 + ≤100 行 CLAUDE.md）",
+        "/onboard 命令体现派发可视化（v1.9 强制）：每个 phase 都输出 ⚡派发 + ✓合流",
+        "/init 强化：检测到已有项目（src/ 满 + >50 文件）时自动建议改用 /onboard，避免空项目用大流程",
+        "/init 与 /onboard 分工表：/init 空项目轻量 / /onboard 已有项目深度 / /index-repo 大项目反复操作",
+        "orchestration-playbook 新增 3 条主动性映射：'我刚 clone' → /onboard、'大项目省 token' → /index-repo、'空项目 CLAUDE.md' → /init",
+        "help skill workflow-map 加 phase 0-onboard：fs_scan_rules 检测 src/ >50 文件 + 无 CLAUDE.md + 无 onboarding/ → 推断在 0-onboard 阶段",
+        "PRPs/ 加 onboarding/ 子目录占位（落盘 *-onboard-report.md）",
+        "commands: 11 → 13（+/onboard +/index-repo）；skills: 17 → 18（+project-onboarding）",
+        "ECC 调研落地：4 阶段 codebase-onboarding 完整借鉴；SuperClaude index-repo token 节省思想完整借鉴；wshobson 多维并行扫描在 Phase 2 体现；显式命令而非隐式触发；CLAUDE.md ≤100 行强制",
+        "smoke 加 phase-0 covers test；build.js MIN_COMMANDS 10→12 / MIN_SKILLS 15→16",
+        "version: 1.10.0 → 2.0.0（major bump：新核心能力，接手已有项目 + token 节省）"
+      ]
+    },
     {
       "version": "1.10.0",
       "date": "2026-04-25",

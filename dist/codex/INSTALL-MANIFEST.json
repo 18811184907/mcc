@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "generatedAt": "2026-04-24T22:51:20.984Z",
+  "generatedAt": "2026-04-24T23:03:46.533Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
@@ -138,9 +138,21 @@
     },
     {
       "kind": "prompt",
+      "dist": ".codex/prompts/mcc-index-repo.md",
+      "size": 5852,
+      "sha256": "e95e27365edb078598ed68f2642ecd75b058e83cceeab9ebedff1c6c9b5d2d78"
+    },
+    {
+      "kind": "prompt",
       "dist": ".codex/prompts/mcc-init.md",
-      "size": 2369,
-      "sha256": "d7fa0da5453e7dff4d04ed17819dc549918134e442fc77fb6e00c1eb5b9fd65c"
+      "size": 4369,
+      "sha256": "2f579b6bd5e6f7ab671f2c81e7b58f26e09995c4f27acf79fbef9e59f1a46810"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-onboard.md",
+      "size": 4499,
+      "sha256": "b31a00fd59eb91a8ae2c873b606b915931dedea1e874aed88f5e8cbde1142477"
     },
     {
       "kind": "prompt",
@@ -254,8 +266,8 @@
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 13751,
-      "sha256": "916ac97a2c83a5ec1decefc861b26f845efc60b521dea0c0439820fba566b8b4"
+      "size": 14558,
+      "sha256": "1a647a23fcc1f9f532e8090f16f38f86725277491f7b5d2c55be2e30b69522c5"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -279,15 +291,15 @@
     "Codex 不支持 skill，转为 AGENTS.md 中的场景指引段"
   ],
   "summary": {
-    "total": 44,
+    "total": 46,
     "byKind": {
       "agent": 19,
-      "prompt": 11,
+      "prompt": 13,
       "rule": 11,
       "agents-md": 1,
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 253934
+    "totalBytes": 267092
   }
 }

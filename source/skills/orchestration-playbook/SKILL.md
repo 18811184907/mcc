@@ -63,6 +63,9 @@ MCC 的执行哲学**落地到具体选择**。不对用户可见——这是 Cl
 | 执行已有 plan 的 task 链 | `subagent-driven-development` |
 | 写代码前做产品验证 | `product-lens` |
 | 用户问"我在哪 / 下一步" | `help`（纯用户导航） |
+| **用户说"我刚 clone / 不熟这个项目 / 怎么接手 / 从哪开始"**（已有项目） | **`/onboard` 命令 + `project-onboarding` skill**（4 阶段深度接手） |
+| 大项目（>1k 文件）反复操作想省 token | `/index-repo` 命令（PROJECT_INDEX，2K 投入省 50K/session） |
+| 全新空项目 / 想要轻量 CLAUDE.md | `/init` 命令（轻量模式，已有项目会建议改用 /onboard） |
 | 涉及证据驱动 | `confidence-check` skill（5 维度评估） |
 | 涉及 SOLID / 代码风格 | `coding-standards` skill（Python + TS 带示例） |
 | 涉及架构取舍 / 可逆性 | `architecture-decision-records` skill（产出 ADR） |

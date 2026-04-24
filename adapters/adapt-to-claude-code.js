@@ -146,6 +146,7 @@ async function adaptToClaudeCode(sourceDir, distDir) {
     path.join(prpBase, 'reviews'),
     path.join(prpBase, 'reviews', 'full'),
     path.join(prpBase, 'features'),
+    path.join(prpBase, 'onboarding'),  // v2.0: /onboard 命令落盘 *-onboard-report.md
   ];
   for (const dir of placeholders) {
     placeholderDir(dir);
