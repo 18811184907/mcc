@@ -1,0 +1,36 @@
+# MCC MCP servers
+# 追加到 ~/.codex/config.toml 的末尾（或 installer 自动合并）
+# 由 MCC adapter 从 source/mcp/mcp.json 自动生成
+
+[mcp_servers.serena]
+command = "uvx"
+args = ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server", "--context", "ide-assistant"]
+# 语义化代码理解 + 项目记忆 + session 持久化
+# required: false
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp@2.1.4"]
+# 实时查官方库文档（防幻觉）
+# required: true
+
+[mcp_servers.github]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-github@2025.4.8"]
+# GitHub PR / Issue / 代码搜索（全局规则里 GitHub 搜索优先）
+# required: true
+
+[mcp_servers.github.env]
+GITHUB_PERSONAL_ACCESS_TOKEN = "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+
+[mcp_servers.sequential-thinking]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-sequential-thinking@2025.12.18"]
+# 高 token 效率的 chain-of-thought 推理（task-management mode 和多 agent 辩论场景常用）
+# required: true
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["-y", "@playwright/mcp@0.0.69", "--extension"]
+# 浏览器自动化 + E2E 测试（做 Web 开发时必装）
+# required: false

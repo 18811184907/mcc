@@ -1,0 +1,52 @@
+{
+  "$schema": "https://schemas.claude.com/marketplace/v1.json",
+  "name": "mcc-marketplace",
+  "owner": {
+    "name": "MCC"
+  },
+  "metadata": {
+    "description": "MCC（Multi-target Claude/Codex Configuration）— 为 Claude Code 和 Codex 双目标定制的产品级配置集合"
+  },
+  "plugins": [
+    {
+      "name": "mcc",
+      "source": "./",
+      "description": "19 agents + 20 commands + 8 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules. 中文主场景，Python + TypeScript + AI 全栈定向优化。",
+      "version": "1.0.0",
+      "author": {
+        "name": "MCC"
+      },
+      "homepage": "https://github.com/18811184907/mcc",
+      "repository": "https://github.com/18811184907/mcc",
+      "license": "MIT",
+      "keywords": [
+        "agents",
+        "skills",
+        "commands",
+        "hooks",
+        "mcp",
+        "workflow",
+        "python",
+        "typescript",
+        "ai",
+        "llm",
+        "rag",
+        "chinese"
+      ],
+      "category": "workflow",
+      "tags": [
+        "claude-code",
+        "codex",
+        "multi-target",
+        "tdd",
+        "code-review",
+        "security",
+        "prp",
+        "party-mode",
+        "confidence-check",
+        "mcc-principles"
+      ],
+      "strict": false
+    }
+  ]
+}

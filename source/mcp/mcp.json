@@ -1,0 +1,93 @@
+{
+  "$schema": "https://schemas.mcc.dev/mcp-v1.json",
+  "version": "1.0.0",
+  "description": "MCC 精选 5 个 MCP。installer 按目标工具（Claude Code 或 Codex）转为对应格式。",
+
+  "mcpServers": {
+    "serena": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide-assistant"
+      ],
+      "description": "语义化代码理解 + 项目记忆 + session 持久化",
+      "required": false,
+      "install_notes": {
+        "deps": ["Python 3.11+", "uv (astral.sh)"],
+        "windows": "winget install astral-sh.uv",
+        "china_mirror": "首次从 GitHub 拉 serena 仓库可能慢，可设置 GOPROXY 或用 git mirror",
+        "env": {}
+      }
+    },
+
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@2.1.4"],
+      "description": "实时查官方库文档（防幻觉）",
+      "required": true,
+      "install_notes": {
+        "deps": ["Node.js 18+"],
+        "env": {}
+      }
+    },
+
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github@2025.4.8"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "description": "GitHub PR / Issue / 代码搜索（全局规则里 GitHub 搜索优先）",
+      "required": true,
+      "install_notes": {
+        "deps": ["Node.js 18+"],
+        "env": {
+          "GITHUB_PERSONAL_ACCESS_TOKEN": "必需。创建链接: https://github.com/settings/tokens?type=beta （建议 fine-grained PAT，repo + read:org + read:user 最小权限集）"
+        }
+      }
+    },
+
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking@2025.12.18"],
+      "description": "高 token 效率的 chain-of-thought 推理（task-management mode 和多 agent 辩论场景常用）",
+      "required": true,
+      "install_notes": {
+        "deps": ["Node.js 18+"],
+        "env": {}
+      }
+    },
+
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@0.0.69", "--extension"],
+      "description": "浏览器自动化 + E2E 测试（做 Web 开发时必装）",
+      "required": false,
+      "install_notes": {
+        "deps": ["Node.js 18+", "首次下载浏览器 ~300MB"],
+        "env": {
+          "PLAYWRIGHT_DOWNLOAD_HOST": "可选，国内镜像: https://npmmirror.com/mirrors/playwright/",
+          "PLAYWRIGHT_BROWSERS_PATH": "可选，指定浏览器缓存位置"
+        }
+      }
+    }
+  },
+
+  "installer_strategy": {
+    "default_install": ["context7", "github", "sequential-thinking"],
+    "prompt_install": {
+      "serena": "是否安装 Serena MCP？（需 Python + uv，首次拉 GitHub 可能慢）[y/N]",
+      "playwright": "是否做 Web / 前端开发？（需下载浏览器）[y/N]"
+    },
+    "github_pat_check": {
+      "env_var": "GITHUB_PERSONAL_ACCESS_TOKEN",
+      "missing_action": "print_link_and_wait",
+      "link": "https://github.com/settings/tokens?type=beta",
+      "wait_seconds": 3
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "$schema": "https://schemas.mcc.dev/hooks-v1.json",
+  "version": "1.0.0",
+  "description": "MCC 精选 8 条 hook。variables 由 installer 在安装时替换。",
+
+  "variables": {
+    "MCC_HOME": "安装时替换为 MCC 安装根目录（如 ~/.claude/.mcc 或 项目/.claude/.mcc）",
+    "MCC_HOOKS": "${MCC_HOME}/hooks/scripts",
+    "MCC_SKILLS": "${MCC_HOME}/skills"
+  },
+
+  "hooks": [
+    {
+      "id": "pre:config-protection",
+      "event": "PreToolUse",
+      "matcher": "Write|Edit|MultiEdit",
+      "timeout_ms": 5000,
+      "async": false,
+      "profile": ["standard", "strict"],
+      "description": "阻止 Claude 修改配置来绕过 lint/security 规则（独家）",
+      "command": "node ${MCC_HOOKS}/hooks/plugin-hook-bootstrap.js run-with-flags.js pre:config-protection scripts/hooks/config-protection.js standard,strict"
+    },
+    {
+      "id": "stop:format-typecheck",
+      "event": "Stop",
+      "matcher": "*",
+      "timeout_ms": 300000,
+      "async": false,
+      "description": "响应结束时批量跑 format + typecheck（不是每次 edit 跑，显著降成本）",
+      "command": "node -e \"require('${MCC_HOOKS}/hooks/stop-format-typecheck.js').run(process.stdin)\""
+    },
+    {
+      "id": "session:start",
+      "event": "SessionStart",
+      "matcher": "*",
+      "async": false,
+      "description": "自动加载上次 session 的上下文（别名、记忆、项目探测）",
+      "command": "node ${MCC_HOOKS}/hooks/session-start-bootstrap.js"
+    },
+    {
+      "id": "stop:session-end",
+      "event": "Stop",
+      "matcher": "*",
+      "timeout_ms": 10000,
+      "async": true,
+      "description": "持久化 session 状态",
+      "command": "node -e \"require('${MCC_HOOKS}/hooks/session-end.js').run(process.stdin)\""
+    },
+    {
+      "id": "stop:check-console-log",
+      "event": "Stop",
+      "matcher": "*",
+      "async": true,
+      "description": "扫残留 console.log / print 语句",
+      "command": "node -e \"require('${MCC_HOOKS}/hooks/check-console-log.js').run(process.stdin)\""
+    },
+    {
+      "id": "pre:bash:safety",
+      "event": "PreToolUse",
+      "matcher": "Bash",
+      "async": false,
+      "description": "Bash 安全/质量/tmux/push 预检（dispatcher 串联 6 个子检查）",
+      "command": "node ${MCC_HOOKS}/hooks/pre-bash-dispatcher.js"
+    },
+
+    {
+      "id": "pre:observe:continuous-learning",
+      "event": "PreToolUse",
+      "matcher": "*",
+      "timeout_ms": 10000,
+      "async": true,
+      "default_enabled": false,
+      "description": "continuous-learning-v2 的 PreToolUse 观察。默认关闭，用户手动启用。",
+      "command": "bash ${MCC_HOOKS}/hooks/run-with-flags-shell.sh pre:observe:continuous-learning ${MCC_SKILLS}/continuous-learning-v2/hooks/observe.sh pre"
+    },
+    {
+      "id": "post:observe:continuous-learning",
+      "event": "PostToolUse",
+      "matcher": "*",
+      "timeout_ms": 10000,
+      "async": true,
+      "default_enabled": false,
+      "description": "continuous-learning-v2 的 PostToolUse 观察。默认关闭。",
+      "command": "bash ${MCC_HOOKS}/hooks/run-with-flags-shell.sh post:observe:continuous-learning ${MCC_SKILLS}/continuous-learning-v2/hooks/observe.sh post"
+    }
+  ],
+
+  "platform_notes": {
+    "windows": [
+      "pre:observe / post:observe 需要 Git Bash + Python 3。未安装 Python 时静默跳过不阻塞。",
+      "pre:bash:safety 内部的 tmux 子检查在 Windows 无 tmux 时自动降级为 no-op。",
+      "所有 node 脚本已做 process.platform === 'win32' 适配。"
+    ]
+  }
+}

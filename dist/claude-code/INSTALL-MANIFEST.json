@@ -1,0 +1,733 @@
+{
+  "target": "claude-code",
+  "generatedAt": "2026-04-23T23:04:32.653Z",
+  "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
+  "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
+  "installBase": ".claude/",
+  "files": [
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/ai-engineer.md",
+      "install": ".claude/agents/ai-engineer.md",
+      "size": 6243,
+      "sha256": "ecb8f86047110c54d8c90f5cebff72bb8f7cdcc1e361ce264f74b177f606ca3c"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/backend-architect.md",
+      "install": ".claude/agents/backend-architect.md",
+      "size": 8998,
+      "sha256": "9c226d1ad97c26a9e17a326850abbe85125d8ff985f6e2793b2d6d3d9db41465"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/code-explorer.md",
+      "install": ".claude/agents/code-explorer.md",
+      "size": 2916,
+      "sha256": "1b2b15786371a0b8249cf65c97f5043cd7783232a04e850e4eff132449bb70c2"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/code-reviewer.md",
+      "install": ".claude/agents/code-reviewer.md",
+      "size": 9544,
+      "sha256": "752a2fd5b52cb326cc5c20eed6b264c27162463583edeb22786673fda6e6a25e"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/database-optimizer.md",
+      "install": ".claude/agents/database-optimizer.md",
+      "size": 7948,
+      "sha256": "6fbd82671ad25d5a7e3b0ba00b2873ef1a47bf1273001334742187e97d45fa98"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/debugger.md",
+      "install": ".claude/agents/debugger.md",
+      "size": 4806,
+      "sha256": "e27f897e0529c621bf15cf80aa105172400faf3c715cf5fd5356fb31f9387bd4"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/fastapi-pro.md",
+      "install": ".claude/agents/fastapi-pro.md",
+      "size": 4837,
+      "sha256": "7a6dcda6c1bc11bd3df454820c3a56d24d420282b8faebcc8d62da0169ec77bb"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/frontend-developer.md",
+      "install": ".claude/agents/frontend-developer.md",
+      "size": 5418,
+      "sha256": "2246d964cbfbc7ea6dff2a3b3ad437db7ef201836d6055afd42a8af522d33348"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/javascript-pro.md",
+      "install": ".claude/agents/javascript-pro.md",
+      "size": 3309,
+      "sha256": "99e0758e8386646cfa81ee626bce2093c0dc10af8a0fa2e9f45f848e8f04b0b9"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/performance-engineer.md",
+      "install": ".claude/agents/performance-engineer.md",
+      "size": 12054,
+      "sha256": "77faa6651e54426079c956ecfd9286c7a04e6b0c25c0bfb6f281cffcf01cb02d"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/planner.md",
+      "install": ".claude/agents/planner.md",
+      "size": 7146,
+      "sha256": "38029582a1c011e27a5ef7a789d3fc820cad074f21ab058782ef3ce5f5f1ee9c"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/prompt-engineer.md",
+      "install": ".claude/agents/prompt-engineer.md",
+      "size": 5263,
+      "sha256": "0aa834c0875d2eda9c6fbae4ce8aec29be2388a4657a2de6d0827b665fd98eeb"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/python-pro.md",
+      "install": ".claude/agents/python-pro.md",
+      "size": 4921,
+      "sha256": "f39d496cc32293576d9ffe49dc9901f0061a140708486442b29b05dfaf883d3f"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/refactor-cleaner.md",
+      "install": ".claude/agents/refactor-cleaner.md",
+      "size": 2686,
+      "sha256": "83aac112632be64d4b1c1d1e84dbea221584d9c21966aff060f7e66094e36e86"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/security-reviewer.md",
+      "install": ".claude/agents/security-reviewer.md",
+      "size": 5101,
+      "sha256": "b8c33c139c6112a8d7e03e72c8b4a40573f9b1d7f9663da0998fdf37abfb61aa"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/silent-failure-hunter.md",
+      "install": ".claude/agents/silent-failure-hunter.md",
+      "size": 3371,
+      "sha256": "c4f59f636a7a4921ae5137bfd39ab656594d84b64e1c106cb5d072529e70235a"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/test-automator.md",
+      "install": ".claude/agents/test-automator.md",
+      "size": 5156,
+      "sha256": "cc0905f4adfc4bf55d8abf553b8f4e62b272e71d8822a57fc093fe79fda0ecb3"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/typescript-pro.md",
+      "install": ".claude/agents/typescript-pro.md",
+      "size": 3628,
+      "sha256": "bfd555b383a925718c5f8d1c0f7fa6eceaaffeea18d1959a0b2e3b4975858f2c"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/vector-database-engineer.md",
+      "install": ".claude/agents/vector-database-engineer.md",
+      "size": 5246,
+      "sha256": "2acaa49b3fd5b55763daf93d11a347208d1beaa1cd9760515dfb0bbc3903b929"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/build-fix.md",
+      "install": ".claude/commands/mcc/build-fix.md",
+      "size": 2838,
+      "sha256": "1e958fcc7e71f00af42d8d77fe81bee1f2a079a4fa48498f69b26f6150de6069"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/e2e.md",
+      "install": ".claude/commands/mcc/e2e.md",
+      "size": 4593,
+      "sha256": "b155b3aa975f56f51f034ee57207aef9c5e75eeaee1e5ce4f9940b80cf671783"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/explain.md",
+      "install": ".claude/commands/mcc/explain.md",
+      "size": 1628,
+      "sha256": "b3d7296c43134480df9b003134322be132b98844420760b0f62ccab09e18a644"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/fix-bug.md",
+      "install": ".claude/commands/mcc/fix-bug.md",
+      "size": 2372,
+      "sha256": "8939c425d7309d5fd16a2d76114262106ebdb1325a2cf54e050400e676e28f57"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/full-review.md",
+      "install": ".claude/commands/mcc/full-review.md",
+      "size": 12042,
+      "sha256": "a1864890909ac8b21a8c67e1b712dd57390ab57abd7ee04074c1144d5976dd9a"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/full-stack.md",
+      "install": ".claude/commands/mcc/full-stack.md",
+      "size": 13004,
+      "sha256": "e3616100cc5bf1a122fb35584df0cc029e6d0b1e200654792e58f71f6a02b126"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/implement.md",
+      "install": ".claude/commands/mcc/implement.md",
+      "size": 7594,
+      "sha256": "d8f028d77957a3b7edbadd9801472420627b2f0fe3175759c0c2932d62839f39"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/init.md",
+      "install": ".claude/commands/mcc/init.md",
+      "size": 2373,
+      "sha256": "ad79ea6771b5b9c722c5ead60552c76f4b39fe9384d089645a305a75fddd8937"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/learn.md",
+      "install": ".claude/commands/mcc/learn.md",
+      "size": 1892,
+      "sha256": "86bc3fc3b9a00abae60dec3ce3c61391dc7c5043e25c7b7d143494aa90ed97de"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/plan.md",
+      "install": ".claude/commands/mcc/plan.md",
+      "size": 10181,
+      "sha256": "40b2ab45cc88f56b7e53214686f2a12c81ca060cb208c617de7521cbd0c92c47"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/pr.md",
+      "install": ".claude/commands/mcc/pr.md",
+      "size": 4555,
+      "sha256": "39e6fb310ca543fdf6802dd60322a9dee67a910f1523f43f0fb4baa1eb5ae1cf"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/prd.md",
+      "install": ".claude/commands/mcc/prd.md",
+      "size": 8906,
+      "sha256": "5d1ca9cd8d674fdbbe82d473e2258da180067486db517c31f8d6098a404c83f4"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/review.md",
+      "install": ".claude/commands/mcc/review.md",
+      "size": 6837,
+      "sha256": "64c4ade74e58df011b8a2dc1cb422ef3724613f58f533eccaaa1fc52681ccc0a"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/session-resume.md",
+      "install": ".claude/commands/mcc/session-resume.md",
+      "size": 5410,
+      "sha256": "6059c2589daa0b88bd81959b2b906e1aebe389a7322e441c906e004e0ee85f1d"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/session-save.md",
+      "install": ".claude/commands/mcc/session-save.md",
+      "size": 6441,
+      "sha256": "009ac197d7670b47dd78371efa6650893d8b224770099741e84366cfe4400978"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/skill-create.md",
+      "install": ".claude/commands/mcc/skill-create.md",
+      "size": 2769,
+      "sha256": "71a2566ef7039bd4a953b710731db203d20d0a618c2efa3c7736cd1476ec0525"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/tdd.md",
+      "install": ".claude/commands/mcc/tdd.md",
+      "size": 3400,
+      "sha256": "cb23f27197e9d95e9b6be2127aededce2e27b88ac049a49ed0bd7c25bcb35951"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/test-coverage.md",
+      "install": ".claude/commands/mcc/test-coverage.md",
+      "size": 3084,
+      "sha256": "4555c0b7d7428e2f040a3d959db0e88599bacb90b7d3fa4aa7aa416772c57f46"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/troubleshoot.md",
+      "install": ".claude/commands/mcc/troubleshoot.md",
+      "size": 3802,
+      "sha256": "69991f31f847afd3e5c84576496ae9ab15eb0688b678bc8576831388419772a5"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc/verify.md",
+      "install": ".claude/commands/mcc/verify.md",
+      "size": 1046,
+      "sha256": "7b92eeac296278b236ee38ab40120b4ec89b1e2e08e11a965ccc186401c5b87d"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/architecture-decision-records/SKILL.md",
+      "install": ".claude/skills/architecture-decision-records/SKILL.md",
+      "size": 6062,
+      "sha256": "fcfff97c52a08450a0528f659367995787be8005758fe82a1c8f50f74a4f9ae7"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/coding-standards/SKILL.md",
+      "install": ".claude/skills/coding-standards/SKILL.md",
+      "size": 13823,
+      "sha256": "35205eb578439c83da72bccca2943e954da95107a3d54b4af8e64fc073285bd4"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/confidence-check/SKILL.md",
+      "install": ".claude/skills/confidence-check/SKILL.md",
+      "size": 3425,
+      "sha256": "3fe8eee15f9f95c97d2f9302935ac48541354e0a26839602d0afaa8e853187d3"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/continuous-learning-v2/SKILL.md",
+      "install": ".claude/skills/continuous-learning-v2/SKILL.md",
+      "size": 7942,
+      "sha256": "0e210d2188bfd59638aa77dd26360a6a936f7c21d277703b11fe292cc2f33fb8"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/continuous-learning-v2/agents/observer-loop.sh",
+      "install": ".claude/skills/continuous-learning-v2/agents/observer-loop.sh",
+      "size": 10158,
+      "sha256": "ed0043fc7a44a0e0bebec298537e701fd10366a62719adc251156518e6c77863"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/continuous-learning-v2/agents/observer.md",
+      "install": ".claude/skills/continuous-learning-v2/agents/observer.md",
+      "size": 7594,
+      "sha256": "7a3e6d4cd4660d487d27646c5408c0458ece6afd682b64aac6487e081d895861"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/continuous-learning-v2/agents/session-guardian.sh",
+      "install": ".claude/skills/continuous-learning-v2/agents/session-guardian.sh",
+      "size": 6542,
+      "sha256": "3027eb89222c54d8e4340a73e41d3507327e29514755dc7c90c6c4f928333b7a"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/continuous-learning-v2/agents/start-observer.sh",
+      "install": ".claude/skills/continuous-learning-v2/agents/start-observer.sh",
+      "size": 7766,
+      "sha256": "f9544a4fb37004d3b0acb5682e5cc22d7329326e30b25014b44f1edc0259892d"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/continuous-learning-v2/config.json",
+      "install": ".claude/skills/continuous-learning-v2/config.json",
+      "size": 143,
+      "sha256": "cad935d114cbe1c1bf56e778b8ad7e15b5983540bb795efdd1f088fc09bc0996"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/continuous-learning-v2/hooks/observe.sh",
+      "install": ".claude/skills/continuous-learning-v2/hooks/observe.sh",
+      "size": 18163,
+      "sha256": "1d7d2a7d24c23774d7c1d477c57ef97192ea8ee6d768762101e27cbce9490055"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/continuous-learning-v2/scripts/detect-project.sh",
+      "install": ".claude/skills/continuous-learning-v2/scripts/detect-project.sh",
+      "size": 8497,
+      "sha256": "357cde7279986c5a067d286ac5a5eec3a4fdd1f70123ef87829e26f44d265a71"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/continuous-learning-v2/scripts/instinct-cli.py",
+      "install": ".claude/skills/continuous-learning-v2/scripts/instinct-cli.py",
+      "size": 59176,
+      "sha256": "9dbcb076bece3020312b1386d243e0a08d7b5f130c8cbcf63ac7f62090011cc6"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/continuous-learning-v2/scripts/test_parse_instinct.py",
+      "install": ".claude/skills/continuous-learning-v2/scripts/test_parse_instinct.py",
+      "size": 34090,
+      "sha256": "79bdd4d0dccc0ef7de56aa32c2b3c803d22810c457839642bea2835c110c64bf"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/mcc-help/SKILL.md",
+      "install": ".claude/skills/mcc-help/SKILL.md",
+      "size": 4394,
+      "sha256": "01f007b731b38082b98fb600aea335c2fef8934414bbabdbc4a3dc58cdedea16"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/mcc-help/workflow-map.json",
+      "install": ".claude/skills/mcc-help/workflow-map.json",
+      "size": 4186,
+      "sha256": "40e841f1d4be69a82e90826f226d789798e233a3769b2ee6cc4f408ace25aee5"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/party-mode/SKILL.md",
+      "install": ".claude/skills/party-mode/SKILL.md",
+      "size": 6692,
+      "sha256": "76eeb0cf4be2065a78ff7ad5872d9eec332b0748d9144abe7109352feedc689a"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/product-lens/SKILL.md",
+      "install": ".claude/skills/product-lens/SKILL.md",
+      "size": 3097,
+      "sha256": "048669e584f02626970e8f638bed6a2f8dd4e5dbe0759344eb9780b63dab585f"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/verification-loop/SKILL.md",
+      "install": ".claude/skills/verification-loop/SKILL.md",
+      "size": 3010,
+      "sha256": "cf7c5dc77ed23c5cab3c1b70ce42a72d2bd139e4e84c774332a78a6e50157375"
+    },
+    {
+      "kind": "modes",
+      "dist": ".claude/modes/brainstorming.md",
+      "install": ".claude/modes/brainstorming.md",
+      "size": 2784,
+      "sha256": "1b638d19364e0ecc0d543437a7194c40e4a57e1b8042e0827cea2d45014e1522"
+    },
+    {
+      "kind": "modes",
+      "dist": ".claude/modes/task-management.md",
+      "install": ".claude/modes/task-management.md",
+      "size": 3956,
+      "sha256": "a454f56a9eb63549b35af7b86caf0aab7fa186ee322df79cfbc89b506682c210"
+    },
+    {
+      "kind": "modes",
+      "dist": ".claude/modes/token-efficiency.md",
+      "install": ".claude/modes/token-efficiency.md",
+      "size": 3464,
+      "sha256": "42157194cda774a805f4848a7f14b952208698b9ceb7a6c20b37fa79a13cbe34"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/auto-tmux-dev.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/auto-tmux-dev.js",
+      "size": 4336,
+      "sha256": "e3d967a98ae821713b5c587b2747e92bf735444b5c819322a704aca2f0fcd760"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/bash-hook-dispatcher.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/bash-hook-dispatcher.js",
+      "size": 4723,
+      "sha256": "552ab02a08787b57eae5ab274c2b7b406e0e922e4ccf006abcbe0cf6cf152cad"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/block-no-verify.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/block-no-verify.js",
+      "size": 8058,
+      "sha256": "f79c78da423ea265055e1672f0376a47b7ffa08e28b33e72414af8cd93c056fa"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/check-console-log.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/check-console-log.js",
+      "size": 1960,
+      "sha256": "5dfc8b4fe4c78d9886ff9711644c8cd1707f1276970f04fb50d8985fdb039068"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/check-hook-enabled.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/check-hook-enabled.js",
+      "size": 307,
+      "sha256": "6b6682952e92bdbc037f3dc76c5c7b53295991a0d6c8b7ef80c3355ae102dcf1"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/config-protection.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/config-protection.js",
+      "size": 3815,
+      "sha256": "9d5c731587fe03ace64123e6eade0d404ae67091b42af53fe102999c54ce40be"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/gateguard-fact-force.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/gateguard-fact-force.js",
+      "size": 13114,
+      "sha256": "ffa7a23cb7d4d3224ad23bebc8800ff853756bdf1b3b36bf1dd3f017c6ced0db"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/plugin-hook-bootstrap.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/plugin-hook-bootstrap.js",
+      "size": 3796,
+      "sha256": "229e48e0c230f3ab42866cd978aef44167731a5eedb99d2e59dba30ce64e3dc3"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/pre-bash-commit-quality.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/pre-bash-commit-quality.js",
+      "size": 12535,
+      "sha256": "005dd643158b0ad83af3684512c36a6ad25e50d46de971d38b8eef1f233445e5"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/pre-bash-dispatcher.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/pre-bash-dispatcher.js",
+      "size": 579,
+      "sha256": "cb05a00904873e0747cb422d579494f78446f65dc8c0ea6f1790d78a3f0d5bc4"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/pre-bash-git-push-reminder.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/pre-bash-git-push-reminder.js",
+      "size": 1475,
+      "sha256": "24d6954f5300c42e8696e0399299f97d18bfc1999ac161993551ef56733f6e7a"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/pre-bash-tmux-reminder.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/pre-bash-tmux-reminder.js",
+      "size": 1669,
+      "sha256": "7dd3bfaac2462b54a8d971700b15d65831e8090b3f80e43435301339776ef09a"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/run-with-flags-shell.sh",
+      "install": ".claude/.mcc-hooks/scripts/hooks/run-with-flags-shell.sh",
+      "size": 1139,
+      "sha256": "551945510f0a995935dbb765532d4c622a48d782cb1ab12c50ccb1e98f3b2b87"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/run-with-flags.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/run-with-flags.js",
+      "size": 5543,
+      "sha256": "43270d4b7bfd736c5995368411677ea51b92f30c289b6c52430da132f575ea7f"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/session-end.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/session-end.js",
+      "size": 11361,
+      "sha256": "2e5cb4179ead5ba28faa4f5a128b11dedcb2ca9872ee4a172459781db8c6431f"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/session-start-bootstrap.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/session-start-bootstrap.js",
+      "size": 5406,
+      "sha256": "6930804c073235ee996a94e9fcd34b13ce82299d1610ad394167853902cb3213"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/session-start.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/session-start.js",
+      "size": 17932,
+      "sha256": "8d5bfef432ec3f8a416b0ffe67ce740f78203883637db436eacb6ea3eeac4dfe"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/stop-format-typecheck.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/stop-format-typecheck.js",
+      "size": 7390,
+      "sha256": "30821365e99ce63bba6e788325442ac05fdff081be9ab04f1fb9e95fc0a3970b"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/lib/hook-flags.js",
+      "install": ".claude/.mcc-hooks/scripts/lib/hook-flags.js",
+      "size": 1845,
+      "sha256": "454fb3a5e202f199898a7edb0e34051744819d717c2726e4148cacb900469106"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/lib/observer-sessions.js",
+      "install": ".claude/.mcc-hooks/scripts/lib/observer-sessions.js",
+      "size": 5110,
+      "sha256": "6dba03d411f8c44093c55c9c8b5f853828260b603e7e2b443254f11376f0102c"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/lib/package-manager.js",
+      "install": ".claude/.mcc-hooks/scripts/lib/package-manager.js",
+      "size": 12447,
+      "sha256": "f9bc449ba30bad55eddb897653dc1c6d2e0f23fc601a47c1689064a08ea1363c"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/lib/project-detect.js",
+      "install": ".claude/.mcc-hooks/scripts/lib/project-detect.js",
+      "size": 13713,
+      "sha256": "31c57cc54ff72d53c5af11c66021461860cba7fc339d789cd6b8e6a1280712cb"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/lib/resolve-formatter.js",
+      "install": ".claude/.mcc-hooks/scripts/lib/resolve-formatter.js",
+      "size": 6182,
+      "sha256": "762e0d83718aec13652e80d77ee631af6925866929b7f33bd453fb04063b60de"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/lib/session-aliases.js",
+      "install": ".claude/.mcc-hooks/scripts/lib/session-aliases.js",
+      "size": 12814,
+      "sha256": "924a688da59343748cc472c0d69c02ce25498f5d14613e2b5233a97bb3332fdd"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/lib/utils.js",
+      "install": ".claude/.mcc-hooks/scripts/lib/utils.js",
+      "size": 18475,
+      "sha256": "c9592f9193304719364d5246ec904027b14218ce5cfdc197483b662aa86841ba"
+    },
+    {
+      "kind": "hooks-config",
+      "dist": ".claude/.mcc-hooks/hooks.json",
+      "install": ".claude/.mcc-hooks/hooks.json",
+      "size": 3585,
+      "sha256": "bb3c3e397e99f86b00891403de97d0af14415bdf30f23ab5e89363dc958ab3e8"
+    },
+    {
+      "kind": "settings-fragment",
+      "dist": ".claude/settings.fragment.json",
+      "install": ".claude/settings.fragment.json",
+      "size": 3208,
+      "sha256": "ccd8a95ed3661fd9089ae0b35764e90233ddffe67cf103510c857193e8cc3f79"
+    },
+    {
+      "kind": "mcp-config",
+      "dist": ".claude/mcp-configs/mcp.json",
+      "install": ".claude/mcp-configs/mcp.json",
+      "size": 3152,
+      "sha256": "4b1953d0ab71d3f43cbd11fa217585dd9bb34f11183fd77fe41471207514f9a7"
+    },
+    {
+      "kind": "rules",
+      "dist": ".claude/rules/common/mcc-principles.md",
+      "install": ".claude/rules/common/mcc-principles.md",
+      "size": 10328,
+      "sha256": "ca03d5f62f5db8aeb0a70988418febdd578a18672f57bd1893f5ead066334b3b"
+    },
+    {
+      "kind": "rules",
+      "dist": ".claude/rules/python/coding-style.md",
+      "install": ".claude/rules/python/coding-style.md",
+      "size": 753,
+      "sha256": "410fddcae6eeab990cbb4e2d2d88eeead1c3f32733b0bfa116d324f37fdb1b50"
+    },
+    {
+      "kind": "rules",
+      "dist": ".claude/rules/python/hooks.md",
+      "install": ".claude/rules/python/hooks.md",
+      "size": 443,
+      "sha256": "5f2d7ab459128fe61f738af19d7d32e2511a6f2dc1db43abaa03bfc56331ab5c"
+    },
+    {
+      "kind": "rules",
+      "dist": ".claude/rules/python/patterns.md",
+      "install": ".claude/rules/python/patterns.md",
+      "size": 862,
+      "sha256": "11c4d803ee567a815758a1aea02e6056f6b82f4bc7b3f88a6767d08c01aede0f"
+    },
+    {
+      "kind": "rules",
+      "dist": ".claude/rules/python/security.md",
+      "install": ".claude/rules/python/security.md",
+      "size": 554,
+      "sha256": "78737034ec9f2dce64eaac000f0fd40ac519ee6884d0de932913a0fca264cb8c"
+    },
+    {
+      "kind": "rules",
+      "dist": ".claude/rules/python/testing.md",
+      "install": ".claude/rules/python/testing.md",
+      "size": 619,
+      "sha256": "c63f125b7cab2dd2e2f70faf91eb68b70aa0916ea1c8291b9b4a1f20bbc6008d"
+    },
+    {
+      "kind": "placeholder",
+      "dist": ".claude/PRPs/prds/.gitkeep",
+      "size": 0,
+      "sha256": null,
+      "install": ".claude/PRPs/prds/"
+    },
+    {
+      "kind": "placeholder",
+      "dist": ".claude/PRPs/plans/.gitkeep",
+      "size": 0,
+      "sha256": null,
+      "install": ".claude/PRPs/plans/"
+    },
+    {
+      "kind": "placeholder",
+      "dist": ".claude/PRPs/plans/completed/.gitkeep",
+      "size": 0,
+      "sha256": null,
+      "install": ".claude/PRPs/plans/completed/"
+    },
+    {
+      "kind": "placeholder",
+      "dist": ".claude/PRPs/reports/.gitkeep",
+      "size": 0,
+      "sha256": null,
+      "install": ".claude/PRPs/reports/"
+    },
+    {
+      "kind": "placeholder",
+      "dist": ".claude/PRPs/reviews/.gitkeep",
+      "size": 0,
+      "sha256": null,
+      "install": ".claude/PRPs/reviews/"
+    },
+    {
+      "kind": "placeholder",
+      "dist": ".claude/PRPs/reviews/full/.gitkeep",
+      "size": 0,
+      "sha256": null,
+      "install": ".claude/PRPs/reviews/full/"
+    },
+    {
+      "kind": "placeholder",
+      "dist": ".claude/PRPs/features/.gitkeep",
+      "size": 0,
+      "sha256": null,
+      "install": ".claude/PRPs/features/"
+    }
+  ],
+  "notes": [],
+  "summary": {
+    "total": 101,
+    "byKind": {
+      "agents": 19,
+      "command": 20,
+      "skills": 18,
+      "modes": 3,
+      "hooks": 25,
+      "hooks-config": 1,
+      "settings-fragment": 1,
+      "mcp-config": 1,
+      "rules": 6,
+      "placeholder": 7
+    },
+    "totalBytes": 627550
+  }
+}

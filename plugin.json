@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schemas.claude.com/plugin/v1.json",
+  "name": "mcc",
+  "version": "1.0.0",
+  "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 20 commands + 8 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules. 中文主场景，Python + TypeScript 全栈，AI 应用优先。",
+  "author": {
+    "name": "MCC",
+    "url": "https://github.com/18811184907/mcc"
+  },
+  "homepage": "https://github.com/18811184907/mcc",
+  "repository": "https://github.com/18811184907/mcc",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "codex",
+    "agents",
+    "skills",
+    "commands",
+    "hooks",
+    "mcp",
+    "workflow",
+    "python",
+    "typescript",
+    "fastapi",
+    "ai",
+    "llm",
+    "rag",
+    "tdd",
+    "code-review",
+    "chinese"
+  ],
+
+  "agents": ["./dist/claude-code/.claude/agents/"],
+  "commands": ["./dist/claude-code/.claude/commands/"],
+  "skills": ["./dist/claude-code/.claude/skills/"]
+}

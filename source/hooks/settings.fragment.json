@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "_mcc_fragment_note": "installer 会把这个片段深度合并到 ~/.claude/settings.json。hooks 数组按 matcher 去重追加，permissions.allow 并集去重，mcpServers 对象合并。",
+
+  "permissions": {
+    "allow": [
+      "Read(*)",
+      "Grep(*)",
+      "Glob(*)",
+      "Write(*.md)",
+      "Edit(*.md)",
+      "Bash(gh *)",
+      "Bash(git *)",
+      "Bash(ls *)",
+      "Bash(npm *)",
+      "Bash(pnpm *)",
+      "Bash(yarn *)",
+      "Bash(bun *)",
+      "Bash(uv *)",
+      "Bash(uvx *)",
+      "Bash(pip *)",
+      "Bash(python *)",
+      "Bash(pytest *)",
+      "Bash(ruff *)",
+      "Bash(mypy *)",
+      "Bash(pyright *)",
+      "Bash(black *)",
+      "Bash(prettier *)",
+      "Bash(biome *)",
+      "Bash(eslint *)",
+      "Bash(tsc *)",
+      "Bash(playwright *)",
+      "WebFetch(*)"
+    ]
+  },
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${MCC_HOOKS}/hooks/config-protection.js",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${MCC_HOOKS}/hooks/pre-bash-dispatcher.js"
+          }
+        ]
+      }
+    ],
+
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${MCC_HOOKS}/hooks/session-start-bootstrap.js"
+          }
+        ]
+      }
+    ],
+
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"require('${MCC_HOOKS}/hooks/stop-format-typecheck.js').run(process.stdin)\"",
+            "timeout": 300
+          },
+          {
+            "type": "command",
+            "command": "node -e \"require('${MCC_HOOKS}/hooks/session-end.js').run(process.stdin)\"",
+            "async": true,
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "node -e \"require('${MCC_HOOKS}/hooks/check-console-log.js').run(process.stdin)\"",
+            "async": true
+          }
+        ]
+      }
+    ]
+  },
+
+  "_mcc_optional_hooks": {
+    "_note": "以下 hooks 默认不启用。用户启用 continuous-learning-v2 skill 时由 installer 或 skill 激活脚本追加。",
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${MCC_HOOKS}/hooks/run-with-flags-shell.sh pre:observe:continuous-learning ${MCC_SKILLS}/continuous-learning-v2/hooks/observe.sh pre",
+            "async": true,
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${MCC_HOOKS}/hooks/run-with-flags-shell.sh post:observe:continuous-learning ${MCC_SKILLS}/continuous-learning-v2/hooks/observe.sh post",
+            "async": true,
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

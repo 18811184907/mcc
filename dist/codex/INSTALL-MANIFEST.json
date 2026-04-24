@@ -1,0 +1,317 @@
+{
+  "target": "codex",
+  "generatedAt": "2026-04-23T23:04:32.791Z",
+  "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
+  "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
+  "files": [
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/ai-engineer.md",
+      "size": 6253,
+      "sha256": "26d8673f7752c4ca3d10d331db0ad70ed181007ce97f06200477282d01eda464"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/backend-architect.md",
+      "size": 9007,
+      "sha256": "d81ea8203432d1620dd6ef5dd1399a45d5854ae92dfd1fb245f0b7091cc66bc7"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/code-explorer.md",
+      "size": 2926,
+      "sha256": "d617165401de2ed1a699b38fab62d5a20c4b150ff5a3f57ed7f49dfcb800a3f0"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/code-reviewer.md",
+      "size": 9554,
+      "sha256": "54e4c65ba85b72a7d0c3c0d4d35cf3936b22bbd1b3d25867c14c08fc08f86b62"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/database-optimizer.md",
+      "size": 7957,
+      "sha256": "a98d8a210168ce91acdc0f6e1704453a1804105353e1457983ac50ec51351056"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/debugger.md",
+      "size": 4823,
+      "sha256": "d33ad7557b571bf8b41eab321ef543cd1627d4228c20fbf0bd058200998585a8"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/fastapi-pro.md",
+      "size": 4847,
+      "sha256": "1a4cf74d256e67e045e363e8be34bebec710a5a7d432ebfe42b7ff4d61f1d5b5"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/frontend-developer.md",
+      "size": 5427,
+      "sha256": "31c94f7d8b069dc0f02e28eb09e62a677b11e118451bca17eb9e0335580ff08e"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/javascript-pro.md",
+      "size": 3318,
+      "sha256": "29b5fdd6ba5bdf28c8e240cf35983f3e92790af703180771d6a201907abdd94c"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/performance-engineer.md",
+      "size": 12063,
+      "sha256": "cb51aaa6de02a22a06373a347a046620f8561a6a1d105a7e7990a1172694a3e5"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/planner.md",
+      "size": 7145,
+      "sha256": "39c23e4ceb20a3a8b30a1ea094846f0a8be3043b1caf76f4c627d39f057bbc9e"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/prompt-engineer.md",
+      "size": 5273,
+      "sha256": "2394669a014d60f45286e2096f077ffcbbcb99a3b002d08ab2f8989fb0c77307"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/python-pro.md",
+      "size": 4931,
+      "sha256": "bc7459b07ed4096c58b09590813f403bc2a8d7ca647982a65845c20debe61a2d"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/refactor-cleaner.md",
+      "size": 2696,
+      "sha256": "47e08f0d6f7ed32b18d144a70be4275e5c2961f0bdf818da6c354f9a0a30eaaa"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/security-reviewer.md",
+      "size": 5111,
+      "sha256": "e483cf2ed8b8c7295401c5a7c5ec4e9625b1b93d317bc1fc01190865a6b1e894"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/silent-failure-hunter.md",
+      "size": 3381,
+      "sha256": "af45bfbafddee594053d23a872c5c63f553cd9d6050f1ef30d5a90273be5185c"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/test-automator.md",
+      "size": 5166,
+      "sha256": "0538ccf955441c0c778477b30eeb15304b9425aa59b5cd5496787fe36e6851bb"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/typescript-pro.md",
+      "size": 3638,
+      "sha256": "8ec7200659d4083c9aab33dc5d9c21f66203c33ee0e8525aabebea971890c5fe"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/vector-database-engineer.md",
+      "size": 5255,
+      "sha256": "8524723f03bb8f3796d7cf8c3ac23e82e10c97f2d543c5f4d2667d9754702f4d"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-build-fix.md",
+      "size": 2856,
+      "sha256": "5cc68c0e2530fa1ecafa7891dd05d8d7325b409a021c0168086c9c88babb8b54"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-e2e.md",
+      "size": 4617,
+      "sha256": "f4d6b4935e8ecd173a8cc2c87fef4e916e55eb196b986a899fafca3b26c69721"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-explain.md",
+      "size": 1628,
+      "sha256": "b3d7296c43134480df9b003134322be132b98844420760b0f62ccab09e18a644"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-fix-bug.md",
+      "size": 2404,
+      "sha256": "9a0126e728d956046cd821a2be9eb0634692396ff8dcfca1dca2bcb327047326"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-full-review.md",
+      "size": 12086,
+      "sha256": "7c065a9c169c3590c4dd1f95ddd79e70df2c8ad29d3cb70c9aa7a49e6b01331e"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-full-stack.md",
+      "size": 13090,
+      "sha256": "ea146057da14c2c6fec9a77a4d1f4e8d60f3f02f1becf46976c36983f29c4d29"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-implement.md",
+      "size": 7652,
+      "sha256": "5281559326fba8c1526f877072bb9ef1e8736ff642bb11ecf837053fe708249b"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-init.md",
+      "size": 2381,
+      "sha256": "dc28d3c8b7abd12c36c16cd9645f775a9f9d6af5d1c1974fe72ef6ff08beb0ea"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-learn.md",
+      "size": 1928,
+      "sha256": "d11dc2c7ead0c682c2bed6841c0b2d14d0c72c9bd4cd639b77b83fc3e23c9528"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-plan.md",
+      "size": 10209,
+      "sha256": "11d97ac6de684208e8e8185b6fb0be20f47d45bc4004562e3eaf9e639aa9ded2"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-pr.md",
+      "size": 4583,
+      "sha256": "9a26f474e0a5cbfdb37f6273d37ba8bba05ccc915c294a885dd308a387b5bbd5"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-prd.md",
+      "size": 8926,
+      "sha256": "22e2130d652f2b09eb13b12521c0d8403575b7f1c674d0fdff413da98b5b2141"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-review.md",
+      "size": 6867,
+      "sha256": "f43c27d4b320609cb30ad1f4d929c180e5b75be5bfce99b04360b8830b0f176d"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-session-resume.md",
+      "size": 5486,
+      "sha256": "63d3a5145a1e22c88471d7fd23dace73f2a0b8c5a6d9e3d3dd3dcc7f37ad9616"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-session-save.md",
+      "size": 6467,
+      "sha256": "2d9e7c7f711db0c42358af96fedf25a0b29932e6ed63ee5aa6845c8542df8f59"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-skill-create.md",
+      "size": 2811,
+      "sha256": "902359a75fd95cf32b1335504de38119d3e54bf485497f3110d2bd9ca9923772"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-tdd.md",
+      "size": 3466,
+      "sha256": "dc685ff773470d0c5be564c0981bc0f614e55b5dacd5e3067c9251f1b0ebaa81"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-test-coverage.md",
+      "size": 3124,
+      "sha256": "90412130f623e64702de57697cb58d277b536ebf2509d9e28ee29b61afb61750"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-troubleshoot.md",
+      "size": 3906,
+      "sha256": "b9491e7b2281568c3b305ff0fcf82ec24988356fd90e1ffcfb07d08f27360ced"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-verify.md",
+      "size": 1082,
+      "sha256": "de074b82b7513368e4b2eb36b0fee9f01a92bebaff095c6eb2205f79d9675c00"
+    },
+    {
+      "kind": "rule",
+      "dist": ".codex/rules/python/coding-style.md",
+      "size": 753,
+      "sha256": "410fddcae6eeab990cbb4e2d2d88eeead1c3f32733b0bfa116d324f37fdb1b50"
+    },
+    {
+      "kind": "rule",
+      "dist": ".codex/rules/python/hooks.md",
+      "size": 443,
+      "sha256": "5f2d7ab459128fe61f738af19d7d32e2511a6f2dc1db43abaa03bfc56331ab5c"
+    },
+    {
+      "kind": "rule",
+      "dist": ".codex/rules/python/patterns.md",
+      "size": 862,
+      "sha256": "11c4d803ee567a815758a1aea02e6056f6b82f4bc7b3f88a6767d08c01aede0f"
+    },
+    {
+      "kind": "rule",
+      "dist": ".codex/rules/python/security.md",
+      "size": 554,
+      "sha256": "78737034ec9f2dce64eaac000f0fd40ac519ee6884d0de932913a0fca264cb8c"
+    },
+    {
+      "kind": "rule",
+      "dist": ".codex/rules/python/testing.md",
+      "size": 619,
+      "sha256": "c63f125b7cab2dd2e2f70faf91eb68b70aa0916ea1c8291b9b4a1f20bbc6008d"
+    },
+    {
+      "kind": "rule",
+      "dist": ".codex/rules/common/mcc-principles.md",
+      "size": 10328,
+      "sha256": "ca03d5f62f5db8aeb0a70988418febdd578a18672f57bd1893f5ead066334b3b"
+    },
+    {
+      "kind": "agents-md",
+      "dist": "AGENTS.md",
+      "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
+      "size": 10455,
+      "sha256": "65d2cfa47c5186fe79ff6aab2b61442c082c0d91310dbc88ba335a0b66745221"
+    },
+    {
+      "kind": "hooks-soft-guidance",
+      "dist": "HOOKS-SOFT-GUIDANCE.md",
+      "install": "HOOKS-SOFT-GUIDANCE.md（Codex 用户参考；不自动生效）",
+      "size": 2756,
+      "sha256": "5cf0b7fdeca0565d02b61183046bf24864caca615c68cfbeee7b84a75f250bde"
+    },
+    {
+      "kind": "mcp-toml",
+      "dist": "config.fragment.toml",
+      "install": "合并到 ~/.codex/config.toml（追加 [mcp_servers.*] 段）",
+      "size": 1236,
+      "sha256": "d81eeb9d32eb208376954449ecf73571645e8a0e07cc1eb874a5255f0d5e5266"
+    }
+  ],
+  "notes": [
+    "Codex 不支持 sub-agent 直接调用，agents 作为角色指引放 AGENTS.md + .codex/agents/",
+    "Codex 不支持 slash command，改用 prompts 机制（.codex/prompts/mcc-*.md）",
+    "Codex 不支持 hook，转为 HOOKS-SOFT-GUIDANCE.md 作自律约定",
+    "Codex 不支持 skill，转为 AGENTS.md 中的场景指引段"
+  ],
+  "summary": {
+    "total": 48,
+    "byKind": {
+      "agent": 19,
+      "prompt": 20,
+      "rule": 6,
+      "agents-md": 1,
+      "hooks-soft-guidance": 1,
+      "mcp-toml": 1
+    },
+    "totalBytes": 242346
+  }
+}

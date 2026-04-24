@@ -1,0 +1,111 @@
+{
+  "version": "1.0",
+  "phases": [
+    {
+      "id": "1-discover",
+      "name": "需求发现",
+      "entry_artifacts": [],
+      "exit_artifacts": [".claude/PRPs/prds/*.md"],
+      "required": false,
+      "skills": ["product-lens", "brainstorming"],
+      "commands": ["/mcc:prd"],
+      "next_hint": "输出 PRODUCT-BRIEF.md 后，运行 /mcc:prd 生成正式 PRD"
+    },
+    {
+      "id": "2-plan",
+      "name": "方案规划",
+      "entry_artifacts": [".claude/PRPs/prds/*.md"],
+      "exit_artifacts": [".claude/PRPs/plans/*.md"],
+      "required": true,
+      "skills": ["architecture-decision-records"],
+      "agents": ["planner", "backend-architect"],
+      "commands": ["/mcc:plan"],
+      "next_hint": "PRD 已有但 plans/ 为空 → 运行 /mcc:plan"
+    },
+    {
+      "id": "3-confidence",
+      "name": "开工前置信度检查",
+      "entry_artifacts": [".claude/PRPs/plans/*.md"],
+      "exit_artifacts": [],
+      "required": true,
+      "skills": ["confidence-check"],
+      "commands": [],
+      "gate_rule": "confidence >= 0.9",
+      "next_hint": "Plan 已定 → 运行 confidence-check，≥90% 才进入 implement"
+    },
+    {
+      "id": "4-implement",
+      "name": "实现",
+      "entry_artifacts": [".claude/PRPs/plans/*.md"],
+      "exit_artifacts": [".claude/PRPs/plans/completed/*.md"],
+      "required": true,
+      "skills": ["coding-standards", "task-management"],
+      "commands": ["/mcc:implement", "/mcc:tdd"],
+      "agents": ["planner", "backend-architect", "ai-engineer", "python-pro", "typescript-pro", "fastapi-pro"],
+      "next_hint": "plans/<X>.md 未移到 completed/ → /mcc:implement 继续"
+    },
+    {
+      "id": "5-verify",
+      "name": "验证",
+      "entry_artifacts": [".claude/PRPs/plans/completed/*.md"],
+      "exit_artifacts": [".claude/PRPs/reports/*.md"],
+      "required": true,
+      "skills": ["verification-loop"],
+      "commands": ["/mcc:verify", "/mcc:test-coverage"],
+      "next_hint": "代码完成 → /mcc:verify 走 6 阶段"
+    },
+    {
+      "id": "6-review",
+      "name": "评审",
+      "entry_artifacts": [".claude/PRPs/reports/*.md"],
+      "exit_artifacts": [".claude/PRPs/reviews/*.md"],
+      "required": true,
+      "skills": [],
+      "commands": ["/mcc:review", "/mcc:full-review"],
+      "agents": ["code-reviewer", "security-reviewer"],
+      "next_hint": "verify 通过 → /mcc:full-review 出评审报告"
+    },
+    {
+      "id": "7-ship",
+      "name": "提交 PR",
+      "entry_artifacts": [".claude/PRPs/reviews/*.md"],
+      "exit_artifacts": [],
+      "required": false,
+      "skills": [],
+      "commands": ["/mcc:pr"]
+    }
+  ],
+  "anytime": {
+    "stuck_debug": {
+      "signals": ["错误反复", "debug 超过 30 分钟"],
+      "recommend": ["debugger agent", "/mcc:troubleshoot"]
+    },
+    "research": {
+      "signals": ["不知道用什么库", "不确定 API"],
+      "recommend": ["Context7 MCP", "Exa MCP"]
+    },
+    "refactor": {
+      "signals": ["代码腐化", "死码堆积"],
+      "recommend": ["refactor-cleaner agent", "coding-standards skill"]
+    },
+    "architecture_debate": {
+      "signals": ["两个方案选不出", "方向性决策"],
+      "recommend": ["party-mode skill", "architecture-decision-records skill"]
+    },
+    "learning": {
+      "signals": ["最近犯了同样错误"],
+      "recommend": ["/mcc:learn", "continuous-learning-v2 skill", "docs/mistakes/ 索引"]
+    }
+  },
+  "fs_scan_rules": {
+    "current_phase_inference": [
+      { "if": ".claude/PRPs/prds/ is empty", "then": "1-discover" },
+      { "if": ".claude/PRPs/prds/ has files AND .claude/PRPs/plans/ is empty", "then": "2-plan" },
+      { "if": ".claude/PRPs/plans/ has files AND .claude/PRPs/plans/completed/ is empty", "then": "4-implement" },
+      { "if": ".claude/PRPs/plans/completed/ has files AND .claude/PRPs/reports/ is empty", "then": "5-verify" },
+      { "if": ".claude/PRPs/reports/ has files AND .claude/PRPs/reviews/ is empty", "then": "6-review" },
+      { "if": ".claude/PRPs/reviews/ has files", "then": "7-ship" }
+    ],
+    "mistakes_hint": "读 docs/mistakes/ 最近 3 条，若跟当前任务领域相关 → 推荐用户先看"
+  }
+}

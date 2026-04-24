@@ -1,0 +1,137 @@
+{
+  "$schema": "https://schemas.mcc.dev/manifest-v1.json",
+  "name": "mcc",
+  "version": "1.0.0",
+  "description": "Multi-target Claude/Codex Configuration",
+  "license": "MIT",
+  "homepage": "https://github.com/18811184907/mcc",
+
+  "targets": {
+    "claude-code": {
+      "label": "Claude Code",
+      "dist_dir": "dist/claude-code",
+      "install_global": "~/.claude",
+      "install_project": ".claude",
+      "settings_fragment": "dist/claude-code/.claude/settings.fragment.json",
+      "mcp_config": "dist/claude-code/.claude/mcp-configs/mcp.json",
+      "hooks_config": "dist/claude-code/.claude/.mcc-hooks/hooks.json",
+      "hooks_scripts_dir": "dist/claude-code/.claude/.mcc-hooks/scripts",
+      "detect": [
+        {"kind": "file_exists", "path": "~/.claude/settings.json"},
+        {"kind": "env", "name": "CLAUDE_CODE_HOME"}
+      ]
+    },
+    "codex": {
+      "label": "Codex",
+      "dist_dir": "dist/codex",
+      "install_global": "~/.codex",
+      "install_project": ".codex",
+      "agents_md": "dist/codex/AGENTS.md",
+      "config_fragment": "dist/codex/config.fragment.toml",
+      "hooks_soft_guidance": "dist/codex/HOOKS-SOFT-GUIDANCE.md",
+      "detect": [
+        {"kind": "file_exists", "path": "~/.codex/config.toml"},
+        {"kind": "file_exists", "path": "~/.codex/"},
+        {"kind": "env", "name": "CODEX_HOME"}
+      ]
+    }
+  },
+
+  "components": {
+    "agents": 19,
+    "commands": 20,
+    "skills": 8,
+    "modes": 3,
+    "hooks": 8,
+    "hook_scripts": 25,
+    "mcp_servers": 5,
+    "rules_python": 5,
+    "rules_common": 1,
+    "principles_sections": 6
+  },
+
+  "compatibility": {
+    "claude_code_min_version": "2.1.0",
+    "node_min_version": "18.0.0",
+    "platforms": ["windows", "macos", "linux"]
+  },
+
+  "merge_strategy": {
+    "agents": "skip_existing",
+    "commands": "skip_existing",
+    "skills": "skip_existing_dir",
+    "modes": "skip_existing",
+    "rules": "skip_existing",
+    "hook_scripts": "replace_in_mcc_namespace",
+    "settings_json": "deep_merge_with_dedup",
+    "config_toml": "append_sections_dedup",
+    "PRPs_directory": "create_only_missing"
+  },
+
+  "install_variables": {
+    "MCC_HOOKS": {
+      "description": "hooks 脚本的真实安装位置",
+      "resolved_at_install": true
+    },
+    "MCC_SKILLS": {
+      "description": "skills 的真实安装位置",
+      "resolved_at_install": true
+    },
+    "MCC_HOME": {
+      "description": "MCC 安装根目录（随 scope 决定是 ~/.claude/.mcc-hooks 或 项目/.claude/.mcc-hooks）",
+      "resolved_at_install": true
+    }
+  },
+
+  "uninstall": {
+    "strategy": "restore_from_backup",
+    "backup_dir_pattern": "{home}/.claude.backup-{timestamp}",
+    "preserve": [
+      "PRPs/**/*.md",
+      "session-data/*",
+      "skills/learned/*",
+      "docs/mistakes/*",
+      "docs/adr/*"
+    ],
+    "note": "卸载只恢复 MCC 装之前的配置文件；用户工作产物（PRD/plan/report/session/learned skill）一律保留"
+  },
+
+  "build": {
+    "source_dir": "source/",
+    "adapters_dir": "adapters/",
+    "dist_dir": "dist/",
+    "build_command": "node adapters/build.js"
+  },
+
+  "version_history": [
+    {
+      "version": "1.0.0",
+      "date": "2026-04-24",
+      "changes": [
+        "初始版本",
+        "19 agents（含 5 个融合型：code-reviewer / debugger / backend-architect / database-optimizer / performance-engineer）",
+        "20 commands（PRP 流水线 + full-stack 大流水线 + 诊断三档 + 测试三路）",
+        "8 skills（含 mcc-help 的 workflow-map.json 扫 fs 推进度）",
+        "3 Behavioral Modes（brainstorming/task-management/token-efficiency）",
+        "8 hooks（pre:config-protection 是独家）",
+        "5 MCPs（Serena/Context7/GitHub/Sequential/Playwright）",
+        "Python rules 5 个 + mcc-principles.md（SC PRINCIPLES 中文化融合）",
+        "双目标 adapter（claude-code + codex），0.2 秒构建"
+      ]
+    }
+  ],
+
+  "roadmap": [
+    {
+      "version": "1.1.0",
+      "planned": true,
+      "theme": "Superpowers 增量",
+      "items": [
+        "纳入 obra/superpowers 的 subagent-driven-development 机制",
+        "纳入 using-git-worktrees skill",
+        "纳入 writing-skills（meta-skill）",
+        "纳入 requesting-code-review / receiving-code-review 双 skill"
+      ]
+    }
+  ]
+}
