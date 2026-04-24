@@ -252,31 +252,25 @@ async function adaptToCodex(sourceDir, distDir) {
 
 // ─── AGENTS.md 拼接 ─────────────────────────────────────
 
+// v1.8: description 压缩工具 — 截到第一个句号/句点或 N 字符
+function shortDesc(desc, maxLen = 140) {
+  if (!desc) return '';
+  const s = String(desc).trim();
+  if (s.length <= maxLen) return s;
+  // 优先在第一个"。"或". " 截断（Chinese / English 都可）
+  const cuts = [s.indexOf('。'), s.indexOf('. '), s.indexOf('；'), s.indexOf('; ')]
+    .filter(i => i > 0 && i <= maxLen);
+  if (cuts.length) {
+    const at = Math.min(...cuts);
+    return s.slice(0, at + 1).trim();
+  }
+  return s.slice(0, maxLen).trim() + '…';
+}
+
 function buildAgentsMd(sourceDir) {
   const L = [];
-  L.push('# AGENTS.md');
-  L.push('');
-  L.push('> MCC 自动生成。编辑 `source/` 后跑 `node adapters/build.js` 刷新。');
-  L.push('> 本文件 + `.codex/agents/*.md` + `.codex/prompts/*.md` 构成 Codex 上的 MCC 能力。');
-  L.push('');
 
-  // Core principles
-  L.push('## 核心原则');
-  L.push('');
-  L.push('完整版见 `.codex/rules/common/mcc-principles.md`。要点：');
-  L.push('- **证据 > 假设**：所有结论需证据支撑；不确定时明确标"假设"');
-  L.push('- **代码 > 文档**：文档是代码的影子，不是真相');
-  L.push('- **效率 > 冗长**：符号/缩写/压缩优先，尤其 context 紧张时');
-  L.push('- **SOLID + KISS + DRY + YAGNI**：工程判断的公约数');
-  L.push('- **实现前 5 维度置信度 ≥90%** 才开工（见 `confidence-check` 指引）');
-  L.push('- **错误时禁止 retry**，强制 root cause（见 `debugger` 指引）');
-  L.push('');
-
-  // Agents
-  L.push('## 可用角色（相当于 Claude Code 的 sub-agents）');
-  L.push('');
-  L.push('遇到对应场景时，以该角色视角工作。`.codex/agents/*.md` 有完整 prompt。');
-  L.push('');
+  // 收集数据
   const agentsSrc = path.join(sourceDir, 'agents');
   const agentEntries = [];
   for (const rel of walkFiles(agentsSrc)) {
@@ -284,94 +278,167 @@ function buildAgentsMd(sourceDir) {
     const content = readText(path.join(agentsSrc, rel));
     const { frontmatter } = parseFrontmatter(content);
     if (!frontmatter) continue;
-    const name = frontmatter.name || rel.replace(/\.md$/, '');
-    const desc = frontmatter.description || '';
-    agentEntries.push({ name, desc });
-  }
-  for (const { name, desc } of agentEntries) {
-    L.push(`### ${name}`);
-    L.push(desc);
-    L.push('');
+    agentEntries.push({
+      name: frontmatter.name || rel.replace(/\.md$/, ''),
+      desc: frontmatter.description || '',
+    });
   }
 
-  // Commands (as prompts)
-  L.push('## 工作流（Prompts）');
-  L.push('');
-  L.push('Codex 下用 `mcc-xxx` 调用（文件：`.codex/prompts/mcc-xxx.md`）：');
-  L.push('');
   const cmdSrc = path.join(sourceDir, 'commands');
+  const cmdEntries = [];
   for (const rel of walkFiles(cmdSrc)) {
     if (!rel.endsWith('.md')) continue;
     const content = readText(path.join(cmdSrc, rel));
     const { frontmatter } = parseFrontmatter(content);
-    const cmdName = rel.replace(/\.md$/, '');
-    const desc = (frontmatter && frontmatter.description) || '';
-    L.push(`- **\`mcc-${cmdName}\`** — ${desc}`);
+    cmdEntries.push({
+      name: rel.replace(/\.md$/, ''),
+      desc: (frontmatter && frontmatter.description) || '',
+    });
   }
-  L.push('');
 
-  // Skills
-  L.push('## Skill 指引（Codex 不原生支持 skill，以下为遇场景时的思路）');
-  L.push('');
   const skillsSrc = path.join(sourceDir, 'skills');
+  const skillEntries = [];
   if (pathExists(skillsSrc)) {
-    const skillDirs = fs
-      .readdirSync(skillsSrc, { withFileTypes: true })
-      .filter((e) => e.isDirectory())
-      .map((e) => e.name)
-      .sort();
-    for (const sd of skillDirs) {
-      const skillFile = path.join(skillsSrc, sd, 'SKILL.md');
-      if (!pathExists(skillFile)) continue;
-      const content = readText(skillFile);
+    const dirs = fs.readdirSync(skillsSrc, { withFileTypes: true })
+      .filter(e => e.isDirectory()).map(e => e.name).sort();
+    for (const sd of dirs) {
+      const f = path.join(skillsSrc, sd, 'SKILL.md');
+      if (!pathExists(f)) continue;
+      const content = readText(f);
       const { frontmatter } = parseFrontmatter(content);
-      const desc = (frontmatter && frontmatter.description) || '';
-      L.push(`### ${sd}`);
-      L.push(desc);
-      L.push('');
+      skillEntries.push({
+        name: sd,
+        desc: (frontmatter && frontmatter.description) || '',
+      });
     }
   }
 
-  // Modes
-  L.push('## 心智模式（按关键词/上下文自动激活）');
-  L.push('');
   const modesSrc = path.join(sourceDir, 'modes');
+  const modeEntries = [];
   if (pathExists(modesSrc)) {
     for (const rel of walkFiles(modesSrc)) {
       if (!rel.endsWith('.md')) continue;
       const content = readText(path.join(modesSrc, rel));
       const { frontmatter } = parseFrontmatter(content);
-      const modeName = rel.replace(/\.md$/, '');
-      const desc = (frontmatter && frontmatter.description) || '';
-      L.push(`### ${modeName}`);
-      L.push(desc);
-      L.push('');
+      modeEntries.push({
+        name: rel.replace(/\.md$/, ''),
+        desc: (frontmatter && frontmatter.description) || '',
+      });
     }
   }
 
-  // Hooks soft
-  L.push('## 软约定（原 hooks，Codex 下靠自律）');
+  // ── 标题 + 使用提示
+  L.push('# AGENTS.md');
   L.push('');
-  L.push('完整自律指引见 `HOOKS-SOFT-GUIDANCE.md`。核心 3 条：');
-  L.push('- **pre:config-protection**：改 config 前检查是否放宽 lint/security 规则');
-  L.push('- **stop:format-typecheck**：每批 edit 完，手动跑 format + typecheck');
-  L.push('- **pre:bash:safety**：破坏性 Bash（rm -rf / git reset --hard / force push）前三思');
+  L.push('> MCC 自动生成，编辑 `source/` 后跑 `node adapters/build.js` 刷新。');
+  L.push('> Codex 会话加载此文件 + `.codex/agents/*.md` + `.codex/prompts/*.md`。');
+  L.push('');
+  L.push('**快速使用**：');
+  L.push('- 需要某个 role 的视角？在下面【角色】查它的触发条件和场景');
+  L.push('- 要跑 PRP 工作流？在【工作流 Prompts】找 `mcc-xxx`');
+  L.push('- 遇到某个开发场景？在【Skill 场景指引】看该用什么思路');
+  L.push('- 描述里说 "完整 prompt 见" 的文件在 `.codex/agents/` 或 `.codex/prompts/`');
   L.push('');
 
-  // Artifacts
-  L.push('## 产出落盘位置（与 Claude Code 侧共享）');
+  // ── TOC
+  L.push('## 目录（TOC）');
   L.push('');
-  L.push('- `.claude/PRPs/prds/{slug}.prd.md` — PRD');
-  L.push('- `.claude/PRPs/plans/{slug}.plan.md` — Plan');
-  L.push('- `.claude/PRPs/plans/completed/` — 已完成 plan 归档');
-  L.push('- `.claude/PRPs/reports/{plan}-report.md` — 实施报告');
-  L.push('- `.claude/PRPs/reviews/pr-{N}-review.md` — PR 审查');
-  L.push('- `.claude/PRPs/reviews/full/{ts}/` — 全面审查（5 阶段）');
-  L.push('- `.claude/PRPs/features/{slug}/01-...09-docs.md` — 全栈特性 9 步');
-  L.push('- `~/.claude/session-data/` — 跨 session 持久化');
-  L.push('- `~/.claude/skills/learned/` — 从 session 提取的 pattern');
-  L.push('- `docs/mistakes/bug-YYYY-MM-DD-{slug}.md` — bug 归档');
-  L.push('- `docs/adr/NNNN-*.md` — 架构决策');
+  L.push('- [核心原则](#核心原则)');
+  L.push('- [并行优先](#并行优先-parallel-first)');
+  L.push(`- [角色（${agentEntries.length}）](#角色agents)`);
+  for (const { name } of agentEntries) L.push(`  - [${name}](#${name})`);
+  L.push(`- [工作流 Prompts（${cmdEntries.length}）](#工作流-prompts)`);
+  for (const { name } of cmdEntries) L.push(`  - [mcc-${name}](#mcc-${name})`);
+  L.push(`- [Skill 场景指引（${skillEntries.length}）](#skill-场景指引)`);
+  for (const { name } of skillEntries) L.push(`  - [${name}](#${name})`);
+  L.push(`- [心智模式（${modeEntries.length}）](#心智模式)`);
+  L.push('- [软约定 (Hooks → 自律)](#软约定)');
+  L.push('- [产出落盘](#产出落盘)');
+  L.push('');
+
+  // ── 核心原则
+  L.push('## 核心原则');
+  L.push('');
+  L.push('完整 8 章见 `.codex/rules/common/mcc-principles.md`。要点：');
+  L.push('- **证据 > 假设 > 代码 > 文档 > 效率 > 冗长**');
+  L.push('- **SOLID + KISS + DRY + YAGNI**');
+  L.push('- **5 维度置信度 ≥90% 才开工**（confidence-check）');
+  L.push('- **禁止 retry，强制 root cause**（debugger）');
+  L.push('');
+
+  // ── 并行优先（v1.7 新 + v1.8 AGENTS.md 首次显式暴露）
+  L.push('## 并行优先（Parallel-First）');
+  L.push('');
+  L.push('遇任务第 1 秒自问 Q1-Q4：能拆 → fan-out / 多视角 → party-mode / 有依赖 → 接力 / 很小 → 直接做。');
+  L.push('');
+  L.push('**典型并行组合**（同一条回复里一次发多个 Task call）：');
+  L.push('- 代码审查 → `code-reviewer` + `security-reviewer` + （深度审加 `silent-failure-hunter` + `performance-engineer`）');
+  L.push('- Bug 盲诊 → `debugger` + `performance-engineer` + （涉数据加 `database-optimizer`）');
+  L.push('- 架构规划 → `planner` + 栈相关 domain agent');
+  L.push('- 完整 10 种组合见 `dispatching-parallel-agents` skill');
+  L.push('');
+
+  // ── 角色
+  L.push('## 角色（Agents）');
+  L.push('');
+  L.push('对应场景自动以该角色视角工作。描述后附触发条件；完整 prompt 在 `.codex/agents/{name}.md`。');
+  L.push('');
+  for (const { name, desc } of agentEntries) {
+    L.push(`### ${name}`);
+    L.push(shortDesc(desc));
+    L.push('');
+  }
+
+  // ── 工作流 Prompts
+  L.push('## 工作流 Prompts');
+  L.push('');
+  L.push('Codex 调用：`mcc-xxx`（文件：`.codex/prompts/mcc-xxx.md`）。');
+  L.push('');
+  for (const { name, desc } of cmdEntries) {
+    L.push(`### mcc-${name}`);
+    L.push(shortDesc(desc));
+    L.push('');
+  }
+
+  // ── Skills
+  L.push('## Skill 场景指引');
+  L.push('');
+  L.push('Codex 不原生支持 skill。遇下列场景时以该 skill 思路工作。');
+  L.push('');
+  for (const { name, desc } of skillEntries) {
+    L.push(`### ${name}`);
+    L.push(shortDesc(desc));
+    L.push('');
+  }
+
+  // ── Modes
+  L.push('## 心智模式');
+  L.push('');
+  L.push('按关键词 / 上下文自动激活。');
+  L.push('');
+  for (const { name, desc } of modeEntries) {
+    L.push(`### ${name}`);
+    L.push(shortDesc(desc));
+    L.push('');
+  }
+
+  // ── 软约定
+  L.push('## 软约定');
+  L.push('');
+  L.push('Codex 不支持 Claude Code 原生 hook，转为自律约定。完整见 `HOOKS-SOFT-GUIDANCE.md`。');
+  L.push('核心 3 条：');
+  L.push('- **config 保护**：改 lint/security/tsconfig 前先问"这是放宽规则吗？"');
+  L.push('- **交付闸门**：每批 edit 完跑 format + typecheck + test');
+  L.push('- **破坏性命令**：`rm -rf` / `git reset --hard` / force push 前停 2 秒');
+  L.push('');
+
+  // ── Artifacts
+  L.push('## 产出落盘');
+  L.push('');
+  L.push('- `.claude/PRPs/prds/` PRD · `plans/` Plan（完成后归 `completed/`）· `reports/` 实施报告 · `reviews/` PR 审查');
+  L.push('- `.claude/PRPs/features/{slug}/` 全栈特性 9 步');
+  L.push('- `~/.claude/session-data/` 跨 session 持久化 · `~/.claude/skills/learned/` 提取的 pattern');
+  L.push('- `docs/mistakes/` bug 归档 · `docs/adr/` 架构决策');
   L.push('');
 
   return L.join('\n') + '\n';

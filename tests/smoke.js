@@ -160,6 +160,32 @@ const readme = readText(path.join(ROOT, 'README.md'));
 assert(readme.includes(`version-${v}-blue`) || readme.includes(`version-${v}`),
   `README.md 未见 version badge=${v}`);
 
+// --- 8. installer dry-run 集成测试 ---
+
+try {
+  const dryRunResult = execSync('node tests/installer-dry-run.js', {
+    cwd: ROOT, stdio: 'pipe', encoding: 'utf8', timeout: 60_000,
+  });
+  const passed = /passed ✓/.test(dryRunResult);
+  assert(passed, `installer dry-run 测试未通过：${dryRunResult.slice(-300)}`);
+} catch (err) {
+  assert(false, `installer dry-run 测试失败：${err.message.slice(0, 200)}`);
+}
+
+// --- 9. rules 完整性（TS + Python 对齐）---
+
+const pyRulesDir = path.join(src, 'rules', 'python');
+const tsRulesDir = path.join(src, 'rules', 'typescript');
+if (isDir(pyRulesDir) && isDir(tsRulesDir)) {
+  const pyFiles = new Set(listDir(pyRulesDir).filter(f => f.endsWith('.md')));
+  const tsFiles = new Set(listDir(tsRulesDir).filter(f => f.endsWith('.md')));
+  // 两侧应有同名文件覆盖（coding-style / hooks / patterns / security / testing）
+  for (const core of ['coding-style.md', 'testing.md', 'security.md', 'hooks.md', 'patterns.md']) {
+    assert(pyFiles.has(core), `rules/python/${core} 缺失`);
+    assert(tsFiles.has(core), `rules/typescript/${core} 缺失`);
+  }
+}
+
 // --- 报告 ---
 
 console.log('');

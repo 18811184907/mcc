@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-24T08:37:59.734Z",
+  "generatedAt": "2026-04-24T09:05:46.074Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -324,8 +324,8 @@
       "kind": "skills",
       "dist": ".claude/skills/dispatching-parallel-agents/SKILL.md",
       "install": ".claude/skills/dispatching-parallel-agents/SKILL.md",
-      "size": 9892,
-      "sha256": "f04c3f053ed481b9276bbb2150eadb4a8139d9317e6357b4d7c66365047171f7"
+      "size": 12388,
+      "sha256": "81871d73429c60b140a0470af3164d5474968632b9a636b59b83f1a797065463"
     },
     {
       "kind": "skills",
@@ -345,8 +345,8 @@
       "kind": "skills",
       "dist": ".claude/skills/mcc-help/SKILL.md",
       "install": ".claude/skills/mcc-help/SKILL.md",
-      "size": 4378,
-      "sha256": "9deb618d78c13bf1c852aa8f0b2a52efe5cf754fdc65a6c905c3649164819547"
+      "size": 4602,
+      "sha256": "d08dcb4d8b1ace059d197c8f6e0adc93a0e4b374fe4098af5bca7c820db60ae6"
     },
     {
       "kind": "skills",
@@ -354,6 +354,13 @@
       "install": ".claude/skills/mcc-help/workflow-map.json",
       "size": 4735,
       "sha256": "92176e1d15dea79a26de391bc8252a9b10657ba2267f6b30b35bd4c8662d530d"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/orchestration-playbook/SKILL.md",
+      "install": ".claude/skills/orchestration-playbook/SKILL.md",
+      "size": 5863,
+      "sha256": "ed425a6dd1e1760327e1c12c5f059dd309b449cad0039b6bb1abb08c9e5443e4"
     },
     {
       "kind": "skills",
@@ -646,8 +653,8 @@
       "kind": "settings-fragment",
       "dist": ".claude/settings.fragment.json",
       "install": ".claude/settings.fragment.json",
-      "size": 4500,
-      "sha256": "754ae65f41a80698907b322d6ac82f85a522df770a79492465f261d7695b4eda"
+      "size": 5677,
+      "sha256": "86640dab2f26be832f2e0b3fe685fec27b8664c14f4825038416cd2b3ffd5090"
     },
     {
       "kind": "mcp-config",
@@ -660,8 +667,8 @@
       "kind": "rules",
       "dist": ".claude/rules/common/mcc-principles.md",
       "install": ".claude/rules/common/mcc-principles.md",
-      "size": 18818,
-      "sha256": "6927b76c8957b11418378f4b6d4fb882e181cc259b6c4ee4faba24cc6adf4a8c"
+      "size": 4486,
+      "sha256": "e5250361e5072f6f3b5d789004ea26b43d83a8e46352a2f62b8a588586bae31c"
     },
     {
       "kind": "rules",
@@ -785,11 +792,11 @@
   ],
   "notes": [],
   "summary": {
-    "total": 111,
+    "total": 112,
     "byKind": {
       "agents": 19,
       "command": 11,
-      "skills": 32,
+      "skills": 33,
       "modes": 3,
       "hooks": 25,
       "hooks-config": 1,
@@ -798,6 +805,6 @@
       "rules": 11,
       "placeholder": 7
     },
-    "totalBytes": 760796
+    "totalBytes": 756224
   }
 }

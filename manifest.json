@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -40,7 +40,7 @@
   "components": {
     "agents": 19,
     "commands": 11,
-    "skills": 16,
+    "skills": 17,
     "modes": 3,
     "hooks": 8,
     "hook_scripts": 25,
@@ -105,6 +105,27 @@
   },
 
   "version_history": [
+    {
+      "version": "1.8.0",
+      "date": "2026-04-24",
+      "changes": [
+        "v1.8 主题：4 层架构职责重构 + token 预算 + 安全网",
+        "重构 · rules / commands / agents / skills 4 层职责清晰化：rules 只放元规则骨架；commands 是工作流入口；agents 是领域专家（Actor）；skills 是方法论参考（Method）",
+        "mcc-principles 精简：391 行 → 94 行（5600 → ~1500 tokens 常驻），只留 3 条元规则骨架 + 指针到 skill。通用软工原则（证据 / SOLID / 系统思维 / 决策 / 风险）挪对应 skill 按需激活",
+        "拆分 mcc-help 的职责混乱：恢复为纯用户导航（用户问'我在哪'激活）；新建 orchestration-playbook skill 承载 Claude 主动性手册（场景 → agent/skill 映射）",
+        "新增 orchestration-playbook skill（107 行）：Claude 自查专用。A 节 agent 派发速查 / B 节 skill 激活速查 / C 节并行 Q1-Q4 / D 节任务规模 → 流程深度",
+        "dispatching-parallel-agents 补全：协作 4 模式（fan-out / 接力 / 辩论 / 混合）+ 合流 4 动作（去重 / 调矛盾 / 补缺 / 压摘要）+ 成本控制（上限 4 / Haiku-Sonnet 分级 / 超时策略）",
+        "AGENTS.md（Codex 侧）加 TOC + 每个 description 压缩到 ≤140 字符；首次显式暴露 v1.7 的并行能力。size 13295 → 12424 bytes",
+        "hooks 孤儿误判澄清：auto-tmux-dev / block-no-verify / pre-bash-* / post-bash-* 都在 bash-hook-dispatcher.js 里 require 到数组，不是孤儿",
+        "补 post_bash_dispatcher_OFF_BY_DEFAULT 到 _mcc_optional_hooks，暴露 post:bash:* 启用入口",
+        "installer 拆分撤回：没坏不动，拆分风险 > 收益",
+        "新建 tests/installer-dry-run.js 集成测试（12 checks，作为未来拆分的安全网）",
+        "smoke 集成 installer dry-run + rules 完整性检查（python / typescript 对齐 5 核心文件）",
+        "smoke 从 133 → 145 checks（加 TS rules 校验）",
+        "skills 16 → 17（新增 orchestration-playbook）",
+        "版本方针：各层职责清晰 > 集中；能力完整 > token 极简（用户明确'token 充足'）"
+      ]
+    },
     {
       "version": "1.7.0",
       "date": "2026-04-24",

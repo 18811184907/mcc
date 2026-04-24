@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "generatedAt": "2026-04-24T08:37:59.886Z",
+  "generatedAt": "2026-04-24T09:05:46.212Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
@@ -247,15 +247,15 @@
     {
       "kind": "rule",
       "dist": ".codex/rules/common/mcc-principles.md",
-      "size": 18818,
-      "sha256": "6927b76c8957b11418378f4b6d4fb882e181cc259b6c4ee4faba24cc6adf4a8c"
+      "size": 4486,
+      "sha256": "e5250361e5072f6f3b5d789004ea26b43d83a8e46352a2f62b8a588586bae31c"
     },
     {
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 13295,
-      "sha256": "b1b149aefb57728d931f5c6498b7336cc6467b492fc5d69aa872576c69e5dd2b"
+      "size": 12576,
+      "sha256": "66da64e4ab119389b0af749e44aafbccaf496fbb3737e964fc846e693278d72e"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -288,6 +288,6 @@
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 232383
+    "totalBytes": 217332
   }
 }

@@ -1,9 +1,9 @@
 ---
 name: mcc-help
-description: "扫 .claude/PRPs/* 和 docs/mistakes/* 推断当前进度，给结构化'下一步'建议。用户问'我该做什么'、'下一步'时激活。"
+description: "用户导航：扫 .claude/PRPs/* 和 docs/mistakes/* 推断当前进度，给结构化'下一步'建议。用户问'我该做什么 / 下一步 / 帮我理一下流程 / MCC 怎么用 / 从哪开始 / 我现在在哪'时激活。仅服务用户导航；Claude 自己查'该派什么 agent / 激活什么 skill'请激活 orchestration-playbook skill。"
 ---
 
-# MCC Help
+# MCC Help · 用户导航
 
 帮用户搞清楚**当前在流程哪一步**、**下一步做什么**。不是罗列全部工具，而是基于 workspace 当前状态给具体建议。
 

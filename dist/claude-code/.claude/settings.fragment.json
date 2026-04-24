@@ -135,6 +135,23 @@
           "timeout": 10
         }
       ]
+    },
+
+    "post_bash_dispatcher_OFF_BY_DEFAULT": {
+      "_reason_off": "后置 Bash hook 聚合：包含 post:bash:command-log-audit / command-log-cost / pr-created / build-complete 4 个子模块。默认关：对大多数用户只是记录开销。启用时同时装 dispatcher 脚本和对应 MCC_PROFILE=standard 或 strict 环境变量。",
+      "_enable_put_into": "hooks.PostToolUse",
+      "_profiles_hint": "设 MCC_PROFILE=standard 启用 pr-created + build-complete；strict 再加 tmux/git-push/commit-quality 等 pre:bash:* 子模块。",
+      "matcher": "Bash",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "node ${MCC_HOOKS}/hooks/bash-hook-dispatcher.js post",
+          "async": true,
+          "timeout": 5
+        }
+      ]
     }
-  }
+  },
+
+  "_mcc_pre_bash_safety_submodules_note": "当 pre:bash:safety 启用时，内部 dispatcher 会按 MCC_PROFILE 串行跑这 6 个子模块（在 bash-hook-dispatcher.js 里列出）：block-no-verify / auto-tmux-dev / tmux-reminder / git-push-reminder / commit-quality / gateguard-fact-force。这些脚本存在但非独立 hook——通过 dispatcher 间接暴露。不要误判为孤儿。"
 }

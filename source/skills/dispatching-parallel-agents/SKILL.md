@@ -61,6 +61,63 @@ Q4. 任务很小（<30 行改动）？
 用户说"并行处理这些"           → 直接按独立度拆分
 ```
 
+## 协作 4 模式（subagent 之间看不见，主 session 做整合）
+
+Subagent 之间**不能直接通信**（各自 context 独立）。所谓"多 agent 协作"真实发生在 3 个位置：
+
+**模式 A · 一次 fan-out，一次整合**（最常见）
+```
+[主 session]
+   ├─ Task: agent1 ─┐
+   ├─ Task: agent2 ─┼─ 并行返回 ──→ [主 session 整合]
+   └─ Task: agent3 ─┘
+```
+适用：代码审查（质量+安全+性能）、问题诊断（bug/perf/DB）、架构规划。
+
+**模式 B · 接力（A → B → C）**
+```
+Task: code-explorer（探索现有代码）
+   → 主 session 提炼 "关键文件"
+Task: planner + domain agent（基于文件写 plan）
+   → 主 session 审 plan
+Task: 执行 subagent 按 plan 实现
+```
+适用：`/plan` / `/implement` 工作流。每步都有真实依赖，不能并行。
+
+**模式 C · 辩论（同问题多视角 → 合流出权衡）**
+```
+Task: party-mode spawn 4 agents 同题不同角
+   → 每 agent 独立回答 → 主 session 做权衡矩阵
+```
+适用：技术选型、架构决策。详见 `party-mode` skill。
+
+**模式 D · 混合（fan-out → 某一路发现新问题 → 补派一次）**
+```
+Task: code-reviewer + security-reviewer 并行
+   主 session 看：reviewer 说"有静默失败风险"
+   → Task: silent-failure-hunter 补派
+```
+适用：深度审查、跨域问题。
+
+## 合流整合 4 动作（必做）
+
+每次 subagent 并行返回后，主 session 做：
+
+1. **去重** — 多 agent 报同一问题合并为 1 条
+2. **调矛盾** — A 说 X、B 说 Y：判断真矛盾 vs 不同优先级，给最终决策
+3. **补缺** — 某 agent 跳过了某维度（如没碰数据库）→ 自觉补 `database-optimizer`
+4. **压摘要** — **禁止**把每个 agent 的 full report 贴给用户；压成 CRITICAL / HIGH / MEDIUM 三档，每档 ≤3 条
+
+## 成本与效率控制
+
+- **上限 4 并发**：再多合流难度指数增长
+- **完整 briefing**：每个 agent 收到的 prompt 必须**自包含**（goal / context / deliverable / output format 全给）；禁止说"和另一个 agent 一起看"
+- **模型分级**：
+  - 轻量扫描（格式 / lint / 简单事实）→ **Haiku**
+  - 深度判断（架构 / 安全 / 复杂 bug）→ **Sonnet/Opus**
+  - 混合派发明确标：`code-reviewer(sonnet) + silent-failure-hunter(haiku)`
+- **超时**：每个 subagent 心里设 timeout（大 PR 审 ≤5 min），超时主 session 不等，用已返回先整合
+
 ## 何时使用
 
 ```dot

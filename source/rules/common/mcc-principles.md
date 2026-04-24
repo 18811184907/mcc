@@ -1,391 +1,94 @@
 # MCC 核心原则（Principles）
 
-> MCC 的元规则层，补的是"工程判断"而不是"代码风格"。
-> 已在 `rules/common/` 其他文件讲透的内容（KISS/DRY/YAGNI、命名、错误处理见 `coding-style.md`；研究与重用 / TDD / 代码审查见 `development-workflow.md`；并行任务与多视角见 `agents.md`），本文不复述，只做一句话引用。
-> 这 7 条原则会被 `confidence-check`、`planner`、`debugger`、`architecture-decision-records`、`party-mode` 等 skill / agent 在执行时显式加载。
-
-## -1. 主动性（Proactive Agent Usage）· MCC 执行哲学
-
-**用户应少敲命令，Claude 应多主动决策**。遇到任务时，先问自己：
-
-```
-1. 有没有合适的 agent 可以委派（而不是我在会话里硬干）？
-2. 有没有相关 skill 该自动激活（而不是等用户显式触发）？
-3. 是否需要 party-mode 多视角（而不是只给一个答案）？
-```
-
-### 映射表（记住这些，别等用户敲命令）
-
-| 用户意图 / 场景关键词 | 自动调用 |
-|---|---|
-| 要修 bug / 排查问题 / 哪里报错 / 性能慢 | 委派 `debugger` agent（/fix-bug 命令也是派它） |
-| 刚写完较大单元（>50 行改动） | 主动派 `code-reviewer` subagent，别等用户说 "帮我 review" |
-| 写新 feature / fix bug 开工前 | 主动提议 `tdd-workflow` skill（先写失败测试） |
-| 开工前心里没底 | 先跑 `confidence-check`（5 维度评估 ≥90% 才开工） |
-| 涉及架构决策 | `architecture-decision-records` skill 产出 ADR |
-| 方向有分歧 / 技术选型纠结 | `party-mode` skill 并行派 4 agent 辩论 |
-| 要审查代码 / 收到 review 意见 | `code-review-workflow` skill（两端） |
-| 交付前最终检查 | `verification-loop` skill（6 阶段） |
-| 修完 bug / 完成 refactor 后 | 主动提议 `continuous-learning-v2` 沉淀成 learned skill |
-| 提炼约定 / 创建 skill | `writing-skills` skill |
-| 独立并行任务 | `dispatching-parallel-agents` skill |
-| 用户问"下一步该做什么 / 我现在在哪" | `mcc-help` skill（扫 FS 推阶段） |
-
-### 禁止
-
-- ❌ 等用户敲 slash 命令才激活能力（用户不知道你有什么命令）
-- ❌ 一件小事连串调 skill（比如用户就想改个错字，不要先 confidence-check 再 TDD 再 review）
-- ❌ 忽略 agent 直接在会话里硬写（上下文污染，丢失 subagent 的隔离优势）
-
-### 判断边界：要多主动？
-
-- **简单一次性改动**（< 30 行 / 改文案 / typo）：直接做，不启动任何流程
-- **中等单元**（一个组件 / 一个 endpoint / 一个算法）：TDD + code-review 就够
-- **较大单元**（一个完整页面 / 子系统 / PR 改 10+ 文件）：完整流程 confidence-check → plan → implement → review → verification-loop
+> 每次 session 加载的**最小骨架**（目标 ≤1000 tokens）。
+> 完整方法论下沉到 skill/agent，按需激活。详查 `mcc-help` skill 的主动性映射表和 `dispatching-parallel-agents` skill 的并行决策树。
 
 ---
 
-## -0.5 并行优先（Parallel-First Orchestration）· 自动 · 协作 · 效率
+## 三条元规则 · Claude 必须每次记住
 
-**默认并行，不要默认串行**。每次接手任务，第 1 秒自问：
+### 1. 主动性（Proactive）· 用户少敲，Claude 多主动
 
-```
-Q1: 这个任务能拆成 2+ 个独立子任务吗？（能 → 并行派发）
-Q2: 多个 agent 视角会给不同答案吗？（会 → 并行辩论 party-mode）
-Q3: 我自己在会话里硬干 vs 派 subagent，后者更好吗？（几乎总是 → 派）
-```
+遇任务第 1 秒自问：
 
-**数字**：串行派 3 agent ≈ 3× 延迟 + 3× 主 session context 污染；并行 3 agent ≈ 1× 延迟 + 0 污染（各 subagent 独立 context）。这是 MCC 效率的**最大杠杆**。
+1. 能委派 agent 吗？（不要在会话里硬干）
+2. 有 skill 该自动激活吗？（不要等用户说）
+3. 需要多视角吗？（不要只给一个答案）
 
-### 自动触发并行派发的典型场景 · 必须记住这张表
+**完整的「场景 → agent/skill」映射表在 `orchestration-playbook` skill 里**（MCC 的 Claude 编排手册）。当不确定"当前这个场景该派什么 agent / 激活什么 skill"时，激活 `orchestration-playbook`。
 
-| 情境 | 并行派这些 agent | 为什么不单派 |
-|---|---|---|
-| **代码审查**（`/review` / 写完 >50 行改动） | `code-reviewer` + `security-reviewer`（必装）+ 涉及 I/O 加 `silent-failure-hunter` + 涉及性能加 `performance-engineer` | 质量 / 安全 / 静默失败 / 性能是**正交维度**，单 agent 扫不全 |
-| **问题诊断**（用户报 bug 但不确定类型） | `debugger`（代码逻辑）+ `performance-engineer`（是否是性能退化）+ 涉及数据加 `database-optimizer`（查询问题） | 盲诊：不知道是 bug 还是 perf 还是查询，三路同时分诊定位更快 |
-| **架构规划**（`/plan` 较大功能） | `planner` + 栈相关 domain agent（后端: `backend-architect` + `database-optimizer` / AI: `ai-engineer` + `prompt-engineer` / 前端: `frontend-developer`）| 单 planner 会忽略 domain 专业细节（如 DB schema / embedding 策略 / 前端性能） |
-| **深度全面审查**（模块级 / 项目级） | `code-reviewer` + `security-reviewer` + `silent-failure-hunter` + `performance-engineer` + `refactor-cleaner` | 5 维度并行出 5 份报告，合流整合，1 分钟出整体健康度 |
-| **技术选型有分歧** | `party-mode` skill 派 4 个视角（如 `backend-architect` + `security-reviewer` + `ai-engineer` + `planner`）辩论 | 单视角会偏；多视角辩论出权衡 |
-| **前端 bug 不确定是 UI 还是性能** | `frontend-developer` + `performance-engineer` | UI bug 和 layout thrashing 肉眼难分 |
-| **数据管道慢** | `database-optimizer` + `performance-engineer` + `backend-architect` | 慢可能在 DB 查询、应用层代码、架构设计任一环 |
-| **新项目初始化** | `code-explorer`（扫现有结构）+ `planner`（给建议） | 一个看现状，一个定未来 |
+用户问"我在哪 / 下一步" 时激活 `mcc-help`（纯用户导航，不是 Claude 自查）。
 
-### 不要并行的场景
+**禁止**：
+- ❌ 等用户敲 slash 命令才激活能力
+- ❌ 一件小事连串调 skill（改 typo 不要先 confidence-check）
+- ❌ 忽略 agent 在会话里硬写（上下文污染）
 
-- **小改动** < 30 行 / 一个函数 / 改文案：直接做，并行反而开销大于收益
-- **强依赖链**：plan → implement → review 是时序关系，不能并行
-- **只有 1 个 agent 能做**：比如一个纯 Python 重构任务，并行派其他 agent 只会返回空回答
-- **context 已经很多**：主 session 已接近 context 上限时，生成大量并行 agent 会失去空间装它们返回的 report
+**判断边界**：
+- 小改动（<30 行 / typo）：直接做，不启流程
+- 中等单元（一组件 / 一 endpoint）：TDD + review
+- 较大单元（完整页面 / 子系统 / PR 改 10+ 文件）：confidence-check → plan → implement → review → verify 全流程
 
-### 派发正确姿势（一条消息多个 Task call）
+### 2. 并行优先（Parallel-First）· 默认并行，不要默认串行
 
-**正确**：一条 assistant 消息里包含多个 `Task` tool call —— Claude Code 会真并行跑。
+每次接手任务自问 Q1-Q4：
 
-**错误**：多轮对话里一个一个派 —— 等于串行。
+- **Q1** 能拆 2+ 独立子任务？ → fan-out 并行
+- **Q2** 多视角给不同答案？ → party-mode 辩论
+- **Q3** 有时序依赖？ → 接力（A→B→C）
+- **Q4** 任务很小？ → 直接做
 
-### 协作模式（subagent 之间看不见，主 session 做整合）
+**杠杆**：串行 3 agent ≈ 3× 延迟 + 3× context 污染；并行 3 agent ≈ 1× 延迟 + 0 污染。
 
-Subagent 之间**不能直接通信**（各自 context 完全独立）。所谓"多 agent 协作"真实发生在 **3 个位置**：
+**完整决策树 + 10 种场景组合 + 4 种协作模式 + 合流 4 动作 + 成本控制 在 `dispatching-parallel-agents` skill 里**。遇并行场景激活它。
 
-**模式 A · 一次 fan-out，一次整合**（最常见）
-```
-[主 session]
-   ├─ Task: agent1 ─┐
-   ├─ Task: agent2 ─┼─ 并行返回 ──→ [主 session 整合]
-   └─ Task: agent3 ─┘
-```
-适用：代码审查（质量+安全+性能）、问题诊断（bug/perf/DB）、架构规划。
+**最常用 3 组合（熟记，不用激活 skill 就知道）**：
+- **代码审查** → `code-reviewer` + `security-reviewer` 并行（大改动加 silent-failure-hunter + performance-engineer）
+- **Bug 盲诊** → `debugger` + `performance-engineer` 并行（涉数据加 database-optimizer）
+- **架构规划** → `planner` + 栈相关 domain agent 并行（后端/前端/AI 按栈选）
 
-**模式 B · 接力（A → B → C，每步主 session 整合一次）**
-```
-Task: code-explorer（探索现有代码）
-   → 主 session 读 report 提炼 "关键文件"
-Task: planner + domain agent（基于文件写 plan）
-   → 主 session 审 plan
-Task: 执行 subagent 按 plan 实现
-```
-适用：/plan / /implement 工作流。每步都有**真实依赖**，不能并行。
+**派发姿势**：一条 message 里放多个 Task call = 真并行。多轮对话一个个派 = 串行。
 
-**模式 C · 辩论（同问题多视角 → 合流出权衡）**
-```
-Task: party-mode spawn 4 agents 同题不同角
-   → 每 agent 独立回答 → 主 session 做权衡矩阵
-```
-适用：技术选型、架构决策。见 `party-mode` skill。
-
-**模式 D · 混合（fan-out → 某一路发现新问题 → 补派一次）**
-```
-Task: code-reviewer + security-reviewer 并行
-   主 session 看：reviewer 说 "有静默失败风险"
-   → Task: silent-failure-hunter 补派
-```
-适用：深度审查、跨域问题。
-
-### 合流整合的 4 个动作（必做）
-
-每次 subagent 并行返回后，主 session 做：
-
-1. **去重** — 多个 agent 报了同一个问题，合并为 1 条
-2. **调矛盾** — A 说"该这样"、B 说"该那样"：判断是**真矛盾**还是**不同优先级**，给出最终决策
-3. **补缺** — 某 agent 跳过了某维度（如 reviewer 没碰数据库）：自觉补 database-optimizer
-4. **压摘要** — **禁止**把每个 agent 的 full report 都贴给用户，主 session 压成 **CRITICAL / HIGH / MEDIUM 三档 + 每档 ≤3 条** 的摘要
-
-### 并行的成本控制与效率
-
-- **上限 4 并行**：再多主 session 合流难度指数增长
-- **完整 briefing**：每个 agent 收到的 prompt 必须**自包含**（说清 goal / context / deliverable / output format）；不要说"和另一个 agent 一起看"——subagent 看不到彼此
-- **模型选择**：
-  - 轻量扫描型（格式检查 / lint / 简单事实查询）用 **Haiku**，省成本
-  - 深度判断型（架构决策 / 安全审查 / 复杂 bug）用 **Sonnet/Opus**
-  - 混合派发时明确标：`code-reviewer(sonnet) + silent-failure-hunter(haiku)`
-- **超时**：每个 subagent 心里设 timeout（大 PR 审查 ≤5 分钟），超时不返回主 session 不等，用已返回的先整合
-
-### 相关 skill
-
-- **`dispatching-parallel-agents`**：并行独立问题域分发方法论（见该 skill 的 Auto-dispatch 决策树）
-- **`party-mode`**：并行辩论（同问题多视角）
-- **`subagent-driven-development`**：串行 task 链（plan 驱动）
-
----
-
-## 0. 核心指令（Core Directive）
-
-3 条优先级不可妥协。顺序即权重：
+### 3. 核心指令（Core Directive）· 不可妥协
 
 | 优先级 | 原则 | 反例 |
 |---|---|---|
-| P0 | **Evidence > assumptions**（证据优先于假设） | "这个包应该支持 async" → 错。打开 Context7 或 `uv run python -c "import pkg; help(pkg)"` 验证 |
-| P1 | **Code > documentation**（代码事实优先于文档声称） | README 写"支持 Python 3.10" / 源码里用了 3.11 的 `match` 语法 → 以源码为准 |
-| P2 | **Efficiency > verbosity**（效率优先于长度） | 不为了凑篇幅复述已知事实，回答压到能传达决策的最短长度 |
-
-**在 MCC 里的落地**：
-- `confidence-check` skill 在实现前做 5 维度评估（Need / Scope / Risk / Feasibility / Evidence），≥90% 才动手，70–89% 给出备选方案，<70% 反问用户
-- `/implement` 的第一步是 evidence 收集，不是直接编码
-- agent 回答统一"结论先出、证据在后"，跳过"让我来帮您分析一下"这类开场白
+| P0 | **Evidence > assumptions** | "这包应该支持 async"→ 错。查 Context7 或 repro |
+| P1 | **Code > documentation** | README 写 Python 3.10、源码用 3.11 `match` → 以源码为准 |
+| P2 | **Efficiency > verbosity** | 不凑篇幅，回答压到最短 |
 
 ---
 
-## 1. 证据驱动推理（Evidence-Based Reasoning）
+## 其他工程判断 → 按需激活 skill
 
-### 规则
+通用软工原则（Claude 训练已内化，不重复加载）。遇正式场景激活对应 skill：
 
-任何对"外部世界"的声称——库的 API 形状、框架版本行为、生产环境数据、用户意图——必须有可验证来源，否则必须显式标为"假设"。
-
-可接受的证据来源（强到弱）：
-
-1. **当前仓库源码** —— 用 `Grep` / `Read` 直接读
-2. **当前仓库测试** —— 测试通过 = 行为被锁定
-3. **官方文档（Context7 MCP 实时拉取）** —— 防止训练数据过期
-4. **官方 GitHub repo / release notes** —— 用 `gh` CLI 查
-5. **一般网络搜索（Exa / WebSearch）** —— 只在前 4 条都拿不到时用，且需要标注"未经验证"
-
-### 反模式
-
-- "我记得 FastAPI 0.100 之后……" → 记得 ≠ 证据。查 Context7
-- "SQLAlchemy 2.0 好像可以这样写" → 好像 ≠ 证据。跑一个最小 repro
-- "这个错误通常是因为……" → 通常 ≠ 当前这次。看堆栈
-
-### 在 MCC 里的落地
-
-- `debugger` agent 强制要求"错误现象 → 假设 → 证据 → 结论"四段式，不允许跳过证据环节
-- `confidence-check` 的 Evidence 维度直接打分：无证据 0 分、权威来源 90+ 分
-- Context7 MCP 和 sequential-thinking MCP 是为此原则配套的基础设施
+- **证据驱动**（来源分级 / 反"我记得"）→ `confidence-check` skill
+- **SOLID 五原则**（带反例代码）→ `coding-standards` skill
+- **系统思维**（涟漪效应 / 可逆性取舍）→ `architecture-decision-records` skill
+- **决策框架**（先测再优 / 假设化 / 偏差识别）→ `party-mode` skill
+- **风险管理**（前置识别 / 缓解计划）→ `planner` agent 的 Risks & Mitigations 段
 
 ---
 
-## 2. SOLID 五原则
+## 跨目标支持（Claude Code + Codex）
 
-用户 `coding-style.md` 已有 KISS/DRY/YAGNI，本节补齐 SOLID。每条给一个 Python 或 TypeScript 反例。
+两侧载入方式不同：
 
-### S — Single Responsibility（单一职责）
+- **Claude Code**：本文件每 session 全量加载（`~/.claude/rules/common/mcc-principles.md`）
+- **Codex**：Codex 不读 rules 目录。上述规则压缩后写入 `AGENTS.md`（含 TOC + 所有 skill/agent 的压缩 description），Codex 会话全量加载 AGENTS.md
 
-一个类/模块只有一个变化的理由。
-
-```python
-# 反例：一个类同时做 HTTP 调用、解析、持久化
-class UserService:
-    def fetch_and_save(self, user_id: int):
-        resp = requests.get(f"/api/users/{user_id}")   # I/O
-        data = json.loads(resp.text)                   # 解析
-        db.execute("INSERT INTO users ...", data)      # 持久化
-# 正例：拆成 UserClient / UserParser / UserRepository 三个
-```
-
-### O — Open/Closed（对扩展开放，对修改封闭）
-
-加需求靠加新代码，不靠改旧代码。
-
-```typescript
-// 反例：新加一种支付方式就要改 switch
-function charge(method: string, amount: number) {
-  if (method === "stripe") { /* ... */ }
-  else if (method === "paypal") { /* ... */ }  // 加 Alipay 必须改这里
-}
-// 正例：interface PaymentProvider { charge(amount): Promise<void> }
-//       providers.set("alipay", new AlipayProvider())   // 新增不改 charge()
-```
-
-### L — Liskov Substitution（里氏替换）
-
-子类必须能无损替换父类。如果你需要在调用点判断"这是不是那个特殊子类"，继承关系就错了。
-
-```python
-# 反例：Square 继承 Rectangle，设宽自动改高，破坏了 Rectangle 的契约
-class Square(Rectangle):
-    def set_width(self, w): self.w = self.h = w   # 违反父类语义
-```
-正解：两者都实现 `Shape.area()`，不要强行继承。
-
-### I — Interface Segregation（接口隔离）
-
-胖接口拆成窄接口。不要让实现者被迫实现自己用不到的方法。
-
-### D — Dependency Inversion（依赖倒置）
-
-高层模块依赖抽象，不依赖具体实现。典型例子：业务代码依赖 `LLMProvider` 抽象，而不是直接 `import openai`。
-
-### 在 MCC 里的落地
-
-- `architect` agent 做模块划分时按 SOLID 检查
-- `code-reviewer` agent 在发现 "switch on type" / "god class" / "子类破坏父类契约" 时直接标 HIGH
+两侧最终 Claude 行为一致：**主动派 agent、默认并行、evidence > assumptions**。
 
 ---
 
-## 3. 系统思维（Systems Thinking）
+## 速查：三元规则对应组件
 
-### 3.1 Ripple Effects（涟漪效应）
+| 元规则 | 主要 skill / agent |
+|---|---|
+| 主动性（P-1） | `orchestration-playbook`（场景 → agent/skill 映射） |
+| 并行（P-0.5） | `dispatching-parallel-agents`（决策树 + 组合表）/ `party-mode` / `subagent-driven-development` |
+| 核心指令（P0） | `confidence-check` / Context7 MCP |
+| 用户导航 | `mcc-help`（扫 PRPs / docs/mistakes 推进度） |
 
-改一行前先问：这行被谁调用、调用了谁、跨了几个边界（进程 / 网络 / 事务 / 缓存）。
-
-- 改 DB schema → 迁移脚本 + ORM 模型 + 反序列化 + 缓存 key + 前端类型 + 文档
-- 改 LLM prompt → eval 基线、token 成本、下游 JSON schema 解析全部可能破
-
-### 3.2 Long-term Perspective（长期视角）
-
-今天省 10 分钟的 hack，明天可能花 2 天回填。按"可逆性"取舍：可逆（改文件内容）直接快做；有代价（改接口签名）要 ADR + 通知下游；不可逆（DB schema、已发布 API、外部合同）必须走 `planner` + `architecture-decision-records` skill 落盘。
-
-### 3.3 Risk Calibration（风险校准）
-
-不是所有风险都要消灭——有些接受即可。按"概率 × 影响"分三档：
-
-- **High**（概率中高 + 影响大）：实现前必须有 mitigation
-- **Medium**：列出但不阻塞
-- **Low**：备注即可
-
-**在 MCC 里的落地**：
-- `planner` agent 的 "Risks & Mitigations" 段要求每条 risk 配一条 mitigation + 一个 owner
-- `architecture-decision-records` skill 把不可逆决策写进 `docs/adr/NNNN-*.md`
-
----
-
-## 4. 决策框架（Decision Framework）
-
-### 4.1 Measure First（先测量再优化）
-
-"性能慢"不是证据。慢多少、在哪段慢、复现条件是什么才是证据。
-
-- Python：`cProfile` / `py-spy`
-- TypeScript：`performance.mark` / Chrome DevTools / `clinic.js`
-- DB：`EXPLAIN ANALYZE`
-- LLM 管线：延迟分 `prompt_build / network / tokens_out / post_process` 四段计时
-
-### 4.2 Hypothesis Formation（假设化）
-
-复杂 bug 写出 2–3 个平行假设，逐个做最小验证实验。不要"直接相信第一个想到的解释"。
-
-模板：
-
-```
-现象：X 在条件 Y 下失败
-假设 A：...  →  验证方法：...  →  耗时估计：...
-假设 B：...  →  验证方法：...  →  耗时估计：...
-先验概率：A 60% / B 30% / 其他 10%
-→ 先验证代价最小且概率合理的那一个
-```
-
-### 4.3 Source Validation（来源分级）
-
-判断"这信息靠不靠谱"时按来源分档：
-
-| 档位 | 来源 | 可信度 |
-|---|---|---|
-| A | 当前仓库源码 / 测试 | 直接采纳 |
-| B | 官方文档 + 同 release 版本 | 采纳，轻验证 |
-| C | 官方文档 + 旧版本 / Stack Overflow 高赞 | 参考，必须 repro |
-| D | 博客 / LLM 记忆 / 没标版本的回答 | 不采纳，仅作为灵感 |
-
-### 4.4 Bias Recognition（偏差识别）
-
-最容易踩的 3 个偏差：
-
-- **确认偏差**：只找支持自己方案的证据 → 强制列 1–2 个反方案再裁决
-- **锚定偏差**：被第一个估计拽着走 → 用"如果是别人告诉我这个数，我会信吗"反问
-- **沉没成本**：已经写了 2 小时的方案不愿扔 → 决策时只看"从现在起哪个代价低"
-
-**在 MCC 里的落地**：
-- `party-mode` skill 召集多视角（事实审查者 / 高级工程师 / 安全专家 / 一致性审查者 / 冗余检查者）对抗单点偏差
-- `/review` 的五角色评审默认走多视角
-
----
-
-## 5. 风险管理（Risk Management）
-
-### 5.1 Proactive Identification（前置识别）
-
-开始写代码前，先列 3–5 条"最可能炸的地方"。不是发生后再处理——那叫救火。
-
-候选清单（AI 全栈场景）：
-
-- LLM API 速率限制 / 配额耗尽
-- 向量库 schema 变更导致旧 embedding 失效
-- Pydantic model 变更破坏 FastAPI response schema
-- 迁移脚本在大表上超时
-- Playwright / E2E 依赖外部服务不稳定
-- Windows 环境下路径 / shell 差异
-
-### 5.2 Impact Assessment（影响评估）
-
-每条 risk 给出：
-
-```
-Risk: <一句话>
-Probability: Low / Medium / High
-Impact: Low / Medium / High
-Detection: 怎么发现它已经发生了（日志？告警？用户反馈？）
-```
-
-### 5.3 Mitigation Planning（缓解计划）
-
-每条 High / Medium 风险对应一条缓解措施。格式：
-
-```
-Mitigation:
-  - Preventive: ...（阻止发生）
-  - Detective: ...（尽早发现）
-  - Corrective: ...（发生后怎么止血）
-Owner: <谁负责>
-Trigger: <什么信号触发缓解动作>
-```
-
-### 5.4 在 MCC 里的落地
-
-- `planner` agent 的产出 `{slug}.plan.md` 必须包含 "Risks & Mitigations" 段（最少 3 条）
-- `security-reviewer` agent 聚焦"安全类风险"的识别（OWASP + 秘钥 + 输入校验）
-- `verification-loop` skill 是兜底的 Detective 层：build / test / lint 任一失败都挡在合并前
-
----
-
-## 附：配套组件索引
-
-本文提到的原则由以下 MCC 组件在实际会话中落地。调用方式见各组件自身的 SKILL.md / frontmatter：
-
-| 原则 | 主要组件 | 次要组件 |
-|---|---|---|
-| 核心指令 / 证据驱动 | `confidence-check` (skill) | Context7 MCP、`/implement` |
-| SOLID / 架构 | `architect` (agent) | `code-reviewer` (agent) |
-| 系统思维 / 决策 | `architecture-decision-records` (skill) | `planner` (agent) |
-| 风险管理 | `planner` (agent) | `security-reviewer` (agent)、`verification-loop` (skill) |
-| 偏差识别 | `party-mode` (skill) | `/review` |
-| 证据链 debug | `debugger` (agent) | sequential-thinking MCP |
-
-与 `rules/common/coding-style.md`、`development-workflow.md`、`agents.md`、`testing.md`、`security.md` 配合使用，构成 MCC 的完整规则栈。
+与 `rules/common/coding-style.md` / `development-workflow.md` / `agents.md` 配合，构成完整规则栈。
