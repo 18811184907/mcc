@@ -1,6 +1,6 @@
 ---
 name: continuous-learning-v2
-description: "hooks 后台观察 + 原子 instinct + 置信度评分，长期学习你的编码习惯。默认关闭 observer，需手动启用。"
+description: "长期学习你的编码习惯，沉淀 learned skill 到 ~/.claude/skills/learned/。用户说'记下这个 / 以后别再这样 / 这个模式以后用 / 沉淀一下 / 提炼出约定 / 归纳经验'时激活；修完 bug 或完成重要 refactor 后 Claude 主动提议。默认关闭 observer 需手动启用。"
 ---
 
 # Continuous Learning v2.1 — 基于 instinct 的后台学习

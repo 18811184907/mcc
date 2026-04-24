@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "generatedAt": "2026-04-24T06:56:26.595Z",
+  "generatedAt": "2026-04-24T07:22:04.392Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
@@ -120,18 +120,6 @@
     },
     {
       "kind": "prompt",
-      "dist": ".codex/prompts/mcc-build-fix.md",
-      "size": 2826,
-      "sha256": "e351c3e26dd344bcd47276b8789d907e1067bb1521938ca12ef13f09ba1e2920"
-    },
-    {
-      "kind": "prompt",
-      "dist": ".codex/prompts/mcc-e2e.md",
-      "size": 4577,
-      "sha256": "52d5eec0e810ce8b4be67c2946d9b3f9701a0d16d856dbb7ad80c52290af8501"
-    },
-    {
-      "kind": "prompt",
       "dist": ".codex/prompts/mcc-explain.md",
       "size": 1628,
       "sha256": "b3d7296c43134480df9b003134322be132b98844420760b0f62ccab09e18a644"
@@ -139,20 +127,8 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-fix-bug.md",
-      "size": 2352,
-      "sha256": "dd74c8f1204f7fcf672cee4a22ac833dfadd3b4979342849de2f856b62d52db0"
-    },
-    {
-      "kind": "prompt",
-      "dist": ".codex/prompts/mcc-full-review.md",
-      "size": 12014,
-      "sha256": "1e132340c75df011e2906c42778547de957d42a7b2a17cab0f441ac7d5f3f960"
-    },
-    {
-      "kind": "prompt",
-      "dist": ".codex/prompts/mcc-full-stack.md",
-      "size": 12960,
-      "sha256": "b71386570395272a2211ca79e12cd4c8fa8bc19ec7de0b07b6be9ef05237dae5"
+      "size": 3719,
+      "sha256": "767e9eaf59f50e664ca9a69c1708cbe6363cf7805fc0f06d58a3c4012ae2916a"
     },
     {
       "kind": "prompt",
@@ -165,12 +141,6 @@
       "dist": ".codex/prompts/mcc-init.md",
       "size": 2369,
       "sha256": "d7fa0da5453e7dff4d04ed17819dc549918134e442fc77fb6e00c1eb5b9fd65c"
-    },
-    {
-      "kind": "prompt",
-      "dist": ".codex/prompts/mcc-learn.md",
-      "size": 1868,
-      "sha256": "7538b15afef8e745df26c27b4f01b9304cee650adc8ac2d76b88608d0e94efd7"
     },
     {
       "kind": "prompt",
@@ -210,33 +180,9 @@
     },
     {
       "kind": "prompt",
-      "dist": ".codex/prompts/mcc-skill-create.md",
-      "size": 2745,
-      "sha256": "11e75270345d0b75526305475c82842a2242402f96d11aabde9c83a7f175a72c"
-    },
-    {
-      "kind": "prompt",
       "dist": ".codex/prompts/mcc-tdd.md",
       "size": 3356,
       "sha256": "c170e2d01fe5b7772921ed3c8da73d44402e648bed49f464ff7611a56d6ddc46"
-    },
-    {
-      "kind": "prompt",
-      "dist": ".codex/prompts/mcc-test-coverage.md",
-      "size": 3060,
-      "sha256": "166d862e5992ae853e696717365da8352b05090a48d6747183393b3105a878cf"
-    },
-    {
-      "kind": "prompt",
-      "dist": ".codex/prompts/mcc-troubleshoot.md",
-      "size": 3742,
-      "sha256": "7dce683bf8ab8b10c2ce591f5f4ed4879b1a4d00546634fefdddef06f7be6671"
-    },
-    {
-      "kind": "prompt",
-      "dist": ".codex/prompts/mcc-verify.md",
-      "size": 1022,
-      "sha256": "61df975a5417d3c06832b80cc0344e774d997522b810cf37debccbdf0a23277b"
     },
     {
       "kind": "rule",
@@ -271,15 +217,15 @@
     {
       "kind": "rule",
       "dist": ".codex/rules/common/mcc-principles.md",
-      "size": 10312,
-      "sha256": "cd9c166d6c30c747a7233a698c3d3e109d00a33a6cf13c04e7739827b8bfdb8f"
+      "size": 12594,
+      "sha256": "18a456aedb4c860dadc531bf027ae5e13a1cb902fba4e9f48def70477fc845f8"
     },
     {
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 11851,
-      "sha256": "ab20e880c5b6e8553f354c9bd8bbcbe1fa7f073c12b8f2cb722dba7cc6d7afb9"
+      "size": 11082,
+      "sha256": "c7c942e6ae21884e30f7c719e7916d20f45441bee2bc107bb7792dd205019822"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -303,15 +249,15 @@
     "Codex 不支持 skill，转为 AGENTS.md 中的场景指引段"
   ],
   "summary": {
-    "total": 48,
+    "total": 39,
     "byKind": {
       "agent": 19,
-      "prompt": 20,
+      "prompt": 11,
       "rule": 6,
       "agents-md": 1,
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 242200
+    "totalBytes": 200266
   }
 }

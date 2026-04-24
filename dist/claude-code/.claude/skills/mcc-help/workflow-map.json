@@ -1,5 +1,5 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "phases": [
     {
       "id": "1-discover",
@@ -31,7 +31,7 @@
       "skills": ["confidence-check"],
       "commands": [],
       "gate_rule": "confidence >= 0.9",
-      "next_hint": "Plan 已定 → 运行 confidence-check，≥90% 才进入 implement"
+      "next_hint": "Plan 已定 → 跑 confidence-check skill（关键词 '开工 / 信心 / 风险'自动触发），≥90% 才进入 implement"
     },
     {
       "id": "4-implement",
@@ -39,7 +39,7 @@
       "entry_artifacts": [".claude/PRPs/plans/*.md"],
       "exit_artifacts": [".claude/PRPs/plans/completed/*.md"],
       "required": true,
-      "skills": ["coding-standards", "task-management"],
+      "skills": ["coding-standards", "tdd-workflow", "subagent-driven-development"],
       "commands": ["/implement", "/tdd"],
       "agents": ["planner", "backend-architect", "ai-engineer", "python-pro", "typescript-pro", "fastapi-pro"],
       "next_hint": "plans/<X>.md 未移到 completed/ → /implement 继续"
@@ -51,8 +51,8 @@
       "exit_artifacts": [".claude/PRPs/reports/*.md"],
       "required": true,
       "skills": ["verification-loop"],
-      "commands": ["/verify", "/test-coverage"],
-      "next_hint": "代码完成 → /verify 走 6 阶段"
+      "commands": [],
+      "next_hint": "代码完成 → verification-loop skill 自动 6 阶段验证（说'验证一下 / 交付前检查'即触发）"
     },
     {
       "id": "6-review",
@@ -60,10 +60,10 @@
       "entry_artifacts": [".claude/PRPs/reports/*.md"],
       "exit_artifacts": [".claude/PRPs/reviews/*.md"],
       "required": true,
-      "skills": [],
-      "commands": ["/review", "/full-review"],
+      "skills": ["code-review-workflow"],
+      "commands": ["/review"],
       "agents": ["code-reviewer", "security-reviewer"],
-      "next_hint": "verify 通过 → /full-review 出评审报告"
+      "next_hint": "verify 通过 → /review 派 code-reviewer + security-reviewer 并行审"
     },
     {
       "id": "7-ship",
@@ -71,14 +71,14 @@
       "entry_artifacts": [".claude/PRPs/reviews/*.md"],
       "exit_artifacts": [],
       "required": false,
-      "skills": [],
+      "skills": ["finishing-a-development-branch"],
       "commands": ["/pr"]
     }
   ],
   "anytime": {
     "stuck_debug": {
-      "signals": ["错误反复", "debug 超过 30 分钟"],
-      "recommend": ["debugger agent", "/troubleshoot"]
+      "signals": ["错误反复", "debug 超过 30 分钟", "不知道问题类型"],
+      "recommend": ["/fix-bug 一键入口（自动 4 域分诊）", "debugger agent"]
     },
     "research": {
       "signals": ["不知道用什么库", "不确定 API"],
@@ -90,11 +90,19 @@
     },
     "architecture_debate": {
       "signals": ["两个方案选不出", "方向性决策"],
-      "recommend": ["party-mode skill", "architecture-decision-records skill"]
+      "recommend": ["party-mode skill（并行派 4 agent 辩论）", "architecture-decision-records skill"]
     },
     "learning": {
-      "signals": ["最近犯了同样错误"],
-      "recommend": ["/learn", "continuous-learning-v2 skill", "docs/mistakes/ 索引"]
+      "signals": ["最近犯了同样错误", "要沉淀经验"],
+      "recommend": ["continuous-learning-v2 skill（用户说'记下这个'自动激活）", "docs/mistakes/ 索引"]
+    },
+    "parallel_tasks": {
+      "signals": ["多个独立子任务", "批量改造"],
+      "recommend": ["dispatching-parallel-agents skill"]
+    },
+    "e2e_tests": {
+      "signals": ["写 E2E", "端到端测试", "Playwright"],
+      "recommend": ["e2e-testing skill"]
     }
   },
   "fs_scan_rules": {

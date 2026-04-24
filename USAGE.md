@@ -1,7 +1,9 @@
 # MCC Usage · 命令速查
 
-> 20 个命令 + 16 个 skill + 3 个 behavioral mode 的使用手册。
+> 11 个命令 + 16 个 skill + 3 个 behavioral mode 的使用手册。
 > 新手建议先看 [README.md](./README.md) 的"典型工作流"章节。
+>
+> **v1.5 后只留真正高频、产出 artifact、或需要显式触发的命令。冷门能力转 skill 自动激活**（说"验证一下" → verification-loop；说"审一下" → code-review-workflow；说"写 E2E" → e2e-testing；说"记下这个" → continuous-learning-v2）。
 
 ---
 
@@ -13,7 +15,7 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 
 ---
 
-## 20 个命令按类型
+## 11 个命令按类型
 
 ### 🎯 PRP 流水线（4 个）· 中小功能的主力流
 
@@ -34,76 +36,81 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 /pr           → 发 PR
 ```
 
-### 🏗 大流水线（2 个）· 复杂功能用
-
-比 PRP 更重，带人工 checkpoint 和并行验证。
-
-| 命令 | 功能 |
-|---|---|
-| `/full-stack` | 9 步全栈特性流水线：需求 → DB 设计 → 架构 → DB/后端/前端实现 → test+sec+perf 并行验证 → 部署 → 文档。**2 个 user approval checkpoint** |
-| `/full-review` | 5 阶段全面代码审查：质量+架构 / 安全+性能 / 测试+文档 / 最佳实践+CI/CD → 按 P0/P1/P2/P3 优先级汇总 |
-
-### 🔍 审查（2 个）
+### 🔍 审查（1 个）
 
 | 命令 | 场景 |
 |---|---|
-| `/review` | **单点**审查：本地未提交 diff，或 `mcc:review 123` 审 PR #123（并行调 code-reviewer + security-reviewer） |
-| `/full-review` | **全面**体检：模块级或项目级（见上面大流水线） |
+| `/review` | 本地未提交 diff 或 `/review 123` 审 PR #123；并行派 `code-reviewer` + `security-reviewer`。深度审能力靠 **code-review-workflow skill** 覆盖。 |
 
-### ✅ 验证 / 测试（4 个）
+### ✅ 测试（1 个）
 
 | 命令 | 场景 |
 |---|---|
-| `/verify` | 跑 verification-loop skill：build / type / lint / test / security / diff 6 阶段 |
-| `/test-coverage` | 分析覆盖率，定位低覆盖文件，生成缺失测试到 80%+（委派 test-automator） |
-| `/tdd` | 强制 RED → GREEN → REFACTOR，先写失败测试再实现 |
-| `/e2e` | Playwright E2E 测试：生成 page object + 跑测 + 产出 artifacts |
+| `/tdd` | 强制 RED → GREEN → REFACTOR。也可直接说"用 TDD 写 xxx"触发 **tdd-workflow skill**。 |
 
-### 🔧 诊断（3 档）
+> **其他测试能力**（不再是命令，说关键词 skill 自动激活）：
+> - 交付前 6 阶段验证 → 说"验证一下 / 交付前检查" → `verification-loop` skill
+> - E2E Playwright → 说"写 E2E / 端到端测试" → `e2e-testing` skill（含 Page Object 模板）
+> - 覆盖率补到 80% → 说"补测试到 80%" → `test-automator` agent
 
-窄 → 广 三档阶梯：
+### 🔧 诊断（1 个 · 统一入口）
 
-| 命令 | 适合 |
+| 命令 | 场景 |
 |---|---|
-| `/build-fix` | 构建/类型错误专项修复。3 次同错误自动停下问用户 |
-| `/fix-bug` | 单个 bug 深挖：强制 root cause → 提 A/B 方案 → 用户确认再动手。禁止 retry / timeout 拉长。产出归档 `docs/mistakes/` |
-| `/troubleshoot` | 多域诊断：bug / build / performance / deployment 四种快速判断 + 路由到上面两个专项 |
+| `/fix-bug` | **统一问题入口**：自动分诊 bug / build / performance / deployment 四域，强制根因调查，禁止打补丁。归档到 `docs/mistakes/`。 |
 
 ### 🧠 会话持久化（2 个）· 跨天必用
 
 | 命令 | 场景 |
 |---|---|
-| `/session-save` | session 结束前写"已验证成果 / 失败路线 / 下一步 exact action"到 `~/.claude/session-data/YYYY-MM-DD-{shortid}-session.tmp` |
-| `/session-resume` | 加载最近 session 文件，结构化 briefing 后等用户确认继续 |
-
-### 📚 学习 / 沉淀（2 个）
-
-| 命令 | 场景 |
-|---|---|
-| `/learn` | 从当前 session 提取可复用 pattern（错误解决 / 调试技巧 / 项目约定）→ `~/.claude/skills/learned/{pattern}.md` |
-| `/skill-create` | 分析 git history（默认 200 commits）提取约定 + 文件共变 + 架构 + 测试模式 → 生成 SKILL.md |
+| `/session-save` | session 结束前写已验证成果 / 失败路线 / 下一步 exact action |
+| `/session-resume` | 加载最近 session 文件 |
 
 ### 🚪 入口（2 个）
 
 | 命令 | 场景 |
 |---|---|
 | `/init` | 新项目首次入场：探测栈 + 提取约定 + 生成 `CLAUDE.md` |
-| `/explain` | 用中文详细解释代码/函数/模块/概念（假设懂基础，补领域知识） |
+| `/explain` | 用中文详细解释代码/函数/模块/概念 |
+
+---
+
+## v1.5 删除的命令 → 能力都在（靠 skill 自动激活）
+
+| 删了 | 替代 |
+|---|---|
+| `/full-stack` | `/prd → /plan → /implement` 已覆盖 |
+| `/full-review` | `/review` + `code-review-workflow` skill |
+| `/verify` | 说"验证一下" → `verification-loop` skill |
+| `/test-coverage` | 说"补覆盖率" → `test-automator` agent |
+| `/e2e` | 说"写 E2E" → `e2e-testing` skill |
+| `/build-fix` | 并入 `/fix-bug`（自动识别 build 类） |
+| `/troubleshoot` | 并入 `/fix-bug`（4 域分诊） |
+| `/learn` | 说"记下这个" → `continuous-learning-v2` skill |
+| `/skill-create` | 说"建个 skill" → `writing-skills` skill |
 
 ---
 
 ## 16 个 skill（Claude 自动激活，无需手动调）
 
-| Skill | 触发时机 |
+| Skill | 自动激活关键词 / 时机 |
 |---|---|
-| **mcc-help** | 用户问"我该做什么 / 下一步是什么 / /help"时激活。扫 `.claude/PRPs/*` + `docs/mistakes/*` 推断当前阶段 |
-| **product-lens** | 写代码前验证"为什么要做"时：4 模式诊断（Diagnostic / Founder Review / User Journey / Feature Prioritization）→ 产出 `PRODUCT-BRIEF.md` |
-| **confidence-check** | 实现前跑 5 维度打勾（去重查 / 架构合规 / 官方文档 / OSS 参考 / 根因识别），≥90% 才开工 |
-| **party-mode** | 架构决策、技术选型、思路发散时：真并行 spawn N 个 MCC agent 辩论（不是单 LLM 扮多角色），滚动 400 词摘要 |
-| **architecture-decision-records** | 识别架构决策瞬间 → `docs/adr/NNNN-*.md` |
-| **coding-standards** | 写代码时自动参考的编码规范（Python + TS 带示例） |
-| **verification-loop** | `/verify` 的实现体 |
-| **continuous-learning-v2** | 默认关闭。启用后 hooks 观察 tool 调用 → Haiku 分析 → 产出 instincts（带置信度） |
+| **mcc-help** | "我该做什么 / 下一步是什么 / /help"。扫 `.claude/PRPs/*` + `docs/mistakes/*` 推断当前阶段 |
+| **product-lens** | 写代码前验证"为什么要做"：4 模式诊断 → 产出 `PRODUCT-BRIEF.md` |
+| **confidence-check** | "开工前 / 心里没底 / 信心如何"：5 维度打勾，≥90% 才开工 |
+| **party-mode** | "选不出方案 / 多视角 / 辩论"：真并行 spawn N 个 MCC agent |
+| **architecture-decision-records** | "记录决策 / 架构取舍" → `docs/adr/NNNN-*.md` |
+| **coding-standards** | 写代码时自动参考 |
+| **verification-loop** | "验证一下 / 交付前检查 / 跑 CI 前"：6 阶段 Build/Type/Lint/Test/Security/Diff |
+| **tdd-workflow** | "用 TDD / 写测试 / 新 feature / 修 bug"：RED-GREEN-REFACTOR |
+| **e2e-testing** | "写 E2E / Playwright / 端到端测试"：Page Object 模板 + CI 集成 |
+| **code-review-workflow** | "审一下 / 帮我看看代码 / 收到审查意见"：派 subagent + 收反馈两端 |
+| **subagent-driven-development** | 任务拆分后每 task fresh subagent + 两阶段 review |
+| **dispatching-parallel-agents** | 多个独立任务并行分发（和 party-mode 辩论互补） |
+| **using-git-worktrees** | 需要同时开多个分支隔离开发 |
+| **finishing-a-development-branch** | 分支收尾（merge/PR/cleanup） |
+| **writing-skills** | "建个 skill / 提炼约定 / 创作流程文档" |
+| **continuous-learning-v2** | "记下这个 / 沉淀 / 归纳经验"：产出 learned skill 到 `~/.claude/skills/learned/` |
 
 ---
 

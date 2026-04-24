@@ -1,6 +1,6 @@
 ---
 name: tdd-workflow
-description: "严格的 RED-GREEN-REFACTOR 工作流：先写失败测试、watch it fail、再写最小实现。实现任何 feature/bugfix 前自动触发；也是 /tdd 命令的 skill 实现。"
+description: "严格的 RED-GREEN-REFACTOR 工作流：先写失败测试、watch it fail、再写最小实现。用户说'写测试 / 加单元测试 / 写新功能 / 修 bug / 用 TDD / test first'时自动激活；任何 feature/bugfix 开工前 Claude 应主动提议。/tdd 命令的 skill 实现。"
 ---
 
 # Test-Driven Development (TDD)

@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-24T06:56:26.436Z",
+  "generatedAt": "2026-04-24T07:22:04.251Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -140,20 +140,6 @@
     },
     {
       "kind": "command",
-      "dist": ".claude/commands/build-fix.md",
-      "install": ".claude/commands/build-fix.md",
-      "size": 2826,
-      "sha256": "e351c3e26dd344bcd47276b8789d907e1067bb1521938ca12ef13f09ba1e2920"
-    },
-    {
-      "kind": "command",
-      "dist": ".claude/commands/e2e.md",
-      "install": ".claude/commands/e2e.md",
-      "size": 4577,
-      "sha256": "52d5eec0e810ce8b4be67c2946d9b3f9701a0d16d856dbb7ad80c52290af8501"
-    },
-    {
-      "kind": "command",
       "dist": ".claude/commands/explain.md",
       "install": ".claude/commands/explain.md",
       "size": 1628,
@@ -163,22 +149,8 @@
       "kind": "command",
       "dist": ".claude/commands/fix-bug.md",
       "install": ".claude/commands/fix-bug.md",
-      "size": 2352,
-      "sha256": "dd74c8f1204f7fcf672cee4a22ac833dfadd3b4979342849de2f856b62d52db0"
-    },
-    {
-      "kind": "command",
-      "dist": ".claude/commands/full-review.md",
-      "install": ".claude/commands/full-review.md",
-      "size": 12014,
-      "sha256": "1e132340c75df011e2906c42778547de957d42a7b2a17cab0f441ac7d5f3f960"
-    },
-    {
-      "kind": "command",
-      "dist": ".claude/commands/full-stack.md",
-      "install": ".claude/commands/full-stack.md",
-      "size": 12960,
-      "sha256": "b71386570395272a2211ca79e12cd4c8fa8bc19ec7de0b07b6be9ef05237dae5"
+      "size": 3719,
+      "sha256": "767e9eaf59f50e664ca9a69c1708cbe6363cf7805fc0f06d58a3c4012ae2916a"
     },
     {
       "kind": "command",
@@ -193,13 +165,6 @@
       "install": ".claude/commands/init.md",
       "size": 2369,
       "sha256": "d7fa0da5453e7dff4d04ed17819dc549918134e442fc77fb6e00c1eb5b9fd65c"
-    },
-    {
-      "kind": "command",
-      "dist": ".claude/commands/learn.md",
-      "install": ".claude/commands/learn.md",
-      "size": 1868,
-      "sha256": "7538b15afef8e745df26c27b4f01b9304cee650adc8ac2d76b88608d0e94efd7"
     },
     {
       "kind": "command",
@@ -245,38 +210,10 @@
     },
     {
       "kind": "command",
-      "dist": ".claude/commands/skill-create.md",
-      "install": ".claude/commands/skill-create.md",
-      "size": 2745,
-      "sha256": "11e75270345d0b75526305475c82842a2242402f96d11aabde9c83a7f175a72c"
-    },
-    {
-      "kind": "command",
       "dist": ".claude/commands/tdd.md",
       "install": ".claude/commands/tdd.md",
       "size": 3356,
       "sha256": "c170e2d01fe5b7772921ed3c8da73d44402e648bed49f464ff7611a56d6ddc46"
-    },
-    {
-      "kind": "command",
-      "dist": ".claude/commands/test-coverage.md",
-      "install": ".claude/commands/test-coverage.md",
-      "size": 3060,
-      "sha256": "166d862e5992ae853e696717365da8352b05090a48d6747183393b3105a878cf"
-    },
-    {
-      "kind": "command",
-      "dist": ".claude/commands/troubleshoot.md",
-      "install": ".claude/commands/troubleshoot.md",
-      "size": 3742,
-      "sha256": "7dce683bf8ab8b10c2ce591f5f4ed4879b1a4d00546634fefdddef06f7be6671"
-    },
-    {
-      "kind": "command",
-      "dist": ".claude/commands/verify.md",
-      "install": ".claude/commands/verify.md",
-      "size": 1022,
-      "sha256": "61df975a5417d3c06832b80cc0344e774d997522b810cf37debccbdf0a23277b"
     },
     {
       "kind": "skills",
@@ -284,6 +221,20 @@
       "install": ".claude/skills/architecture-decision-records/SKILL.md",
       "size": 6062,
       "sha256": "fcfff97c52a08450a0528f659367995787be8005758fe82a1c8f50f74a4f9ae7"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/code-review-workflow/SKILL.md",
+      "install": ".claude/skills/code-review-workflow/SKILL.md",
+      "size": 5961,
+      "sha256": "71e36d8f36e94ecf6d83d676b66e95096541d3f65bfcf1beca1c84976ff99667"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/code-review-workflow/code-reviewer-prompt-template.md",
+      "install": ".claude/skills/code-review-workflow/code-reviewer-prompt-template.md",
+      "size": 3531,
+      "sha256": "942ad4ea9988344259821289134daaf91484207322dd981bd6611d28b13a6c6c"
     },
     {
       "kind": "skills",
@@ -303,8 +254,8 @@
       "kind": "skills",
       "dist": ".claude/skills/continuous-learning-v2/SKILL.md",
       "install": ".claude/skills/continuous-learning-v2/SKILL.md",
-      "size": 7934,
-      "sha256": "53101b8924c1d235258abe7da8e236580731f96947b2db816188babbc86b77da"
+      "size": 8118,
+      "sha256": "157a82c4018c35321fe5d1d6693d3ac067013b73a0108864a51447ee4cf076a0"
     },
     {
       "kind": "skills",
@@ -378,6 +329,13 @@
     },
     {
       "kind": "skills",
+      "dist": ".claude/skills/e2e-testing/SKILL.md",
+      "install": ".claude/skills/e2e-testing/SKILL.md",
+      "size": 4926,
+      "sha256": "92643ada0927707b944401c8c1e1d18a2b922d064ec91679417a3ce5f30e2d9b"
+    },
+    {
+      "kind": "skills",
       "dist": ".claude/skills/finishing-a-development-branch/SKILL.md",
       "install": ".claude/skills/finishing-a-development-branch/SKILL.md",
       "size": 4341,
@@ -394,8 +352,8 @@
       "kind": "skills",
       "dist": ".claude/skills/mcc-help/workflow-map.json",
       "install": ".claude/skills/mcc-help/workflow-map.json",
-      "size": 4122,
-      "sha256": "64f48a4bd8e550109a099823ff4fe5a0dade2f12313966632126ba0fbe015dde"
+      "size": 4735,
+      "sha256": "92176e1d15dea79a26de391bc8252a9b10657ba2267f6b30b35bd4c8662d530d"
     },
     {
       "kind": "skills",
@@ -410,27 +368,6 @@
       "install": ".claude/skills/product-lens/SKILL.md",
       "size": 3085,
       "sha256": "03cae7e89fb90cee901bc2765b710b99c3d1c3b7c4a5ec5a80a23abd841d5575"
-    },
-    {
-      "kind": "skills",
-      "dist": ".claude/skills/receiving-code-review/SKILL.md",
-      "install": ".claude/skills/receiving-code-review/SKILL.md",
-      "size": 6413,
-      "sha256": "c23c806b38ae8e12abdd9e2ff676abc3cd57835a4cb80819752ba856445f7e8e"
-    },
-    {
-      "kind": "skills",
-      "dist": ".claude/skills/requesting-code-review/SKILL.md",
-      "install": ".claude/skills/requesting-code-review/SKILL.md",
-      "size": 3554,
-      "sha256": "42cb6e774ea2157784075126217861bcb77f8af75dcf86bafa108a6439473a6b"
-    },
-    {
-      "kind": "skills",
-      "dist": ".claude/skills/requesting-code-review/code-reviewer.md",
-      "install": ".claude/skills/requesting-code-review/code-reviewer.md",
-      "size": 3531,
-      "sha256": "942ad4ea9988344259821289134daaf91484207322dd981bd6611d28b13a6c6c"
     },
     {
       "kind": "skills",
@@ -464,8 +401,8 @@
       "kind": "skills",
       "dist": ".claude/skills/tdd-workflow/SKILL.md",
       "install": ".claude/skills/tdd-workflow/SKILL.md",
-      "size": 10560,
-      "sha256": "a0273bb4e08b7f30d9fc05bfc01951449c3fc0ca0b985d297aa992e6bdc2155e"
+      "size": 10668,
+      "sha256": "d1b7437c0cc385ae0206ac68ba41fdae2fc172efa1df40a1707fcca72a2d35de"
     },
     {
       "kind": "skills",
@@ -485,15 +422,15 @@
       "kind": "skills",
       "dist": ".claude/skills/verification-loop/SKILL.md",
       "install": ".claude/skills/verification-loop/SKILL.md",
-      "size": 2998,
-      "sha256": "9f96de5beaace7965572f010f72c7f5d37a5d033a89ceec1e426a1b38c871072"
+      "size": 3101,
+      "sha256": "44f7fb00ea8c97a437fff77d03e52ca057c80fd4ec32ced20b3843c9360edeff"
     },
     {
       "kind": "skills",
       "dist": ".claude/skills/writing-skills/SKILL.md",
       "install": ".claude/skills/writing-skills/SKILL.md",
-      "size": 20760,
-      "sha256": "35b0778e28f763fc4810a1a58702458f8856597363a1bf376502ba44e0f84570"
+      "size": 20849,
+      "sha256": "e1ca516be05f29d49b24bb8685d5fe645a89c38f02a97fdbde77b9e9cf3e093c"
     },
     {
       "kind": "skills",
@@ -723,8 +660,8 @@
       "kind": "rules",
       "dist": ".claude/rules/common/mcc-principles.md",
       "install": ".claude/rules/common/mcc-principles.md",
-      "size": 10312,
-      "sha256": "cd9c166d6c30c747a7233a698c3d3e109d00a33a6cf13c04e7739827b8bfdb8f"
+      "size": 12594,
+      "sha256": "18a456aedb4c860dadc531bf027ae5e13a1cb902fba4e9f48def70477fc845f8"
     },
     {
       "kind": "rules",
@@ -813,10 +750,10 @@
   ],
   "notes": [],
   "summary": {
-    "total": 115,
+    "total": 106,
     "byKind": {
       "agents": 19,
-      "command": 20,
+      "command": 11,
       "skills": 32,
       "modes": 3,
       "hooks": 25,
@@ -826,6 +763,6 @@
       "rules": 6,
       "placeholder": 7
     },
-    "totalBytes": 763207
+    "totalBytes": 724059
   }
 }

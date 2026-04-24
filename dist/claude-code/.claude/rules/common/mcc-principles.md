@@ -2,7 +2,48 @@
 
 > MCC 的元规则层，补的是"工程判断"而不是"代码风格"。
 > 已在 `rules/common/` 其他文件讲透的内容（KISS/DRY/YAGNI、命名、错误处理见 `coding-style.md`；研究与重用 / TDD / 代码审查见 `development-workflow.md`；并行任务与多视角见 `agents.md`），本文不复述，只做一句话引用。
-> 这 6 条原则会被 `confidence-check`、`planner`、`debugger`、`architecture-decision-records`、`party-mode` 等 skill / agent 在执行时显式加载。
+> 这 7 条原则会被 `confidence-check`、`planner`、`debugger`、`architecture-decision-records`、`party-mode` 等 skill / agent 在执行时显式加载。
+
+## -1. 主动性（Proactive Agent Usage）· MCC 执行哲学
+
+**用户应少敲命令，Claude 应多主动决策**。遇到任务时，先问自己：
+
+```
+1. 有没有合适的 agent 可以委派（而不是我在会话里硬干）？
+2. 有没有相关 skill 该自动激活（而不是等用户显式触发）？
+3. 是否需要 party-mode 多视角（而不是只给一个答案）？
+```
+
+### 映射表（记住这些，别等用户敲命令）
+
+| 用户意图 / 场景关键词 | 自动调用 |
+|---|---|
+| 要修 bug / 排查问题 / 哪里报错 / 性能慢 | 委派 `debugger` agent（/fix-bug 命令也是派它） |
+| 刚写完较大单元（>50 行改动） | 主动派 `code-reviewer` subagent，别等用户说 "帮我 review" |
+| 写新 feature / fix bug 开工前 | 主动提议 `tdd-workflow` skill（先写失败测试） |
+| 开工前心里没底 | 先跑 `confidence-check`（5 维度评估 ≥90% 才开工） |
+| 涉及架构决策 | `architecture-decision-records` skill 产出 ADR |
+| 方向有分歧 / 技术选型纠结 | `party-mode` skill 并行派 4 agent 辩论 |
+| 要审查代码 / 收到 review 意见 | `code-review-workflow` skill（两端） |
+| 交付前最终检查 | `verification-loop` skill（6 阶段） |
+| 修完 bug / 完成 refactor 后 | 主动提议 `continuous-learning-v2` 沉淀成 learned skill |
+| 提炼约定 / 创建 skill | `writing-skills` skill |
+| 独立并行任务 | `dispatching-parallel-agents` skill |
+| 用户问"下一步该做什么 / 我现在在哪" | `mcc-help` skill（扫 FS 推阶段） |
+
+### 禁止
+
+- ❌ 等用户敲 slash 命令才激活能力（用户不知道你有什么命令）
+- ❌ 一件小事连串调 skill（比如用户就想改个错字，不要先 confidence-check 再 TDD 再 review）
+- ❌ 忽略 agent 直接在会话里硬写（上下文污染，丢失 subagent 的隔离优势）
+
+### 判断边界：要多主动？
+
+- **简单一次性改动**（< 30 行 / 改文案 / typo）：直接做，不启动任何流程
+- **中等单元**（一个组件 / 一个 endpoint / 一个算法）：TDD + code-review 就够
+- **较大单元**（一个完整页面 / 子系统 / PR 改 10+ 文件）：完整流程 confidence-check → plan → implement → review → verification-loop
+
+---
 
 ## 0. 核心指令（Core Directive）
 

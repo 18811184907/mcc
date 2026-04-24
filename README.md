@@ -4,7 +4,7 @@
 > 中文主场景，Python + TypeScript + AI 应用全栈定向优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-1.4.1-blue)
+![Version](https://img.shields.io/badge/version-1.5.0-blue)
 ![Target](https://img.shields.io/badge/target-Claude_Code_%2B_Codex-purple)
 
 ---
@@ -20,7 +20,7 @@
 | 维度 | 内容 |
 |---|---|
 | **19 个角色 agent** | planner / code-reviewer / debugger / security-reviewer / ai-engineer / python-pro / typescript-pro / fastapi-pro / frontend-developer / backend-architect / database-optimizer / performance-engineer / …… |
-| **20 个 slash 命令** | `/prd` `/plan` `/implement` `/pr`（PRP 四件套流水线）、`/full-stack`（9 步全栈）、`/review` `/full-review`（两档审查）、`/tdd` `/e2e` `/test-coverage`（测试三路）、`/fix-bug` `/troubleshoot` `/build-fix`（诊断三档）、`/session-save` `/session-resume`（跨 session 持久化）…… |
+| **11 个 slash 命令** | `/prd` `/plan` `/implement` `/pr`（PRP 四件套流水线）、`/review`（派 code-reviewer + security-reviewer 并行）、`/tdd`（RED-GREEN-REFACTOR）、`/fix-bug`（统一问题入口，自动 4 域分诊 bug / build / performance / deployment）、`/session-save` `/session-resume`（跨 session 持久化）、`/init`（新项目入场）、`/explain`（中文讲解代码） |
 | **16 个 skill** | **v1.0 基础（8）**：`product-lens`（产品诊断）、`confidence-check`（5 维度开工门槛）、`party-mode`（真并行多 agent 辩论）、`mcc-help`（扫 FS 推当前阶段+建议下一步）、`architecture-decision-records`、`coding-standards`、`verification-loop`、`continuous-learning-v2`<br><br>**v1.1 Superpowers 增量（8）**：`subagent-driven-development`（每任务 fresh subagent + 两阶段 review）、`tdd-workflow`（含 testing-anti-patterns，`/tdd` 的 skill 实现体）、`writing-skills`（创作 skill 的 meta-skill + Anthropic 最佳实践）、`using-git-worktrees`、`finishing-a-development-branch`、`requesting-code-review` + `receiving-code-review`（审查两端）、`dispatching-parallel-agents`（和 party-mode 辩论互补：一个分发一个辩论） |
 | **3 个 behavioral mode** | `brainstorming` · `task-management` · `token-efficiency`（按关键词/上下文自动激活） |
 | **8 条 hook** | `pre:config-protection` 独家（阻止 Claude 修改 config 绕过 lint/security）、`stop:format-typecheck`（批量 lint+tsc，不每次 edit 跑）、`pre:bash:safety`（破坏性命令拦截）等 |
@@ -200,7 +200,19 @@ mcc-help → 查看当前阶段 + 推荐 skill
 今天开始：/session-resume → 秒懂昨天做到哪了、什么没跑通、下一步 exact action
 ```
 
-完整 20 个命令速查见 [USAGE.md](./USAGE.md)。
+完整 11 个命令速查见 [USAGE.md](./USAGE.md)。
+
+### v1.5 哲学：少命令，多自动
+
+冷门命令（/full-stack / /full-review / /verify / /test-coverage / /e2e / /learn / /skill-create / /build-fix / /troubleshoot）已删除，能力转移到 skill 自动激活：
+
+- 说"验证一下 / 交付前检查" → `verification-loop` skill 自动 6 阶段
+- 说"写 E2E / Playwright" → `e2e-testing` skill 给出 Page Object 模板
+- 说"审一下 / 帮我看看代码" → `code-review-workflow` skill 派 subagent 审
+- 说"记下这个 / 沉淀经验" → `continuous-learning-v2` skill 写 learned skill
+- 说"建个 skill / 提炼约定" → `writing-skills` skill 交互式创作
+
+mcc-principles 加了 P-1"主动性"规则：**用户应少敲命令，Claude 应多主动决策**。详见 `rules/common/mcc-principles.md` 顶部。
 
 ---
 
@@ -310,7 +322,20 @@ mcc-help → 查看当前阶段 + 推荐 skill
 - [x] v1.3 Hook 减捣乱合并发布（3 个捣乱王默认关）
 - [⊗] v1.4.0 的"团队代码备份"（`/backup` 三件套 + team-install 脚本 + 双份 guide）**已在 v1.4.1 下线**。原因：GitHub 安全模型限制，管理员至少要亲自建一次 PAT，无法做到真正全托管。保留设计文档供未来 Organization 版本参考。
 
-### v1.5+ · 待定（按社区反馈）
+### v1.5 · 2026-04-24 少命令，多自动 ✅
+
+哲学：**用户应少敲命令，Claude 应多主动决策**。
+
+- [x] 命令数 20 → **11**（-45%）
+- [x] 删除 9 个冷门命令：`/full-stack` `/full-review` `/build-fix` `/verify` `/test-coverage` `/e2e` `/learn` `/skill-create` `/troubleshoot`
+- [x] `/fix-bug` 吞下 `/troubleshoot` 的 4 域路由（bug / build / performance / deployment 自动判定）
+- [x] 合并 skill：`requesting-code-review` + `receiving-code-review` → `code-review-workflow`（一个 skill 覆盖两端）
+- [x] 新增 skill：`e2e-testing`（Playwright + Page Object + CI 集成，原 `/e2e` 的能力更全）
+- [x] 强化多个 skill 的自动激活关键词（`verification-loop` / `tdd-workflow` / `continuous-learning-v2` / `writing-skills`）
+- [x] `mcc-principles` 新增 **P-1 主动性原则**：含场景-agent/skill 意图映射表，让 Claude 遇到场景自动派发
+- [x] `mcc-help` workflow-map.json 同步更新
+
+### v1.6+ · 待定（按社区反馈）
 
 - [ ] `install.ps1 -Minimal` 最小 MCP 模式（只装 Context7 + Sequential，省 7-11k tokens）
 - [ ] `doc-updater` agent（ECC 有但当前没装）

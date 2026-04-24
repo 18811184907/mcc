@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -39,7 +39,7 @@
 
   "components": {
     "agents": 19,
-    "commands": 20,
+    "commands": 11,
     "skills": 16,
     "modes": 3,
     "hooks": 8,
@@ -47,7 +47,7 @@
     "mcp_servers": 5,
     "rules_python": 5,
     "rules_common": 1,
-    "principles_sections": 6
+    "principles_sections": 7
   },
 
   "compatibility": {
@@ -104,6 +104,23 @@
   },
 
   "version_history": [
+    {
+      "version": "1.5.0",
+      "date": "2026-04-24",
+      "changes": [
+        "v1.5 '少命令，多自动' 精简：命令数 20 → 11，冷门命令能力转 skill 自动激活，大幅减少用户需要记忆的表面",
+        "删除 9 个冷门命令：/full-stack /full-review /build-fix /verify /test-coverage /e2e /learn /skill-create /troubleshoot",
+        "/fix-bug 吞下 /troubleshoot 的 4 域路由能力（自动判 bug / build / performance / deployment）",
+        "合并 skill：requesting-code-review + receiving-code-review → code-review-workflow（一个 skill 覆盖发起和接收两端）",
+        "新增 skill：e2e-testing（Playwright + Page Object + CI 集成，取代 /e2e 命令）",
+        "强化 skill 自动激活关键词（verification-loop / tdd-workflow / continuous-learning-v2 / writing-skills）",
+        "mcc-principles 新增 P-1 '主动性原则'：用户少敲命令、Claude 多主动派 agent/skill；附意图映射表",
+        "mcc-help workflow-map.json 同步清理被删命令引用，补充 anytime 分支（parallel_tasks / e2e_tests）",
+        "最终保留的 11 commands: /init /prd /plan /implement /pr /session-save /session-resume /explain /tdd /review /fix-bug",
+        "dist 产出: claude-code 104 files / codex 37 files（均下降）",
+        "token 消耗进一步下降（少加载 9 个 command 的 frontmatter + 长文本）"
+      ]
+    },
     {
       "version": "1.4.1",
       "date": "2026-04-24",

@@ -1,19 +1,18 @@
 ---
 name: verification-loop
-description: "交付前 6 阶段验证（Build/Type/Lint/Test/Security/Diff）。/verify 命令触发。"
+description: "交付前 6 阶段验证（Build/Type/Lint/Test/Security/Diff）。用户说'验证一下 / 跑一遍检查 / 交付前检查 / 确认没问题'时自动激活。"
 ---
 
 # Verification Loop
 
 交付前的全面验证系统。
 
-## 何时使用
+## 何时使用（自动激活关键词）
 
-- 完成一个功能或重要改动之后
+- 用户说"验证一下 / 跑一遍检查 / 交付前检查 / 确认没问题 / 跑 CI 前"
+- 完成一个功能或重要改动之后（主动提议）
 - 创建 PR 前
-- 想确认质量门槛都过
 - 重构之后
-- `/verify` 命令就是触发这个 skill——命令和 skill 一一对应
 
 ## 验证阶段
 
