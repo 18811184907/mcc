@@ -4,21 +4,23 @@
 
 ---
 
-## 1. 装（30 秒）
+## 1. 装（一行命令 · 30 秒）
+
+**Windows**（PowerShell）：
 
 ```powershell
-# Windows
-git clone https://github.com/18811184907/mcc
-cd mcc
-.\install.ps1
+iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 | iex
 ```
 
+**macOS / Linux / Git Bash**：
+
 ```bash
-# macOS / Linux / Git Bash
-git clone https://github.com/18811184907/mcc
-cd mcc
-./install.sh
+curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash
 ```
+
+bootstrap 自动检查依赖、clone、装好。**更新就重跑同一条命令**。
+
+> 想看清每一步？用 `git clone https://github.com/18811184907/mcc && cd mcc && ./install.sh`（macOS/Linux）或 `.\install.ps1`（Windows）。
 
 **装完做什么**：自动合并到 `~/.claude/`（保留你已有的）：
 - 19 个领域专家 agent · 13 个 slash 命令 · 18 个方法论 skill

@@ -4,7 +4,7 @@
 > 中文主场景，Python + TypeScript + AI 应用全栈定向优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-2.0.1-blue)
+![Version](https://img.shields.io/badge/version-2.1.0-blue)
 ![Target](https://img.shields.io/badge/target-Claude_Code_%2B_Codex-purple)
 
 ---
@@ -37,32 +37,59 @@
 - **Claude Code** 或 **Codex**（或两者都装）
 - Git Bash（Windows 环境可选，用于 observe.sh hook 等 bash 脚本）
 
-### 3 种安装方式
+### 安装（v2.1 一行命令搞定）
 
-#### A. Claude Code 原生 `/plugin`（推荐 Claude Code 用户）
+#### 🚀 推荐 · 一行远程引导
+
+**Windows（PowerShell）**：
+
+```powershell
+iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 | iex
+```
+
+**macOS / Linux / Git Bash**：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash
+```
+
+**带参数**（如装到当前项目而非全局）：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash -s -- --scope project
+```
+
+bootstrap 自动：检查 git/node ≥18 → clone 到 `~/.mcc-install` → 跑 installer → 给下一步指引。**重新跑同一命令即更新到最新**（自动 git pull）。
+
+#### 📦 备选方案
+
+**Claude Code 原生 `/plugin`**（只装 agent/command/skill，不合并 settings）：
 
 ```
 /plugin marketplace add https://github.com/18811184907/mcc
 /plugin install mcc@mcc-marketplace
 ```
 
-然后跑 `.\install.ps1` 合并 hooks + MCP 配置（`/plugin` 只装 agent/command/skill，settings 合并还得跑 installer）。
+然后跑一次 `.\install.ps1` 合并 hooks + MCP。
 
-#### B. 一键脚本（推荐多工具用户）
+**手动 git clone**（如果你想看清每一步）：
 
 ```powershell
 # Windows
 git clone https://github.com/18811184907/mcc
 cd mcc
 .\install.ps1
+```
 
+```bash
 # macOS / Linux / Git Bash
 git clone https://github.com/18811184907/mcc
 cd mcc
 ./install.sh
 ```
 
-installer 会自动：
+#### installer 会做的事
+
 1. 检测你装了哪些工具（Claude Code / Codex）
 2. 备份现有 `settings.json` / `config.toml`
 3. **不覆盖**你的 agent/command/skill（同名跳过）
