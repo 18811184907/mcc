@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-25T08:20:07.656Z",
+  "generatedAt": "2026-04-25T23:59:02.077Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -37,8 +37,8 @@
       "kind": "agents",
       "dist": ".claude/agents/database-optimizer.md",
       "install": ".claude/agents/database-optimizer.md",
-      "size": 7944,
-      "sha256": "1aed233eaa3b98ab0c3ba1e00dd9dfce591ae372b57ad65051e0183f78cdc1cf"
+      "size": 9452,
+      "sha256": "1c97df412dd05fa45388f06e2169385b815f98cefae2115a361085de00149508"
     },
     {
       "kind": "agents",
@@ -65,8 +65,8 @@
       "kind": "agents",
       "dist": ".claude/agents/javascript-pro.md",
       "install": ".claude/agents/javascript-pro.md",
-      "size": 3309,
-      "sha256": "99e0758e8386646cfa81ee626bce2093c0dc10af8a0fa2e9f45f848e8f04b0b9"
+      "size": 4414,
+      "sha256": "3aec953bf92ff7e346c9b497081c155e45ac982d87201e503ac080d234157e08"
     },
     {
       "kind": "agents",
@@ -387,8 +387,8 @@
       "kind": "skills",
       "dist": ".claude/skills/product-lens/SKILL.md",
       "install": ".claude/skills/product-lens/SKILL.md",
-      "size": 3085,
-      "sha256": "03cae7e89fb90cee901bc2765b710b99c3d1c3b7c4a5ec5a80a23abd841d5575"
+      "size": 5336,
+      "sha256": "016b55f706bfd210f9bb255feb62c4712c37e93c85eefa1ff277a24778444c15"
     },
     {
       "kind": "skills",
@@ -737,15 +737,15 @@
       "kind": "rules",
       "dist": ".claude/rules/typescript/hooks.md",
       "install": ".claude/rules/typescript/hooks.md",
-      "size": 1775,
-      "sha256": "1322d39d333a384680c783b2c3e5f1309664ed5f24aadcb7b64e9a208a776d01"
+      "size": 4544,
+      "sha256": "b478913edfbc26210be89aceab57cede21c1738ed3915f5ccd732e29983a9955"
     },
     {
       "kind": "rules",
       "dist": ".claude/rules/typescript/patterns.md",
       "install": ".claude/rules/typescript/patterns.md",
-      "size": 4544,
-      "sha256": "d9a6200a11bbb9cdb2c9a6c14c9fc51d96b2c36c86421f7799591e251fc133ec"
+      "size": 11247,
+      "sha256": "258079e1a0c7683e0e8f2a93a4add935cfc29660b2eac232764b3e286df3d3d7"
     },
     {
       "kind": "rules",
@@ -833,6 +833,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 826181
+    "totalBytes": 840517
   }
 }

@@ -107,6 +107,46 @@ try {
   fs.rmSync(sentinelDir, { recursive: true, force: true });
 }
 
+// --- Case 7: --exclusive 在已有 .claude 的目录上 dry-run，应说"备份+清空"计划 ---
+
+const exclusiveDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mcc-exclusive-'));
+try {
+  // 制造已有 .claude/agents/ 内容
+  fs.mkdirSync(path.join(exclusiveDir, '.claude', 'agents'), { recursive: true });
+  fs.writeFileSync(path.join(exclusiveDir, '.claude', 'agents', 'user-custom.md'), '# user');
+  fs.mkdirSync(path.join(exclusiveDir, '.claude', 'commands'), { recursive: true });
+  fs.writeFileSync(path.join(exclusiveDir, '.claude', 'commands', 'user-cmd.md'), '# user');
+
+  const before7 = fs.readdirSync(path.join(exclusiveDir, '.claude'));
+  const r7 = runDryRun(['--scope', 'project', '--target', 'claude-code', '--exclusive'], exclusiveDir);
+  assert(r7.exitCode === 0, `Case 7: exclusive dry-run on real dir 应 exit 0，实际 ${r7.exitCode}`);
+
+  // dry-run 不应该改文件
+  const after7 = fs.readdirSync(path.join(exclusiveDir, '.claude'));
+  assert(
+    JSON.stringify(before7.sort()) === JSON.stringify(after7.sort()),
+    `Case 7 CRITICAL: --exclusive --dry-run 不应改 .claude/，实际改了`,
+  );
+  // 用户文件还在
+  assert(
+    fs.existsSync(path.join(exclusiveDir, '.claude', 'agents', 'user-custom.md')),
+    `Case 7 CRITICAL: --exclusive --dry-run 不应删用户文件`,
+  );
+  // 输出应有 exclusive 信号（备份 / 清空类字眼）
+  const outputCombined = r7.stdout + r7.stderr;
+  assert(
+    /备份|backup|exclusive|清空/i.test(outputCombined),
+    `Case 7: exclusive dry-run 输出应提及备份/清空计划，实际:\n${outputCombined.slice(0, 500)}`,
+  );
+} finally {
+  fs.rmSync(exclusiveDir, { recursive: true, force: true });
+}
+
+// --- Case 8: 同时传 --scope 和 --exclusive，参数解析不冲突 ---
+
+const r8 = runDryRun(['--scope', 'project', '--exclusive', '--target', 'claude-code']);
+assert(r8.exitCode === 0, `Case 8: --scope project --exclusive 组合应正常`);
+
 // --- 报告 ---
 
 console.log('');

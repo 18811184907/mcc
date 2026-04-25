@@ -172,6 +172,31 @@ try {
   assert(false, `installer dry-run 测试失败：${err.message.slice(0, 200)}`);
 }
 
+// --- 8b. bootstrap 脚本健康度（v2.2 加）---
+
+const bootstrapPs1 = path.join(ROOT, 'bootstrap.ps1');
+const bootstrapSh = path.join(ROOT, 'bootstrap.sh');
+assert(isFile(bootstrapPs1), 'bootstrap.ps1 不存在');
+assert(isFile(bootstrapSh), 'bootstrap.sh 不存在');
+
+if (isFile(bootstrapPs1)) {
+  const ps1 = readText(bootstrapPs1);
+  assert(ps1.includes('MCC_BOOTSTRAP_ARGS'), 'bootstrap.ps1 缺 MCC_BOOTSTRAP_ARGS env 透传逻辑');
+  assert(ps1.includes('install.ps1'), 'bootstrap.ps1 没引用 install.ps1');
+}
+if (isFile(bootstrapSh)) {
+  const sh = readText(bootstrapSh);
+  assert(sh.includes('MCC_BOOTSTRAP_ARGS'), 'bootstrap.sh 缺 MCC_BOOTSTRAP_ARGS env 透传逻辑');
+  assert(sh.includes('install.sh'), 'bootstrap.sh 没引用 install.sh');
+  assert(sh.startsWith('#!/usr/bin/env bash') || sh.startsWith('#!/bin/bash'),
+    'bootstrap.sh 缺 shebang');
+}
+
+// --- 8c. PRPs/onboarding 占位（v2.0 引入）---
+
+const prpsOnboardingDistCC = path.join(ROOT, 'dist', 'claude-code', '.claude', 'PRPs', 'onboarding');
+assert(isDir(prpsOnboardingDistCC), 'dist/claude-code/.claude/PRPs/onboarding/ 占位目录缺失（v2.0 应有）');
+
 // --- 9. rules 完整性（TS + Python 对齐）---
 
 const pyRulesDir = path.join(src, 'rules', 'python');

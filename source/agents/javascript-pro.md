@@ -84,15 +84,36 @@ try {
 - 用 `node:test` / Vitest（而非老旧 mocha）
 - `node --inspect` + Chrome DevTools profiling
 
-## Bun 运行时
+## Bun 运行时（v1.0+ 现状 · 2026-04 更新）
 
-选 Bun 时的差别：
+Bun 1.0+ 已 GA，Node API 兼容性显著提升。选 Bun 的差别：
 
-- `package.json`：不需要 `ts-node` / `tsx`，直接 `bun run file.ts`
-- 测试：内置 `bun test`（兼容 Jest API 但更快）
-- 包管理：`bun install` 比 npm 快 10-30 倍
-- 部分 Node API 有差异（如 `cluster` 当前不全支持）
-- 适合场景：工具脚本、CLI、Serverless；重 Node 生态依赖的项目谨慎上生产
+**优势**：
+- `package.json`：不需要 `ts-node` / `tsx`，直接 `bun run file.ts`（原生 TS / JSX）
+- 测试：内置 `bun test`（兼容 Vitest / Jest API + 比 Vitest 快 ~3x）
+- 包管理：`bun install` 比 npm 快 10-30 倍（lock 文件 `bun.lockb` 二进制格式）
+- 内置 SQLite / WebSocket / fetch（不用 better-sqlite3 / ws / undici）
+- HTTP server 性能 ~3-4x of Node（Bun.serve）
+
+**Node API 兼容性**（v1.0+ 大幅改善）：
+- ✓ `cluster` 已支持（v1.0.0）
+- ✓ `worker_threads` 完整支持
+- ✓ `napi` 原生模块（better-sqlite3 / sharp 等都能跑）
+- ✓ `node:fs` / `node:path` / `node:crypto` 全套
+- ⚠ 部分 Node 内部 API（如 `node:vm` 高级特性）仍有边界
+- ⚠ `process.env` 行为微差（Bun 默认从 `.env` 自动加载，可能与 Node 不同）
+
+**何时用 Bun**：
+- 新项目、CLI 工具、Serverless / Edge runtime
+- 测试运行（`bun test` 替代 Vitest 拿速度）
+- 包管理（即使其他用 Node，`bun install` 当快速 npm 替代）
+
+**何时仍选 Node**：
+- 重型企业级生态（部分老旧 npm 包仍可能有 napi 边界问题）
+- 精确的 V8 行为依赖（debugger / 性能调优深度场景）
+- 公司有 Node LTS SLA / 安全审计流程要求
+
+**迁移策略**：先用 `bun install` + `bun test`（最低风险），再考虑 `bun run` 替换 `node`。
 
 ## 浏览器侧关注
 

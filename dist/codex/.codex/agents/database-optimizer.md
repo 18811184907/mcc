@@ -151,14 +151,29 @@ SELECT * FROM posts WHERE id > $last_id ORDER BY id LIMIT 20;
 ### 反模式清单（Flag 立即指出）
 
 - `SELECT *` 出现在生产代码
-- `int` 用作 ID（用 `bigint`）
-- `varchar(255)` 无理由（用 `text`）
-- `timestamp` 而非 `timestamptz`
-- 随机 UUIDv4 做主键（索引局部性差）
-- OFFSET 分页（大表）
+- `int` 用作 ID（用 `bigint`，Postgres 14+ 默认 `IDENTITY` 即 bigint）
+- `varchar(255)` 无理由（Postgres 用 `text` 无性能差，留长度只为应用层 hint）
+- `timestamp` 而非 `timestamptz`（带时区永远更安全）
+- 随机 UUIDv4 做主键（索引局部性差 → Postgres 16+ 用 `uuidv7()` 扩展或 `gen_random_uuid()` 配 `BRIN`）
+- OFFSET 分页（大表用 keyset pagination：`WHERE id > :last_id ORDER BY id LIMIT 20`）
 - 未参数化查询（SQL 注入风险）
 - `GRANT ALL` 给应用用户
-- RLS 策略里直接调 `auth.uid()` 而非 `(SELECT auth.uid())`
+- RLS 策略里直接调 `auth.uid()` 而非 `(SELECT auth.uid())`（Supabase RLS 性能陷阱）
+- 不用 `BRIN` 索引存超大日志表（Postgres 12+ 可对 append-only 时序表用 BRIN，比 B-tree 小 99%）
+- JSONB 字段不加 GIN 索引就大量查询（`CREATE INDEX ... USING gin (col)`）
+- `CREATE INDEX` 不带 `CONCURRENTLY`（生产表会锁写）
+- 用 `now()` 给 `created_at` 默认值但忘记加 `NOT NULL`
+- migration 改大表加 `NOT NULL` column 不带 `DEFAULT` + 不分批回填（Postgres 11+ 加 NOT NULL with DEFAULT 已优化为 metadata-only，但旧版本会全表锁）
+- 用 ORM 的 `.all()` 拉全表（生产事故大头，Django queryset / SQLAlchemy 都常见）
+
+### Postgres 12+ 现代模式（推荐）
+
+- **生成列**：`amount_cents int GENERATED ALWAYS AS (price * 100) STORED`，避免应用层转换错误
+- **分区表**：时间序列用 `PARTITION BY RANGE (created_at)`，按月分区 + `pg_partman` 自动管理
+- **BRIN 索引**：append-only 时序数据（log / event）用 BRIN，索引体积 1/100，扫描微秒级
+- **stored generated UUID**：用 `gen_random_uuid()` 或装 `uuid-ossp` / `pg_uuidv7` 扩展
+- **`pg_stat_statements`**：必装扩展，找 top 10 慢查询的入口
+- **logical replication**：14+ 支持 row 级，迁移更灵活
 
 ## 数据库扩展
 

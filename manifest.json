@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,25 @@
   },
 
   "version_history": [
+    {
+      "version": "2.2.0",
+      "date": "2026-04-25",
+      "changes": [
+        "v2.2 主题：v2.1.2 release notes 里的 v2.2 路线图清单全做（6 项做 / 2 项纯重构跳过）",
+        "TS rules patterns.md 补 5 个完整设计模式（+125 行）：Strategy + Discriminated Union / Compound Components / Error Boundary / Custom Hook with AbortController / Result 类型避免 try-catch 满天飞",
+        "TS rules hooks.md 补 4 个实战 hook 模板（+85 行）：format(prettier) / typecheck(tsc) / build / E2E（CI-only），与 Python rules 对等",
+        "smoke.js 补 2 类新检查：bootstrap 脚本健康度（shebang + MCC_BOOTSTRAP_ARGS env 透传）+ PRPs/onboarding 占位目录（v2.0 引入），154 → 160 checks",
+        "installer-dry-run.js 加 Case 7 (--exclusive 在已有 .claude/ 时的 dry-run 不破坏文件 + 输出含'备份/清空'信号) + Case 8 (--scope project --exclusive 组合参数解析)，12 → 17 checks",
+        "database-optimizer.md 反模式清单升级到 PG 12+ 现状：BRIN 索引时序数据 / GIN 索引 JSONB / CREATE INDEX CONCURRENTLY / NOT NULL with DEFAULT 大表锁陷阱 / 分区表 pg_partman / pg_stat_statements 必装",
+        "database-optimizer 加'PG 12+ 现代模式'章节：生成列 / 分区表 / BRIN / pg_uuidv7 / logical replication",
+        "javascript-pro.md Bun 章节更新到 v1.0+ 现状：Node API 兼容性已大幅改善（cluster/worker_threads/napi 全支持）+ Bun.serve 性能 ~3-4x of Node + 何时用 Bun vs Node 决策树 + 渐进迁移策略",
+        "product-lens skill 补优先级矩阵章节（+45 行）：ICE 分（Impact × Confidence ÷ Effort）/ 4 象限快速归类（快赢 / 战略 / 填空 / 不做）/ 用户访谈 vs 直觉 / 反模式 / 输出格式（已 ICE 排序的建议清单）",
+        "跳过的 2 项（v2.1.2 列出但纯重构性质 · 风险>收益）：coding-standards 546 行拆 python+ts；installer.js 700 行模块化",
+        "无新增 / 删除 skill / agent / command（保持 13 / 18 / 19）",
+        "smoke 154 → 160 checks ✓ + installer-dry-run 12 → 17 checks ✓",
+        "version: 2.1.2 → 2.2.0（minor bump：rules 补齐 + 测试覆盖扩展 + agent 内容现代化）"
+      ]
+    },
     {
       "version": "2.1.2",
       "date": "2026-04-25",
