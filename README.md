@@ -4,7 +4,7 @@
 > 中文主场景，Python + TypeScript + AI 应用全栈定向优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-2.1.0-blue)
+![Version](https://img.shields.io/badge/version-2.1.1-blue)
 ![Target](https://img.shields.io/badge/target-Claude_Code_%2B_Codex-purple)
 
 ---
@@ -53,13 +53,51 @@ iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 |
 curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash
 ```
 
-**带参数**（如装到当前项目而非全局）：
+**带参数**（独占模式 / 装到当前项目 / 等）：
+
+**Unix（bash `-s --` 直接透传）**：
 
 ```bash
+# 独占模式（备份并清空 ~/.claude 的 agents,commands,skills,modes 后只装 MCC，最干净）
+curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash -s -- --exclusive
+
+# 装到当前项目（不动全局）
 curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash -s -- --scope project
+
+# 组合
+curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash -s -- --scope project --exclusive
 ```
 
+**Windows（`iwr | iex` 不能直接传参数，用 env 变量）**：
+
+```powershell
+# 独占模式
+$env:MCC_BOOTSTRAP_ARGS = "--exclusive"
+iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 | iex
+
+# 装到当前项目
+$env:MCC_BOOTSTRAP_ARGS = "--scope project"
+iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 | iex
+
+# 组合
+$env:MCC_BOOTSTRAP_ARGS = "--scope project --exclusive"
+iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 | iex
+```
+
+> 两侧 bootstrap 都同时支持**直接参数**和**`MCC_BOOTSTRAP_ARGS` env 变量**，统一脚本时可二选一。
+
 bootstrap 自动：检查 git/node ≥18 → clone 到 `~/.mcc-install` → 跑 installer → 给下一步指引。**重新跑同一命令即更新到最新**（自动 git pull）。
+
+#### 独占模式（`--exclusive`）做什么
+
+适合"只用 MCC、清干净所有现有 agent/command/skill/mode"的场景：
+
+1. **备份**`~/.claude/{agents,commands,skills,modes}` → `~/.claude.exclusive-backup-{时间戳}`
+2. **清空**这 4 个目录（`rules/` 和 `settings.json` 保留）
+3. **装 MCC**（19 agents + 13 commands + 18 skills + 3 modes 全装，零跳过零冲突）
+4. **回滚**：`./uninstall.sh --timestamp {时间戳}` 一条命令复原
+
+⚠ 执行前确认 `~/.claude/agents/` 等目录里没有你不想丢的自定义内容（备份目录留着，但要手动恢复）。
 
 #### 📦 备选方案
 

@@ -78,12 +78,23 @@ if (-not (Test-Path $MCC_DIR)) {
   Write-Host "✓ clone 成功" -ForegroundColor Green
 }
 
-# 2. 跑 install.ps1，透传剩余参数
+# 2. 收集参数：$args（直接传） + $env:MCC_BOOTSTRAP_ARGS（iwr|iex 模式下的方便方式）
+$installerArgs = @()
+if ($args.Count -gt 0) { $installerArgs += $args }
+if ($env:MCC_BOOTSTRAP_ARGS) {
+  # 支持: $env:MCC_BOOTSTRAP_ARGS = "--exclusive --scope project"
+  $installerArgs += ($env:MCC_BOOTSTRAP_ARGS -split '\s+' | Where-Object { $_ })
+}
+
 Write-Host ""
-Write-Host "🔧 启动 install.ps1 ..." -ForegroundColor Cyan
+if ($installerArgs.Count -gt 0) {
+  Write-Host "🔧 启动 install.ps1 (参数: $($installerArgs -join ' '))..." -ForegroundColor Cyan
+} else {
+  Write-Host "🔧 启动 install.ps1 ..." -ForegroundColor Cyan
+}
 Push-Location $MCC_DIR
 try {
-  & "$MCC_DIR\install.ps1" @args
+  & "$MCC_DIR\install.ps1" @installerArgs
   if ($LASTEXITCODE -ne 0) {
     Write-Host "❌ install.ps1 失败（exit $LASTEXITCODE）" -ForegroundColor Red
     exit $LASTEXITCODE

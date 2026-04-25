@@ -12,7 +12,7 @@
       "name": "mcc",
       "source": "./",
       "description": "19 agents + 11 commands + 17 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules（Python + TypeScript）。中文主场景 + Python + TS + AI 全栈定向优化。v1.7 多智能体自动并行协同。v1.8 4 层架构重构 + mcc-principles 精简 5600→1500 tokens + orchestration-playbook Claude 自查手册。",
-      "version": "2.1.0",
+      "version": "2.1.1",
       "author": {
         "name": "MCC"
       },

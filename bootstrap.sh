@@ -95,10 +95,21 @@ if [ ! -d "$MCC_DIR" ]; then
   echo -e "${C_GREEN}✓ clone 成功${C_RESET}"
 fi
 
-# 2. 跑 install.sh，透传剩余参数
+# 2. 收集参数：$@（bash -s -- 透传） + MCC_BOOTSTRAP_ARGS（env 方式，curl|bash 友好）
+installer_args=("$@")
+if [ -n "${MCC_BOOTSTRAP_ARGS:-}" ]; then
+  # 支持: MCC_BOOTSTRAP_ARGS="--exclusive --scope project" curl ... | bash
+  read -r -a env_args <<< "$MCC_BOOTSTRAP_ARGS"
+  installer_args+=("${env_args[@]}")
+fi
+
 echo ""
-echo -e "${C_CYAN}🔧 启动 install.sh ...${C_RESET}"
-( cd "$MCC_DIR" && bash ./install.sh "$@" )
+if [ "${#installer_args[@]}" -gt 0 ]; then
+  echo -e "${C_CYAN}🔧 启动 install.sh (参数: ${installer_args[*]})...${C_RESET}"
+else
+  echo -e "${C_CYAN}🔧 启动 install.sh ...${C_RESET}"
+fi
+( cd "$MCC_DIR" && bash ./install.sh "${installer_args[@]}" )
 
 # 3. 完成提示
 echo ""
