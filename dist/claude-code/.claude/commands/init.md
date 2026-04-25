@@ -150,10 +150,32 @@ fi
 4. 想做新功能 → /prd（PRD）→ /plan → /implement
 ```
 
-## 与 onboard 的分工
+## 与 onboard / index-repo 的路由决策
+
+```
+新到一个项目 → 跑哪个命令？
+
+  ├─ src/ 等几乎为空 / 全新项目
+  │   → /init（轻量 CLAUDE.md ~30 行，~1 min）
+  │
+  ├─ src/ 有内容 / 是别人 clone 来的项目
+  │   → /onboard（4 阶段并行扫，~5 min）
+  │     │
+  │     └─ 完成后看产出的 CLAUDE.md 即可开工
+  │
+  └─ /onboard 完成后，发现项目超大（>1k 文件、要反复改）
+      → 顺手再跑 /index-repo（生成 PROJECT_INDEX，~1 min）
+        ↓
+      之后每次 session Claude 优先读索引省 ~10-15K tokens
+```
 
 | 命令 | 适合场景 | 耗时 | 产出 |
 |---|---|---|---|
 | `/init` | 空项目 / 小项目 / 第一次开 Claude Code | ~1 min | CLAUDE.md（轻量 ~30 行） |
-| `/onboard` | 已有大项目 / brownfield / 接手陌生代码库 | ~5 min | onboarding 报告（详细）+ CLAUDE.md（≤100 行） |
+| `/onboard` | 已有项目 / brownfield / 接手陌生代码库 | ~5 min | onboarding 报告（详细）+ CLAUDE.md（≤100 行） |
 | `/index-repo` | 大项目（>1k 文件）反复操作 | ~1 min | PROJECT_INDEX.md + .json（token 节省） |
+
+**典型组合**：
+- 新项目：`/init` → `/prd` → `/plan` → `/implement`
+- 接手老项目：`/onboard` → 修危险信号 → `/plan` 启动新 feature
+- 接手老大项目：`/onboard` → `/index-repo` → 后续高效迭代

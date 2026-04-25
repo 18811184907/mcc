@@ -1,7 +1,7 @@
 ---
 name: performance-engineer
 description: "性能工程师：观测性、应用剖析、多层缓存、Core Web Vitals、可扩展性。触发条件：用户抱怨'慢 / 卡 / 响应变长 / 延迟高'、bundle 突增、Core Web Vitals 不达标、CPU/内存异常、数据库查询慢——此时 Claude 主动委派本 agent 而非自己硬推。也是 /fix-bug 命令 Phase 2c 的执行主体。"
-tools: [Read, Write, Edit, Bash, Grep, Glob]
+tools: [Read, Write, Edit, Bash, Grep, Glob, WebFetch]
 model: inherit
 ---
 

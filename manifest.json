@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,26 @@
   },
 
   "version_history": [
+    {
+      "version": "2.1.2",
+      "date": "2026-04-25",
+      "changes": [
+        "v2.1.2 · 5 全量审查员重审清零（每人真读所有指定文件）",
+        "CRITICAL · /pr Phase 1 加 detached HEAD 守卫（git symbolic-ref -q HEAD 检查），防止 git push -u origin HEAD 在 detached 状态崩溃",
+        "CRITICAL · /onboard 加 skill 缺失降级方案：project-onboarding 没装时 Claude 直接跑精简 4 阶段（Glob/Grep + 自读关键文件 + 落盘报告 + ≤100 行 CLAUDE.md），耗时 ~3 min（少深度但有产出）",
+        "CRITICAL · installer.js 加中断/异常状态日志：写 ~/.mcc-install.log，记录 SIGINT/SIGTERM/uncaughtException/target_failed/completed 等状态；中断时给用户具体恢复指引（已写文件可手动删 / 备份还在 / 怎么 uninstall 回滚）",
+        "HIGH · planner.md model: opus → sonnet（I/O 密集型任务不该用 Opus，省 10-30% 成本）",
+        "HIGH · performance-engineer.md tools 加 WebFetch（LLM 性能优化需查最新模型定价 / 文档）",
+        "HIGH · silent-failure-hunter description 强化与 code-reviewer 边界：聚焦 4 类典型场景（LLM streaming / Promise.all 漏 catch / Python except: 后只 log 不 raise / JS 空 catch），用法明确为 code-reviewer 第一遍标出后的纵深挖掘",
+        "HIGH · /explain 命令简化：从 6 section 改为默认 3 段（What/How/Gotcha），扩展段（Why / 如何修改）按需加",
+        "HIGH · /init 加完整三命令路由决策树（init / onboard / index-repo），含 ASCII 流程图 + 典型组合（新项目 / 接手老项目 / 接手老大项目）",
+        "HIGH · subagent-driven-development SKILL.md 加'明确载入指引'段：派 subagent 前必须 Read implementer-prompt.md / spec-reviewer-prompt.md / code-quality-reviewer-prompt.md 全文作为 prompt（不能凭印象造）",
+        "审查员发现的观察（不一定要修）记录在 README v2.2 路线图：Python rules vs TS 仍 32% 差距 / coding-standards 可拆 python+ts / installer 700 行可分模块 / smoke 缺 bootstrap 和占位测试 / javascript-pro Bun 章节略旧 / database-optimizer 反模式与 PG 12+ 略脱节 / product-lens 价值密度偏低",
+        "无新增 / 删除 skill / agent / command（保持 13 / 18 / 19）",
+        "smoke 154 ✓ 通过",
+        "version: 2.1.1 → 2.1.2"
+      ]
+    },
     {
       "version": "2.1.1",
       "date": "2026-04-25",

@@ -17,6 +17,16 @@ argument-hint: "[base-branch] [--draft]"
 ## Phase 1 — 预检
 
 ```bash
+# v2.1.2 守卫：detached HEAD 时 git push -u origin HEAD 会崩，先检测
+if ! git symbolic-ref -q HEAD >/dev/null 2>&1; then
+  echo "❌ 当前在 detached HEAD 状态（不在分支上）"
+  echo "   /pr 需要分支才能 push。请先："
+  echo "   1) git checkout -b feature/your-name   (基于当前 commit 建分支)"
+  echo "   或"
+  echo "   2) git checkout main && git pull"
+  exit 1
+fi
+
 git branch --show-current
 git status --short
 git log origin/<base>..HEAD --oneline
@@ -24,6 +34,7 @@ git log origin/<base>..HEAD --oneline
 
 | 检查 | 条件 | 失败时动作 |
 |---|---|---|
+| **不在 detached HEAD** | `git symbolic-ref -q HEAD` 失败 | 停：必须先 `git checkout -b feature/...` 建分支 |
 | 不在 base 上 | 当前分支 ≠ base | 停："先切到 feature branch" |
 | 工作区干净 | 无未提交改动 | 警："你有未提交改动，先 commit 或 stash。" |
 | 有待推送 commit | `git log origin/<base>..HEAD` 非空 | 停："没有领先 `<base>` 的 commit。无事可做。" |

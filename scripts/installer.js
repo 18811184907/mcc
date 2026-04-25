@@ -763,6 +763,46 @@ async function main() {
   const args = parseArgs(process.argv);
   VERBOSE = args.verbose;
 
+  // v2.1.2: 中断 / 异常时写"安装状态日志"到 ~/.mcc-install.log
+  // 让用户知道半成品状态、给恢复指引（避免 Ctrl-C 后用户困惑）
+  const installLog = path.join(os.homedir(), '.mcc-install.log');
+  const startedAt = new Date().toISOString();
+  let installState = 'started';
+
+  function writeStateLog(state, extra = {}) {
+    if (args.dryRun) return; // dry-run 不污染状态文件
+    try {
+      const entry = JSON.stringify({
+        ts: new Date().toISOString(),
+        state,
+        startedAt,
+        scope: args.scope,
+        target: args.target,
+        ...extra,
+      }) + '\n';
+      fs.appendFileSync(installLog, entry, 'utf8');
+    } catch (_) { /* log 失败不影响安装本身 */ }
+  }
+
+  // 中断处理（Ctrl-C / SIGTERM）
+  const onInterrupt = (sig) => {
+    writeStateLog('interrupted', { signal: sig });
+    log('err', `\n⚠ 收到 ${sig} 信号 → 安装中断。状态记录在 ${installLog}`);
+    log('err', `   恢复步骤：检查目标目录是否有半成品文件，可手动删除或重跑 installer。`);
+    log('err', `   独占模式下：备份在 ~/.claude.exclusive-backup-{timestamp}，可 ./uninstall.sh --timestamp 恢复。`);
+    process.exit(130);
+  };
+  process.on('SIGINT', () => onInterrupt('SIGINT'));
+  process.on('SIGTERM', () => onInterrupt('SIGTERM'));
+
+  // 全局异常 → 也写状态日志
+  process.on('uncaughtException', (err) => {
+    writeStateLog('uncaught_exception', { error: String(err.message || err) });
+    log('err', `\n❌ 未捕获异常: ${err.message}`);
+    log('err', `   状态记录在 ${installLog}`);
+    process.exit(1);
+  });
+
   console.log(`scope:  ${args.scope}`);
   console.log(`target: ${args.target}`);
   console.log(`force:  ${args.force}`);
@@ -771,6 +811,7 @@ async function main() {
 
   const manifest = readJson(MANIFEST_PATH);
   log('info', `MCC version ${manifest.version}`);
+  writeStateLog('started', { mccVersion: manifest.version });
   console.log('');
 
   const env = detectEnvironment();
@@ -822,13 +863,21 @@ async function main() {
       } else if (target === 'codex') {
         reports.push(await installCodex(distDir, args.scope, args));
       }
+      writeStateLog('target_done', { target });
       console.log('');
     } catch (err) {
+      writeStateLog('target_failed', { target, error: String(err.message || err) });
       log('err', `${target} 安装失败: ${err.message}`);
+      log('err', `   状态记录在 ${installLog}`);
+      log('err', `   恢复指引：`);
+      log('err', `     • 已写入的文件可手动删除或保留（installer 不破坏现有 settings 备份）`);
+      log('err', `     • 跑 ./uninstall.sh --timestamp <ts> 可回到装前状态（ts 见上面 ✓ 备份行）`);
       if (args.verbose) console.error(err.stack);
       process.exit(1);
     }
   }
+
+  writeStateLog('completed', { targets, reports: reports.length });
 
   // 打印最终报告
   console.log('');

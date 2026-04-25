@@ -113,11 +113,25 @@ Implementer subagent 回报四种状态之一，分别对应：
 
 **永远不要**忽略升级或强制用同模型原样重试。如果 implementer 说自己卡了，肯定有东西要改。
 
-## Prompt 模板
+## Prompt 模板（v2.1.2 · 明确载入指引）
 
-- `./implementer-prompt.md` — Dispatch implementer subagent
-- `./spec-reviewer-prompt.md` — Dispatch spec compliance reviewer subagent
-- `./code-quality-reviewer-prompt.md` — Dispatch code quality reviewer subagent
+本 skill 配套 3 个 prompt 模板文件，激活本 skill 时**必须用 Read tool 读取它们的全文**作为派 subagent 时的 prompt 内容（不要凭印象造）：
+
+- `./implementer-prompt.md` — 派 implementer subagent 时的完整 prompt 模板
+- `./spec-reviewer-prompt.md` — 派 spec compliance reviewer subagent 的完整模板
+- `./code-quality-reviewer-prompt.md` — 派 code quality reviewer subagent 的完整模板
+
+**Skill 路径解析**：
+- 全局装：`~/.claude/skills/subagent-driven-development/`
+- 项目装：`./.claude/skills/subagent-driven-development/`
+- Read 路径用绝对路径或相对当前工作目录的 `.claude/skills/...` 形式
+
+**载入时机**：
+1. Task 开始派 implementer 之前 → Read implementer-prompt.md 全文 → 占位符替换 → 作为 Task tool 的 prompt
+2. Implementer 返回 → Read spec-reviewer-prompt.md → 同样替换 → 派 spec reviewer
+3. Spec 通过 → Read code-quality-reviewer-prompt.md → 派 quality reviewer
+
+**没读这 3 个模板就派 subagent 是反模式**——subagent 收到的 prompt 不完整、漏关键约束。
 
 ## Example Workflow
 

@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-25T00:18:33.287Z",
+  "generatedAt": "2026-04-25T08:20:07.656Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -72,15 +72,15 @@
       "kind": "agents",
       "dist": ".claude/agents/performance-engineer.md",
       "install": ".claude/agents/performance-engineer.md",
-      "size": 12252,
-      "sha256": "0164b606ecbe8236078f3b5caadef40073f99115c090e0540b6d444ad0218c26"
+      "size": 12262,
+      "sha256": "d7244cf8f795da241aa33ce7f188d40c328994942bc1c1f3e31a15e1c637cfa1"
     },
     {
       "kind": "agents",
       "dist": ".claude/agents/planner.md",
       "install": ".claude/agents/planner.md",
-      "size": 7348,
-      "sha256": "c0d53fbdc9796973b93e06d403a351f1acf3c33f16b60f5b5b805b6c6e1fb8fa"
+      "size": 7350,
+      "sha256": "11d4541f5c17b3ed1ca7eb27c0dae90ef1d46ad67efe918618b8ad7f3cfc2b5a"
     },
     {
       "kind": "agents",
@@ -114,8 +114,8 @@
       "kind": "agents",
       "dist": ".claude/agents/silent-failure-hunter.md",
       "install": ".claude/agents/silent-failure-hunter.md",
-      "size": 3593,
-      "sha256": "c0c2d8f9df6a45840ef53c8f294a73b48a86939979c20a37a0816c3040f15f89"
+      "size": 3778,
+      "sha256": "62230673676795d04fc4defb07b9cf973eef54d032f05a7f67957beb711abfc9"
     },
     {
       "kind": "agents",
@@ -142,8 +142,8 @@
       "kind": "command",
       "dist": ".claude/commands/explain.md",
       "install": ".claude/commands/explain.md",
-      "size": 1628,
-      "sha256": "b3d7296c43134480df9b003134322be132b98844420760b0f62ccab09e18a644"
+      "size": 1249,
+      "sha256": "667df1ef7f97d09660ba0542bbe969a99bed1d18ca4c9fffdf89ab7d3563f468"
     },
     {
       "kind": "command",
@@ -170,15 +170,15 @@
       "kind": "command",
       "dist": ".claude/commands/init.md",
       "install": ".claude/commands/init.md",
-      "size": 5059,
-      "sha256": "08d7d6d864f9ff3b79ef66a625b20049c485d6c3c020f591549a3c2221662650"
+      "size": 5894,
+      "sha256": "33317cf84ce55db2e9e144e6a18fd231553c1320fbd0465e4368b2c71ea808e7"
     },
     {
       "kind": "command",
       "dist": ".claude/commands/onboard.md",
       "install": ".claude/commands/onboard.md",
-      "size": 4646,
-      "sha256": "31002456ec3a70597fdd8eb86f2d78bbe643ff446145980b7ea3d47f91d24766"
+      "size": 5985,
+      "sha256": "0ba121345107ee8372aa92dc5a3e47a620821cd4ab73f6d0e8aae7a734261a80"
     },
     {
       "kind": "command",
@@ -191,8 +191,8 @@
       "kind": "command",
       "dist": ".claude/commands/pr.md",
       "install": ".claude/commands/pr.md",
-      "size": 5836,
-      "sha256": "87852c4b6cf0bcbe0376e7317fae44434535fba5f7d5527ab0f572300037509e"
+      "size": 6364,
+      "sha256": "4140c3fc5654bb710abd99e0b81cba392d53758fd669a06969b8c53138629617"
     },
     {
       "kind": "command",
@@ -401,8 +401,8 @@
       "kind": "skills",
       "dist": ".claude/skills/subagent-driven-development/SKILL.md",
       "install": ".claude/skills/subagent-driven-development/SKILL.md",
-      "size": 11721,
-      "sha256": "b73a21ca377c0c49912023aa9f47e9d51f93a2ca43da8e32a3d858bb17e0f866"
+      "size": 12654,
+      "sha256": "b2f1237b5c4ef360e75e323097a505f612e01188654a2cef6a0805ca64459047"
     },
     {
       "kind": "skills",
@@ -833,6 +833,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 822728
+    "totalBytes": 826181
   }
 }

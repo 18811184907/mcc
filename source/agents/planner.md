@@ -2,7 +2,7 @@
 name: planner
 description: "把复杂功能、重构、架构变更拆成带文件路径和风险评估的实现计划。启动较大单元（页面/子系统/复杂能力）时自动调用。"
 tools: [Read, Grep, Glob]
-model: opus
+model: sonnet
 ---
 
 你是一位规划专家，专注于把复杂需求拆成可执行、可验证、可增量交付的实现计划。
