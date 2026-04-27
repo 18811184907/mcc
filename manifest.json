@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,20 @@
   },
 
   "version_history": [
+    {
+      "version": "2.4.3",
+      "date": "2026-04-27",
+      "changes": [
+        "v2.4.3 · BREAKTHROUGH: pre-write path-allow 规则杀死 .claude/ 弹窗",
+        "DISCOVERY: 用户给我看 D:\\07test\\.claude\\settings.json，发现 Claude Code 的 'Yes, allow ... for this project' / 'for all projects' 按钮，本质就是往 settings.json 的 allow 数组追加 'Read(<path-glob>/...)' / 'Write(...)' 规则。.claude/ 子树受 IDE 硬编码反 prompt-injection 保护，但**具体 path-glob 规则可以覆盖**（一般 Tool 名不行）。MCC installer 完全可以装时帮用户'按了'这些按钮",
+        "FIX 1 (用户级): installClaudeCode 里在 fragment 合并前注入 6 条规则: Read/Write/Edit (~/.claude/**) + Read/Write/Edit (~/.codex/**)。运行时根据 os.homedir() 换算 Claude Code path-glob 格式（Windows: //c/Users/... / Unix: /home/...）",
+        "FIX 2 (项目级): installProjectStub 同时写 cwd/.claude/settings.json，注入 6 条规则: Read/Write/Edit (.claude/**) + Read/Write/Edit (.codex/**)。覆盖 workspace 内 .claude/ 写入弹窗",
+        "新增 pathToClaudeCodeGlob() helper：C:\\Users\\28935 → //c/Users/28935 (Windows 小写盘符 + 正斜杠)",
+        "--strict 模式下不注入这些规则（严格用户应该自己管控权限）",
+        "用户体验改变: v2.4.3 装完即用，.claude/ 路径不再弹窗（理论上）。不需要再点 'for all projects' 按钮",
+        "version: 2.4.2 → 2.4.3"
+      ]
+    },
     {
       "version": "2.4.2",
       "date": "2026-04-27",
