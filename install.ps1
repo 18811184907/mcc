@@ -12,7 +12,6 @@
 #
 # This is a thin wrapper. Real logic in scripts/installer.js (Node, cross-platform shared).
 
-[CmdletBinding()]
 param(
     [ValidateSet('global', 'project', 'hybrid')]
     [string]$Scope = 'global',
