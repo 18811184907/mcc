@@ -118,13 +118,54 @@ if (-not $hasExclusive -and -not $hasOptOut) {
 # Strip --no-exclusive (bootstrap-level opt-out, not an installer flag)
 $installerArgs = @($installerArgs | Where-Object { $_ -ne '--no-exclusive' })
 
+# Bypass install.ps1's PS param layer (Unix-style flags would fail PS ValidateSet
+# binding under @splat). Bootstrap already verified node above, so we go straight
+# to scripts/installer.js — same path install.ps1 ultimately delegates to.
+$installerJs = Join-Path $MCC_DIR 'scripts\installer.js'
+if (-not (Test-Path $installerJs)) {
+  Write-Host "[X] $installerJs not found (clone incomplete?)" -ForegroundColor Red
+  exit 1
+}
+
+# Self-heal: rebuild dist/ if missing (rare — repo ships it pre-built)
+$distDir = Join-Path $MCC_DIR 'dist'
+if (-not (Test-Path $distDir)) {
+  Write-Host ""
+  Write-Host "[..] dist/ missing, running build..." -ForegroundColor Yellow
+  Push-Location $MCC_DIR
+  try {
+    & node (Join-Path $MCC_DIR 'adapters\build.js')
+    if ($LASTEXITCODE -ne 0) {
+      Write-Host "[X] build failed" -ForegroundColor Red
+      exit $LASTEXITCODE
+    }
+  } finally {
+    Pop-Location
+  }
+}
+
+# Read MCC version from manifest for banner
+$mccVersion = "(unknown)"
+$manifestPath = Join-Path $MCC_DIR "manifest.json"
+if (Test-Path $manifestPath) {
+  try {
+    $m = Get-Content $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($m.version) { $mccVersion = $m.version }
+  } catch {}
+}
+
 Write-Host ""
-Write-Host "[..] Running install.ps1 (args: $($installerArgs -join ' '))..." -ForegroundColor Cyan
+Write-Host "====================================" -ForegroundColor Cyan
+Write-Host "  MCC Installer v$mccVersion" -ForegroundColor Cyan
+Write-Host "====================================" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "[..] Running installer (args: $($installerArgs -join ' '))..." -ForegroundColor Cyan
+
 Push-Location $MCC_DIR
 try {
-  & "$MCC_DIR\install.ps1" @installerArgs
+  & node $installerJs @installerArgs
   if ($LASTEXITCODE -ne 0) {
-    Write-Host "[X] install.ps1 failed (exit $LASTEXITCODE)" -ForegroundColor Red
+    Write-Host "[X] installer failed (exit $LASTEXITCODE)" -ForegroundColor Red
     exit $LASTEXITCODE
   }
 } finally {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,18 @@
   },
 
   "version_history": [
+    {
+      "version": "2.3.4",
+      "date": "2026-04-27",
+      "changes": [
+        "v2.3.4 · HOTFIX：bootstrap.ps1 → install.ps1 参数风格不匹配",
+        "BUG: v2.3.3 跑出第二个 PS 错误『参数 --scope 不属于 ValidateSet 集合 global,project,hybrid』。根因：bootstrap 用 Unix 风格 --scope project 构建 args，再 @splat 给 install.ps1（PS 脚本要 -Scope project）。字面量字符串 '--scope' 被绑到第一个位置参数 \\$Scope，触发 ValidateSet 验证失败",
+        "FIX: bootstrap.ps1 改为直接调 node scripts/installer.js（与 bash 路径对称），跳过 install.ps1 的 PS 参数层。bootstrap 已自带 node 检查 + git pull，install.ps1 仅剩的 dist 自检和 manifest 横幅功能搬入 bootstrap",
+        "install.ps1 保持原状用作手动 PS 入口（.\\install.ps1 -Scope project -Exclusive 等）",
+        "防回归: 已加 PS 端 e2e 验证（iex 模拟 + Read-Host bypass via env var）",
+        "version: 2.3.3 → 2.3.4"
+      ]
+    },
     {
       "version": "2.3.3",
       "date": "2026-04-27",
