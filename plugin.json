@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 13 commands + 18 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules（Python ↔ TypeScript 完整对等）。v2.3.2 一条命令最多一问 30 秒装好：默认信任模式（permissions.allow=['*'] + bypassPermissions）+ 默认 --exclusive 独占清装 + 自动写 ~/.claude/CLAUDE.md 推荐模板 + --strict / --no-exclusive opt-out。",
   "author": {
     "name": "MCC",

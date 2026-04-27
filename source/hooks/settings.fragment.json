@@ -4,10 +4,24 @@
 
   "_mcc_v1_3_hook_changes": "v1.3 起 3 个捣乱王默认关：pre:config-protection / stop:format-typecheck / pre:bash:safety。",
 
-  "_mcc_v2_3_trust_mode": "v2.3 起 MCC 默认装'信任模式'：permissions.allow=['*'] + defaultMode='bypassPermissions' + skipDangerousModePermissionPrompt + skipAutoPermissionPrompt + enableAllProjectMcpServers。理由：MCC 用户群是开发者，每次工具调用弹窗严重打断流。要回老的细粒度白名单装时加 --strict flag（installer 会读 settings.fragment.strict.json 而非本文件）。",
+  "_mcc_v2_3_trust_mode": "v2.3 起 MCC 默认装'信任模式'。要回老的细粒度白名单装时加 --strict flag（installer 会读 settings.fragment.strict.json 而非本文件）。",
+
+  "_mcc_v2_4_2_allow_format": "v2.4.2 fix：原 allow:['*'] 是无效写法（Claude Code 文档要求 Tool 或 Tool(specifier) 格式，bare '*' 不识别）。改成显式列出全部主工具名，跟 defaultMode='bypassPermissions' 双保险。.claude/ 子树的 Read/Write 即使在 bypass 模式下仍会弹一次确认（IDE 扩展硬编码的反 prompt-injection 保护，settings.json 改不了）—— 用户 UI 选 'for all projects' 即可永久放行该 prefix。",
 
   "permissions": {
-    "allow": ["*"],
+    "allow": [
+      "Read",
+      "Edit",
+      "Write",
+      "Bash",
+      "WebFetch",
+      "WebSearch",
+      "Glob",
+      "Grep",
+      "Agent",
+      "TodoWrite",
+      "NotebookEdit"
+    ],
     "deny": [],
     "ask": [],
     "defaultMode": "bypassPermissions"

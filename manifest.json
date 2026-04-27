@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,17 @@
   },
 
   "version_history": [
+    {
+      "version": "2.4.2",
+      "date": "2026-04-27",
+      "changes": [
+        "v2.4.2 · settings.fragment.json allow:['*'] 是无效写法（Claude Code 文档要 Tool 或 Tool(specifier) 格式）",
+        "BUG: MCC v2.3 起一直写 permissions.allow:['*']，文档明确 bare '*' 不在合法格式里，系统大概率忽略。trust 模式实际仅靠 defaultMode='bypassPermissions' 兜底",
+        "FIX: allow 改为显式列全部主工具名: Read, Edit, Write, Bash, WebFetch, WebSearch, Glob, Grep, Agent, TodoWrite, NotebookEdit",
+        "DOC: 用户报告即使 bypassPermissions 启用，.claude/ 子树的 Read/Write 仍弹窗。已确认这是 Claude Code IDE 扩展硬编码的反 prompt-injection 保护（防止 Claude 篡改自己的权限/agents/skills 配置），settings.json 改不了。用户 UI 选 'for all projects' 永久放行该 prefix。MCC 安装后 readme 加这个说明",
+        "version: 2.4.1 → 2.4.2"
+      ]
+    },
     {
       "version": "2.4.1",
       "date": "2026-04-27",

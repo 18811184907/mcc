@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-27T06:44:06.681Z",
+  "generatedAt": "2026-04-27T06:55:13.205Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -674,8 +674,8 @@
       "kind": "settings-fragment",
       "dist": ".claude/settings.fragment.json",
       "install": ".claude/settings.fragment.json",
-      "size": 5662,
-      "sha256": "32f0cfcd85d121ede1e080cc8054710e9fd15487865aea404ca78a1dfaf9dc8a"
+      "size": 6091,
+      "sha256": "4c5935906e905c604b638160d4bfe30a2cc9d01640a8891b0a3239ffb4aa00c1"
     },
     {
       "kind": "settings-fragment-strict",
@@ -849,6 +849,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 848937
+    "totalBytes": 849366
   }
 }
