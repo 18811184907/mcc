@@ -145,7 +145,11 @@ installer_args=("${filtered_args[@]:-}")
 
 echo ""
 echo -e "${C_CYAN}[..] Running install.sh (args: ${installer_args[*]})...${C_RESET}"
-( cd "$MCC_DIR" && bash ./install.sh "${installer_args[@]}" )
+# DO NOT cd into $MCC_DIR before calling install.sh. installer.js's --scope project
+# uses path.resolve('.claude') / '.codex' relative to process.cwd() — it MUST stay
+# as the user's project dir. install.sh uses absolute $SCRIPT_DIR for its own
+# scripts/installer.js lookup, so it doesn't need to be invoked from $MCC_DIR.
+bash "$MCC_DIR/install.sh" "${installer_args[@]}"
 
 # 5. Done
 echo ""

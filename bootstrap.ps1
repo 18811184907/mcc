@@ -161,15 +161,14 @@ Write-Host "====================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "[..] Running installer (args: $($installerArgs -join ' '))..." -ForegroundColor Cyan
 
-Push-Location $MCC_DIR
-try {
-  & node $installerJs @installerArgs
-  if ($LASTEXITCODE -ne 0) {
-    Write-Host "[X] installer failed (exit $LASTEXITCODE)" -ForegroundColor Red
-    exit $LASTEXITCODE
-  }
-} finally {
-  Pop-Location
+# DO NOT change cwd before invoking installer.js. installer.js's --scope project
+# uses path.resolve('.claude') / '.codex' which is relative to process.cwd() —
+# it MUST stay as the user's project dir. installer.js itself uses __dirname to
+# locate the MCC repo's dist/ regardless of cwd.
+& node $installerJs @installerArgs
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "[X] installer failed (exit $LASTEXITCODE)" -ForegroundColor Red
+  exit $LASTEXITCODE
 }
 
 # 3. Done

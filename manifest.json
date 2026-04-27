@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,18 @@
   },
 
   "version_history": [
+    {
+      "version": "2.3.5",
+      "date": "2026-04-27",
+      "changes": [
+        "v2.3.5 · HOTFIX：bootstrap 在调 installer 之前改了 cwd，导致 --scope project 装错位置",
+        "BUG: 用户在 D:\\01App\\07 claude\\07test 跑 iwr|iex 选 y（project），实际装到了 ~/.mcc-install/.claude（MCC 自己的安装目录里），不是用户当前项目下",
+        "根因: bootstrap.ps1 在 & node installer.js 之前 Push-Location $MCC_DIR；bootstrap.sh 也有 ( cd $MCC_DIR && bash ./install.sh ... )。installer.js 的 path.resolve('.claude') 用 process.cwd()，cwd 被改成了 MCC_DIR",
+        "FIX: bootstrap.ps1 删 Push-Location/Pop-Location；bootstrap.sh 删 ( cd $MCC_DIR && ... ) 子壳，改 bash $MCC_DIR/install.sh 直调（install.sh 内部用 SCRIPT_DIR 绝对路径，不需要从 MCC_DIR 启动）",
+        "installer.js 用 __dirname 找仓库自身资源，不依赖 cwd，所以 bootstrap 不需要 cd",
+        "version: 2.3.4 → 2.3.5"
+      ]
+    },
     {
       "version": "2.3.4",
       "date": "2026-04-27",
