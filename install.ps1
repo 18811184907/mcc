@@ -1,14 +1,16 @@
-# install.ps1 — MCC installer (Windows)
+# install.ps1 - MCC installer (Windows)
 #
-# 用法:
-#   .\install.ps1                        # 自动检测 + 全局安装（共存模式，同名跳过）
-#   .\install.ps1 -Exclusive             # 独占模式：清空 agents/commands/skills/modes 再装 MCC
-#   .\install.ps1 -Scope project         # 装到当前项目的 .claude / .codex
-#   .\install.ps1 -Target claude-code    # 只装 Claude Code 侧
-#   .\install.ps1 -Force                 # 覆盖同名文件（默认跳过）
-#   .\install.ps1 -DryRun                # 只打印计划，不动文件
+# Usage:
+#   .\install.ps1                        # auto-detect + global install (coexist mode, skip same-name)
+#   .\install.ps1 -Exclusive             # exclusive: clear agents/commands/skills/modes then install MCC
+#   .\install.ps1 -Scope project         # install to current project's .claude / .codex
+#   .\install.ps1 -Target claude-code    # only Claude Code side
+#   .\install.ps1 -Force                 # overwrite same-name files (default skip)
+#   .\install.ps1 -DryRun                # print plan only, no file changes
+#   .\install.ps1 -Strict                # strict permissions (vs default trust mode)
+#   .\install.ps1 -SkipClaudemd          # do not auto-write ~/.claude/CLAUDE.md
 #
-# 本文件是薄 wrapper。真正逻辑在 scripts/installer.js（Node 跑，跨平台共享）。
+# This is a thin wrapper. Real logic in scripts/installer.js (Node, cross-platform shared).
 
 [CmdletBinding()]
 param(
@@ -21,13 +23,15 @@ param(
     [switch]$Force,
     [switch]$Exclusive,
     [switch]$DryRun,
-    [switch]$Verbose
+    [switch]$Verbose,
+    [switch]$Strict,
+    [switch]$SkipClaudemd
 )
 
 $ErrorActionPreference = 'Stop'
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-# ─── 环境检查 ─────────────────────────────────────────
+# --- Environment check ---
 
 function Test-CommandExists {
     param([string]$Command)
@@ -35,31 +39,31 @@ function Test-CommandExists {
 }
 
 if (-not (Test-CommandExists 'node')) {
-    Write-Host "`n❌ 未检测到 Node.js`n" -ForegroundColor Red
-    Write-Host "MCC installer 需要 Node 18+。请先安装:" -ForegroundColor Yellow
+    Write-Host "`n[X] Node.js not found`n" -ForegroundColor Red
+    Write-Host "MCC installer requires Node 18+. Install:" -ForegroundColor Yellow
     Write-Host "  https://nodejs.org/en/download"
-    Write-Host "  或 winget install OpenJS.NodeJS"
+    Write-Host "  or: winget install OpenJS.NodeJS"
     exit 1
 }
 
 $nodeVersion = (node --version) -replace '^v', ''
 $nodeMajor = [int]($nodeVersion -split '\.')[0]
 if ($nodeMajor -lt 18) {
-    Write-Host "`n❌ Node 版本太旧: v$nodeVersion`n" -ForegroundColor Red
-    Write-Host "需要 Node 18+，请升级。" -ForegroundColor Yellow
+    Write-Host "`n[X] Node version too old: v$nodeVersion`n" -ForegroundColor Red
+    Write-Host "Need Node 18+, please upgrade." -ForegroundColor Yellow
     exit 1
 }
 
-# ─── 检查 dist/ 是否就绪 ──────────────────────────────
+# --- Check dist/ is ready ---
 
 $distDir = Join-Path $ScriptDir 'dist'
 if (-not (Test-Path $distDir)) {
-    Write-Host "`n⚠  dist/ 不存在，先跑一次 build..." -ForegroundColor Yellow
+    Write-Host "`n[!] dist/ not found, running build..." -ForegroundColor Yellow
     Push-Location $ScriptDir
     try {
         & node (Join-Path $ScriptDir 'adapters\build.js')
         if ($LASTEXITCODE -ne 0) {
-            Write-Host "`n❌ build 失败`n" -ForegroundColor Red
+            Write-Host "`n[X] build failed`n" -ForegroundColor Red
             exit $LASTEXITCODE
         }
     } finally {
@@ -67,12 +71,12 @@ if (-not (Test-Path $distDir)) {
     }
 }
 
-# ─── 调用主 installer ────────────────────────────────
+# --- Invoke main installer ---
 
 $installerJs = Join-Path $ScriptDir 'scripts\installer.js'
 if (-not (Test-Path $installerJs)) {
-    Write-Host "`n❌ 找不到 scripts\installer.js`n" -ForegroundColor Red
-    Write-Host "MCC 分发包不完整，请重新 clone 或下载。" -ForegroundColor Yellow
+    Write-Host "`n[X] scripts\installer.js not found`n" -ForegroundColor Red
+    Write-Host "MCC distribution incomplete, please re-clone or re-download." -ForegroundColor Yellow
     exit 1
 }
 
@@ -81,25 +85,28 @@ $installerArgs = @(
     '--scope', $Scope,
     '--target', $Target
 )
-if ($Force)     { $installerArgs += '--force' }
-if ($Exclusive) { $installerArgs += '--exclusive' }
-if ($DryRun)    { $installerArgs += '--dry-run' }
-if ($Verbose)   { $installerArgs += '--verbose' }
+if ($Force)         { $installerArgs += '--force' }
+if ($Exclusive)     { $installerArgs += '--exclusive' }
+if ($DryRun)        { $installerArgs += '--dry-run' }
+if ($Verbose)       { $installerArgs += '--verbose' }
+if ($Strict)        { $installerArgs += '--strict' }
+if ($SkipClaudemd)  { $installerArgs += '--skip-claudemd' }
 
 Write-Host ""
 Write-Host "====================================" -ForegroundColor Cyan
-# 动态读取 manifest.json 的 version，不再硬编（防版本漂移）
+
+# Read version from manifest.json (avoid hardcode drift)
 $mccVersion = "(unknown)"
-$manifestPath = Join-Path $PSScriptRoot "manifest.json"
+$manifestPath = Join-Path $ScriptDir "manifest.json"
 if (Test-Path $manifestPath) {
-  try {
-    $manifest = Get-Content $manifestPath -Raw | ConvertFrom-Json
-    if ($manifest.version) { $mccVersion = $manifest.version }
-  } catch {
-    Write-Host "  ⚠ manifest.json 解析失败，version 显示 (unknown)。错误: $($_.Exception.Message)" -ForegroundColor Yellow
-  }
+    try {
+        $manifest = Get-Content $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        if ($manifest.version) { $mccVersion = $manifest.version }
+    } catch {
+        Write-Host "  [!] manifest.json parse failed: $($_.Exception.Message)" -ForegroundColor Yellow
+    }
 } else {
-  Write-Host "  ⚠ 找不到 manifest.json（应在 $manifestPath）" -ForegroundColor Yellow
+    Write-Host "  [!] manifest.json not found at $manifestPath" -ForegroundColor Yellow
 }
 Write-Host "  MCC Installer v$mccVersion" -ForegroundColor Cyan
 Write-Host "====================================" -ForegroundColor Cyan

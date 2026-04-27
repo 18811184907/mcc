@@ -4,7 +4,7 @@
 > 中文主场景，Python + TypeScript + AI 应用全栈定向优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-2.3.0-blue)
+![Version](https://img.shields.io/badge/version-2.3.2-blue)
 ![Target](https://img.shields.io/badge/target-Claude_Code_%2B_Codex-purple)
 
 ---
@@ -29,184 +29,47 @@
 
 ---
 
-## 快速上手
+## 安装（一条命令 · 最多一问）
 
-### 前置
-
-- **Node.js 18+**（installer 运行时）
-- **Claude Code** 或 **Codex**（或两者都装）
-- Git Bash（Windows 环境可选，用于 observe.sh hook 等 bash 脚本）
-
-### 安装（v2.1 一行命令搞定）
-
-#### 🚀 推荐 · 一行远程引导
-
-**Windows（PowerShell）**：
-
+**Windows**：
 ```powershell
 iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 | iex
 ```
 
 **macOS / Linux / Git Bash**：
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash
 ```
 
-**带参数**（独占模式 / 装到当前项目 / 等）：
-
-**Unix（bash `-s --` 直接透传）**：
-
-```bash
-# 独占模式（备份并清空 ~/.claude 的 agents,commands,skills,modes 后只装 MCC，最干净）
-curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash -s -- --exclusive
-
-# 装到当前项目（不动全局）
-curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash -s -- --scope project
-
-# 组合
-curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash -s -- --scope project --exclusive
-```
-
-**Windows（`iwr | iex` 不能直接传参数，用 env 变量）**：
-
-```powershell
-# 独占模式
-$env:MCC_BOOTSTRAP_ARGS = "--exclusive"
-iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 | iex
-
-# 装到当前项目
-$env:MCC_BOOTSTRAP_ARGS = "--scope project"
-iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 | iex
-
-# 组合
-$env:MCC_BOOTSTRAP_ARGS = "--scope project --exclusive"
-iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 | iex
-```
-
-> 两侧 bootstrap 都同时支持**直接参数**和**`MCC_BOOTSTRAP_ARGS` env 变量**，统一脚本时可二选一。
-
-bootstrap 自动：检查 git/node ≥18 → clone 到 `~/.mcc-install` → 跑 installer → 给下一步指引。**重新跑同一命令即更新到最新**（自动 git pull）。
-
-#### 信任模式（v2.3 起默认）
-
-MCC 安装时**默认写入信任模式 settings.json**：
-
-```json
-{
-  "permissions": {
-    "allow": ["*"],
-    "defaultMode": "bypassPermissions"
-  },
-  "enableAllProjectMcpServers": true,
-  "skipDangerousModePermissionPrompt": true,
-  "skipAutoPermissionPrompt": true
-}
-```
-
-**为什么默认信任**：MCC 用户群是开发者，每次工具调用弹窗严重打断流。设计哲学就是"用户少敲，Claude 多主动"——这跟"每次问要不要"冲突。
-
-**不会覆盖你已设过的字段**（v2.3 起 `mergeSettingsJson` 改为"fragment-provides-default"语义）：
-- 你设过 `defaultMode: "askForPermission"` → 保留你的
-- 你设过 `alwaysThinkingEnabled: false` → 保留你的
-- 你 allow 列表已有项 → 与 MCC 的并集（`["*"]` 已覆盖一切，但保留冗余无害）
-
-#### 严格模式（`--strict`）
-
-担心信任模式太宽松？装时加 `--strict`：
-
-```bash
-curl ... | bash -s -- --strict          # bash
-$env:MCC_BOOTSTRAP_ARGS = "--strict"    # pwsh
-iwr ... | iex
-```
-
-启用后：
-- `permissions.allow` 用细粒度白名单（`Read(*)` / `Bash(gh *)` / `Bash(git *)` / `Bash(npm *)` / ...）
-- 不写 `defaultMode: bypassPermissions`
-- 不写 `skipDangerousModePermissionPrompt` / `skipAutoPermissionPrompt`
-- 每次新工具调用 / 危险命令仍会弹窗确认
-
-适合：企业 / 安全敏感场景 / 共享机器。**99% 个人开发者用默认信任就好**。
-
-#### 独占模式（`--exclusive`）做什么
-
-适合"只用 MCC、清干净所有现有 agent/command/skill/mode"的场景：
-
-1. **备份**`~/.claude/{agents,commands,skills,modes}` → `~/.claude.exclusive-backup-{时间戳}`
-2. **清空**这 4 个目录（`rules/` 和 `settings.json` 保留）
-3. **装 MCC**（19 agents + 13 commands + 18 skills + 3 modes 全装，零跳过零冲突）
-4. **回滚**：`./uninstall.sh --timestamp {时间戳}` 一条命令复原
-
-⚠ 执行前确认 `~/.claude/agents/` 等目录里没有你不想丢的自定义内容（备份目录留着，但要手动恢复）。
-
-#### 📦 备选方案
-
-**Claude Code 原生 `/plugin`**（只装 agent/command/skill，不合并 settings）：
+bootstrap 在终端里**最多问一个问题**：
 
 ```
-/plugin marketplace add https://github.com/18811184907/mcc
-/plugin install mcc@mcc-marketplace
+Where to install?
+  [N] Global  -> ~/.claude/  (default, recommended)
+  [y] Project -> ./.claude/  (current dir)
 ```
 
-然后跑一次 `.\install.ps1` 合并 hooks + MCP。
+回车走默认（或回 y 装到当前项目），然后**一步装好**：
 
-**手动 git clone**（如果你想看清每一步）：
+- ✓ 信任模式 `settings.json`（`permissions.allow=["*"]` + `bypassPermissions`，不再每次弹窗）
+- ✓ 独占模式（备份你已有的 `~/.claude/{agents,commands,skills,modes}` → `.exclusive-backup-{时间戳}` 后装纯 MCC，回滚一条命令）
+- ✓ 推荐 `~/.claude/CLAUDE.md`（如不存在则写入；已存在不动）
+- ✓ 19 agents + 13 commands + 18 skills + 5 MCPs + 11 rules + 25 hook scripts
 
-```powershell
-# Windows
-git clone https://github.com/18811184907/mcc
-cd mcc
-.\install.ps1
-```
+**重启 Claude Code 立即生效**。重跑同一条命令 = 更新到最新。
 
-```bash
-# macOS / Linux / Git Bash
-git clone https://github.com/18811184907/mcc
-cd mcc
-./install.sh
-```
-
-#### installer 会做的事
-
-1. 检测你装了哪些工具（Claude Code / Codex）
-2. 备份现有 `settings.json` / `config.toml`
-3. **不覆盖**你的 agent/command/skill（同名跳过）
-4. 深度合并 settings.json（permissions 并集、hooks 追加去重、mcpServers 合并）
-5. 打印回滚命令（带时间戳）
-
-#### C. 手动 clone + 指定参数
-
-```bash
-./install.sh --scope project --target claude-code --force
-```
+> 前置：Node.js 18+ · 装了 Claude Code 或 Codex
+>
+> 想关默认？任选 flag：`--no-exclusive`（不清空你已有的）· `--strict`（不开 bypassPermissions）· `--skip-claudemd`（不写 CLAUDE.md）· `/plugin` 或 `git clone` 备选——全部见 **[INSTALL.md](./INSTALL.md)**
 
 ### 验证装好了
 
 在 Claude Code 里打一条消息：
 ```
-help（或：我在哪 / 下一步该做什么）
+help
 ```
 
-会激活 `help` skill，扫 `.claude/PRPs/` 推断当前项目阶段并给建议。
-
----
-
-## 安装选项
-
-```
-./install.sh --scope <global|project|hybrid>    # 安装位置
-             --target <auto|claude-code|codex|both>  # 目标工具
-             --force                             # 覆盖同名（默认跳过）
-             --dry-run                           # 只打印计划，不动文件
-             --verbose                           # 详细日志
-```
-
-| Scope | Claude Code | Codex | 适合谁 |
-|---|---|---|---|
-| **global**（默认） | `~/.claude/` | `~/.codex/` | 个人使用 |
-| **project** | `./.claude/` | `./.codex/` + `./AGENTS.md` | 团队协作 / 多项目不同配置 |
-| **hybrid** | 通用全局 + 规则项目级 | 同上 | 进阶用户 |
+激活 `help` skill，扫 `.claude/PRPs/` 推断当前项目阶段并给建议。
 
 ---
 

@@ -4,36 +4,28 @@
 
 ---
 
-## 1. 装（一行命令 · 30 秒）
+## 1. 装（一条命令 · 最多一问 · 30 秒）
 
-**Windows**（PowerShell）：
-
+**Windows**：
 ```powershell
 iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 | iex
 ```
 
 **macOS / Linux / Git Bash**：
-
 ```bash
 curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash
 ```
 
-bootstrap 自动检查依赖、clone、装好。**更新就重跑同一条命令**。
+终端里会**最多问一个问题**：装到全局（默认）还是当前项目？回车走默认，然后**一步装好**：
 
-> 想看清每一步？用 `git clone https://github.com/18811184907/mcc && cd mcc && ./install.sh`（macOS/Linux）或 `.\install.ps1`（Windows）。
+- ✓ **信任模式**（不再每次工具调用弹窗）
+- ✓ **独占模式**（备份你已有的 → `.exclusive-backup-{时间戳}` 后装纯 MCC）
+- ✓ **写 `~/.claude/CLAUDE.md`**（如不存在）
+- ✓ 19 agent + 13 命令 + 18 skill + 25 hook + 11 rules + 5 MCPs
 
-**装完做什么**：自动合并到 `~/.claude/`（保留你已有的）：
-- 19 个领域专家 agent · 13 个 slash 命令 · 18 个方法论 skill
-- 5 个 MCP 服务器（Serena / Context7 / GitHub / Sequential / Playwright）
-- 8 条 hook（3 个默认关，避免捣乱）
-- Python + TypeScript 代码规则
-- **信任模式 settings.json**（v2.3 起默认）：`permissions.allow=["*"]` + `bypassPermissions`，不再每次工具调用弹窗
+**重启 Claude Code 立即生效**。重跑同一条命令 = 更新到最新。
 
-**保护你已有偏好**：v2.3 起 `mergeSettingsJson` 改为"fragment-provides-default"语义——你已显式设过的字段（`defaultMode` / `alwaysThinkingEnabled` 等）会被保留，**不会被 MCC 覆盖**。
-
-> 担心太宽松？加 `--strict` 装严格模式（细粒度白名单 + 仍弹窗确认）。99% 个人开发者用默认就好。
-
-**重启 Claude Code** 让新命令生效。
+> 想关默认行为？`--no-exclusive` / `--strict` / `--skip-claudemd` 等见 [INSTALL.md](./INSTALL.md)
 
 ---
 

@@ -1,9 +1,9 @@
-# uninstall.ps1 — MCC uninstaller (Windows)
+# uninstall.ps1 - MCC uninstaller (Windows)
 #
-# 用法:
-#   .\uninstall.ps1                         # 从最近备份恢复
-#   .\uninstall.ps1 -Timestamp 2026-04-24-140523   # 指定备份时间戳恢复
-#   .\uninstall.ps1 -Scope project          # 卸载当前项目的 .claude / .codex
+# Usage:
+#   .\uninstall.ps1                                 # restore from latest backup
+#   .\uninstall.ps1 -Timestamp 2026-04-24-140523    # restore specific backup
+#   .\uninstall.ps1 -Scope project                  # uninstall current project's .claude / .codex
 
 [CmdletBinding()]
 param(
@@ -19,13 +19,13 @@ $ErrorActionPreference = 'Stop'
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 if (-not (Get-Command 'node' -ErrorAction SilentlyContinue)) {
-    Write-Host "`n❌ 未检测到 Node.js`n" -ForegroundColor Red
+    Write-Host "`n[X] Node.js not found`n" -ForegroundColor Red
     exit 1
 }
 
 $uninstallerJs = Join-Path $ScriptDir 'scripts\uninstaller.js'
 if (-not (Test-Path $uninstallerJs)) {
-    Write-Host "`n❌ 找不到 scripts\uninstaller.js`n" -ForegroundColor Red
+    Write-Host "`n[X] scripts\uninstaller.js not found`n" -ForegroundColor Red
     exit 1
 }
 
