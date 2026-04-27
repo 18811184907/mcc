@@ -57,9 +57,18 @@ async function adaptToCodex(sourceDir, distDir) {
   const codexRoot = path.join(distDir, '.codex');
   ensureDir(codexRoot);
 
+  // v2.4.4: 用 MCC 版本号代替 wall-clock timestamp，build 才幂等
+  let mccVersion = 'unknown';
+  try {
+    const rootManifest = path.join(path.dirname(sourceDir), 'manifest.json');
+    if (pathExists(rootManifest)) {
+      mccVersion = JSON.parse(readText(rootManifest)).version || 'unknown';
+    }
+  } catch { /* 找不到 manifest.json 不致命 */ }
+
   const manifest = {
     target: 'codex',
-    generatedAt: new Date().toISOString(),
+    mccVersion: mccVersion,
     sourceDir,
     distDir,
     files: [],

@@ -11,8 +11,8 @@
     {
       "name": "mcc",
       "source": "./",
-      "description": "19 agents + 13 commands + 18 skills + 3 behavioral modes + 25 hooks + 5 MCP servers + curated rules（Python + TypeScript）。v2.3.2 一条命令最多一问 30 秒装好 — 默认信任模式 + 独占清装 + 自动写 CLAUDE.md。中文主场景 + Python + TS + AI 全栈定向优化。",
-      "version": "2.4.3",
+      "description": "19 agents + 13 commands + 18 skills + 3 behavioral modes + 25 hook scripts + 5 MCP servers + curated rules（Python + TypeScript）。v2.4 smart-split：用户级能力 → ~/.claude/，项目级产物 → cwd/.claude/PRPs/。装时预写完整 Tool(*) allow + path-glob 规则杀掉 .claude/ 弹窗。中文主场景 + Python + TS + AI 全栈定向优化。",
+      "version": "2.4.4",
       "author": {
         "name": "MCC"
       },

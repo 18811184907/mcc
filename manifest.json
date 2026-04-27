@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,19 @@
   },
 
   "version_history": [
+    {
+      "version": "2.4.4",
+      "date": "2026-04-27",
+      "changes": [
+        "v2.4.4 · settings.fragment allow 大幅扩充 + 改用 Tool(*) 格式",
+        "DISCOVERY: 用户给我看 D:\\06everything\\.claude\\settings.json，里面 allow 数组里 'Bash(*)' / 'Read(*)' / 'Skill(*)' / 'PowerShell(*)' 都有 + 'TaskCreate/Get/List/Output/Stop/Update' 全列了 + 'CronCreate/Delete/List' / 'AskUserQuestion' / 'EnterPlanMode/ExitPlanMode' / 'EnterWorktree/ExitWorktree' 也都有。这些是用户长期用 MCC 累积出来的'实测必需'清单。我 v2.4.2 只列了 11 个 Tool 名，实际官方工具远不止这些（异步调度类 + 工作流类）",
+        "FIX 1: allow 格式从 'Tool' 改用 'Tool(*)'。bare 'Tool' 按文档应该匹配所有调用，但用户实测 'Tool(*)' 更可靠。改 11 个核心工具：Read/Edit/Write/Bash/PowerShell/Glob/Grep/Agent/Skill/WebFetch/WebSearch/NotebookEdit",
+        "FIX 2: 补全 16+ 个之前漏的工具：Skill(*) PowerShell(*) AskUserQuestion EnterPlanMode/ExitPlanMode EnterWorktree/ExitWorktree TaskCreate/Get/List/Output/Stop/Update CronCreate/Delete/List ScheduleWakeup Monitor PushNotification RemoteTrigger ToolSearch ListMcpResources ReadMcpResource",
+        "FIX 3: smoke.js 增强检查：allow 长度 >= 25 + 核心三件套 Tool(*) 格式 + Skill/PowerShell + AskUserQuestion/EnterPlanMode 关键工作流工具",
+        "用户体验改变: v2.4.0-2.4.3 跑 PowerShell / Skill / AskUserQuestion 等仍弹窗。v2.4.4 全部预放行",
+        "version: 2.4.3 → 2.4.4"
+      ]
+    },
     {
       "version": "2.4.3",
       "date": "2026-04-27",

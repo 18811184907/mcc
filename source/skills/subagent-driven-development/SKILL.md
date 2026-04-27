@@ -271,7 +271,7 @@ Done!
 
 **必需的工作流 skill：**
 - `using-git-worktrees` —— 动手前先建隔离 worktree
-- `requesting-code-review` —— 为 reviewer subagent 提供模板（本 skill 在"Dispatch code quality reviewer"那步会用到）
+- `code-review-workflow` —— 为 reviewer subagent 提供模板（本 skill 在"Dispatch code quality reviewer"那步用 `code-reviewer-prompt-template.md`）
 - `finishing-a-development-branch` —— 全部 task 完成后收尾
 
 **可复用的 MCC agent：**

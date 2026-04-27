@@ -206,11 +206,17 @@ assert(isFile(fragmentStrictPath), 'source/hooks/settings.fragment.strict.json �
 
 if (isFile(fragmentJsonPath)) {
   const frag = readJSON(fragmentJsonPath);
-  // 信任模式必备字段（v2.4.2 起 allow 用合规 Tool 名格式，bare "*" 不在 Claude Code 文档列出的合法格式里）
-  assert(Array.isArray(frag.permissions?.allow) && frag.permissions.allow.length >= 5,
-    'settings.fragment 信任模式 allow 应列至少 5 个 Tool 名（v2.4.2: Read/Edit/Write/Bash/...）');
-  assert(frag.permissions.allow.includes('Bash') && frag.permissions.allow.includes('Read') && frag.permissions.allow.includes('Write'),
-    'settings.fragment 信任模式 allow 应包含核心三件套 Read/Write/Bash');
+  // 信任模式必备字段（v2.4.4 起 allow 用 Tool(*) 格式，覆盖全部官方工具 + 异步调度 + plan/worktree mode）
+  assert(Array.isArray(frag.permissions?.allow) && frag.permissions.allow.length >= 25,
+    'settings.fragment 信任模式 allow 应列至少 25 项（v2.4.4: 核心 Tool(*) + 工作流 + 异步调度）');
+  // 核心 Tool(*) 三件套（写代码必需）
+  assert(frag.permissions.allow.includes('Bash(*)') && frag.permissions.allow.includes('Read(*)') && frag.permissions.allow.includes('Write(*)'),
+    'settings.fragment allow 应包含核心三件套 Bash(*)/Read(*)/Write(*)');
+  // 异步调度 + 工作流（用户实测必需，否则会被弹）
+  assert(frag.permissions.allow.includes('Skill(*)') && frag.permissions.allow.includes('PowerShell(*)'),
+    'settings.fragment allow 应包含 Skill(*) 和 PowerShell(*)');
+  assert(frag.permissions.allow.includes('AskUserQuestion') && frag.permissions.allow.includes('EnterPlanMode'),
+    'settings.fragment allow 应包含工作流工具 AskUserQuestion + EnterPlanMode');
   assert(frag.permissions?.defaultMode === 'bypassPermissions',
     'settings.fragment 信任模式应有 defaultMode=bypassPermissions');
   assert(frag.enableAllProjectMcpServers === true,

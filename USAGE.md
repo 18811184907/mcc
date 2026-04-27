@@ -78,7 +78,7 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 | 命令 | 场景 |
 |---|---|
 | `/onboard` | **接手陌生大代码库**（brownfield）：4 阶段并行扫架构/数据/约定/危险信号，~5 min 产出 onboarding 报告 + ≤100 行 CLAUDE.md。借鉴 ECC `codebase-onboarding`。带 `--quick` 模式跳到 ~1 min。 |
-| `/index-repo` | **大项目（>1k 文件）token 节省索引**：生成 `PROJECT_INDEX.md` + `.json`，2K 投入 → 每 session 省 50K+ tokens（27.5x ROI）。借鉴 SuperClaude `/sc:index-repo`。 |
+| `/index-repo` | **大项目（>1k 文件）token 节省索引**：生成 `PROJECT_INDEX.md` + `.json`，2K 一次性投入 → 每 session 省 ~10-15K tokens（多 session 摊平 ROI 5-7x）。借鉴 SuperClaude `/sc:index-repo`。 |
 
 ---
 
@@ -207,20 +207,20 @@ git init
 ### 🔍 提交前全面体检
 
 ```
-/verify         # 本地 6 阶段验证
-/full-review    # 5 阶段 × 多维度审查
+说"验证一下" / "交付前检查"  # 自动激活 verification-loop skill（6 阶段闸门）
+/review                       # 并行派 code-reviewer + security-reviewer
 ```
+
+> v1.5 起 `/verify` 和 `/full-review` 命令已删，改为关键词触发 skill。
 
 ### 🐛 生产出错了
 
 ```
-/troubleshoot "API 偶尔 500"  # 快速多域诊断
+/fix-bug "API 偶尔 500"  # 4 域并行盲诊
 ```
 
-根据诊断路由：
-- 如果是 build 问题 → 自动走 `/build-fix`
-- 如果是单 bug → 自动走 `/fix-bug`
-- 如果是 runtime 多域问题 → 现场给方案
+`/fix-bug` 自动按现象分诊到 build / runtime / performance / deploy 四类。
+v1.5 起 `/troubleshoot` 和 `/build-fix` 已合并进 `/fix-bug`。
 
 ### 🗣 方向有分歧
 
@@ -267,7 +267,7 @@ help               # 查当前阶段 + 推荐（原 mcc-help，v1.9 简化为 he
 
 <用户家目录>/.claude/
 ├── session-data/YYYY-MM-DD-{shortid}-session.tmp  # /session-save
-└── skills/learned/{pattern}.md                     # /learn
+└── skills/learned/{pattern}.md                     # 用户说"记下这个" → continuous-learning-v2 skill 自动产出
 ```
 
 ---

@@ -66,7 +66,7 @@ description: "多步复杂操作的层级任务管理，用 Serena memory 跨会
 | Analysis | `debugger` agent 或 Sequential MCP | `"analysis_results"` |
 | Implementation | 原生 Edit/MultiEdit | `"code_changes"` |
 | UI Components | `frontend-developer` agent | `"ui_components"` |
-| Testing | `test-automator` agent + `/e2e` | `"test_results"` |
+| Testing | `test-automator` agent + `e2e-testing` skill（说"写 E2E"自动激活）| `"test_results"` |
 | Documentation | Context7 MCP | `"doc_patterns"` |
 
 ## Memory Schema

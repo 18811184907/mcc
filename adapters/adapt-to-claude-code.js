@@ -34,9 +34,18 @@ async function adaptToClaudeCode(sourceDir, distDir) {
   const claudeRoot = path.join(distDir, '.claude');
   ensureDir(claudeRoot);
 
+  // v2.4.4: 用 MCC 版本号代替 wall-clock timestamp，build 才幂等（同 source + 同版本 → 同 dist diff）
+  let mccVersion = 'unknown';
+  try {
+    const rootManifest = path.join(path.dirname(sourceDir), 'manifest.json');
+    if (pathExists(rootManifest)) {
+      mccVersion = JSON.parse(readText(rootManifest)).version || 'unknown';
+    }
+  } catch { /* 找不到 manifest.json 不致命 */ }
+
   const manifest = {
     target: 'claude-code',
-    generatedAt: new Date().toISOString(),
+    mccVersion: mccVersion,
     sourceDir: sourceDir,
     distDir: distDir,
     installBase: '.claude/',

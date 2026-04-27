@@ -8,7 +8,7 @@
 
 ```
 Task tool (code-reviewer):
-  Use template at requesting-code-review/code-reviewer.md
+  Use template at code-review-workflow/code-reviewer-prompt-template.md
 
   WHAT_WAS_IMPLEMENTED: [from implementer's report]
   PLAN_OR_REQUIREMENTS: Task N from [plan-file]
@@ -29,4 +29,4 @@ Task tool (code-reviewer):
 
 ## 在 MCC 中直接派 code-reviewer agent
 
-MCC 已经装了 `code-reviewer` agent。上面 `Task tool (code-reviewer)` 这行在 Claude Code 里就是直接 spawn 这个 agent；Codex 侧由 adapter 转为"请按 code-reviewer 的职责评审"。模板（`requesting-code-review/code-reviewer.md`）提供了完整的评审规范。
+MCC 已经装了 `code-reviewer` agent。上面 `Task tool (code-reviewer)` 这行在 Claude Code 里就是直接 spawn 这个 agent；Codex 侧由 adapter 转为"请按 code-reviewer 的职责评审"。模板（`code-review-workflow/code-reviewer-prompt-template.md`）提供了完整的评审规范。

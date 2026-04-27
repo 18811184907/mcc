@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-27T07:01:22.446Z",
+  "mccVersion": "2.4.4",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -401,15 +401,15 @@
       "kind": "skills",
       "dist": ".claude/skills/subagent-driven-development/SKILL.md",
       "install": ".claude/skills/subagent-driven-development/SKILL.md",
-      "size": 12654,
-      "sha256": "b2f1237b5c4ef360e75e323097a505f612e01188654a2cef6a0805ca64459047"
+      "size": 12681,
+      "sha256": "0bdca080c9c79ac8efc4e83b2fdbb5c53f32bac8c420d250e99af4c9ddb679a9"
     },
     {
       "kind": "skills",
       "dist": ".claude/skills/subagent-driven-development/code-quality-reviewer-prompt.md",
       "install": ".claude/skills/subagent-driven-development/code-quality-reviewer-prompt.md",
-      "size": 1426,
-      "sha256": "83bddb7ee2aad6a4d9de2eb2baf5380b5cb757d5f42b3f0b35b61e97baa2f1f6"
+      "size": 1454,
+      "sha256": "94a8960208a653fd7e01f1d635bccff671bc2e1e6e7468c292a0118654a75b07"
     },
     {
       "kind": "skills",
@@ -450,8 +450,8 @@
       "kind": "skills",
       "dist": ".claude/skills/verification-loop/SKILL.md",
       "install": ".claude/skills/verification-loop/SKILL.md",
-      "size": 3388,
-      "sha256": "c88c75773a3c77fecac959e994cc426f274fe66a55868ca10c2a3862c728f4af"
+      "size": 3525,
+      "sha256": "de3fcc3ef856a78433938ad9cddd7772d5620a7caafae389cf879ef3ede738c9"
     },
     {
       "kind": "skills",
@@ -478,8 +478,8 @@
       "kind": "modes",
       "dist": ".claude/modes/task-management.md",
       "install": ".claude/modes/task-management.md",
-      "size": 3952,
-      "sha256": "3498af9ec193963feee9121a3894c69a2755af71f24ae5d13d500d2dab46a066"
+      "size": 3994,
+      "sha256": "b9172e7da8465fc09179030747581526d94c76e04db5210d3fb59e572ba439a6"
     },
     {
       "kind": "modes",
@@ -674,8 +674,8 @@
       "kind": "settings-fragment",
       "dist": ".claude/settings.fragment.json",
       "install": ".claude/settings.fragment.json",
-      "size": 6091,
-      "sha256": "4c5935906e905c604b638160d4bfe30a2cc9d01640a8891b0a3239ffb4aa00c1"
+      "size": 6874,
+      "sha256": "30112eaefa47e2b18e727265c2582c069526d2c41de9eaa201293559acea9ae3"
     },
     {
       "kind": "settings-fragment-strict",
@@ -849,6 +849,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 849366
+    "totalBytes": 850383
   }
 }

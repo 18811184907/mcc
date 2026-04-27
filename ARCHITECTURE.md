@@ -342,5 +342,6 @@ ls -la .claude/.mcc-hooks/ 2>/dev/null   # 应不存在
 - **hooks 脚本的 `ECC_` 环境变量前缀**：拷贝自 ECC 的 hook scripts 内部用 `ECC_HOOK_PROFILE` 等变量名。为了不破坏脚本互相引用，保留不改。用户不会看到这些（纯内部）
 - **continuous-learning-v2 默认关闭 observer**：启用要手动改 `skills/continuous-learning-v2/config.json` 的 `observer.enabled: true`
 - **Windows 上部分 hook 降级**：`pre-bash-tmux-reminder` 在无 tmux 环境静默 no-op（不报错）；`observe.sh` 需要 Git Bash + Python，未装 Python 时静默跳过
-- **`/tdd` 和 `/e2e`**：没有对应的 `tdd-workflow` / `e2e-testing` skill（A3 决策没装），命令本体是内联简化版。v1.2 计划补齐
+- **`/tdd` 命令 + `tdd-workflow` skill**：v1.2 起已配套（命令显式触发 + 关键词"用 TDD/写测试"自动激活 skill）
+- **`/e2e` 命令已删（v1.5）**：能力保留为 `e2e-testing` skill，关键词"写 E2E / Playwright"自动激活
 - **`.codex/skills/` 不拷**：Codex 不原生支持 skill，skill 内容编译进了 `AGENTS.md` 作为场景指引
