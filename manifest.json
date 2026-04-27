@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,17 @@
   },
 
   "version_history": [
+    {
+      "version": "2.4.1",
+      "date": "2026-04-27",
+      "changes": [
+        "v2.4.1 · 顺手 cleanup：AGENTS.md 不再污染 $HOME 根 + 双勾号 cosmetic bug",
+        "FIX: installCodex 全局 scope 下 AGENTS.md / HOOKS-SOFT-GUIDANCE.md 改写到 ~/.codex/ 里（targetRoot 从 os.homedir() 改 ~/.codex），不再污染 $HOME 根（v2.4.0 装出 C:\\Users\\28935\\AGENTS.md 的问题）。Codex CLI 全局 AGENTS.md 标准路径就是 ~/.codex/AGENTS.md。project scope 行为不变（继续写到项目根，给 Codex 从 cwd 向上找）",
+        "FIX: log('ok', '  ✓ ...') 双勾号 cosmetic bug 修复（log 自身已加 ✓ 前缀，msg 里不再重复加）",
+        "v2.4.0 已装的用户：~/AGENTS.md 和 ~/HOOKS-SOFT-GUIDANCE.md 是孤立旧文件，可手动删（installer 不自动清理）",
+        "version: 2.4.0 → 2.4.1"
+      ]
+    },
     {
       "version": "2.4.0",
       "date": "2026-04-27",

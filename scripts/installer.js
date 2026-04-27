@@ -487,7 +487,7 @@ async function installClaudeCode(distDir, scope, options) {
           backupDirAtomicCrossDevice(fromDir, toDir);
         }
       }
-      log('ok', `  ✓ ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
+      log('ok', `  ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
     }
   }
 
@@ -656,7 +656,9 @@ async function installCodex(distDir, scope, options) {
   }
 
   const targetDir = scope === 'project' ? path.resolve('.codex') : path.join(os.homedir(), '.codex');
-  const targetRoot = scope === 'project' ? path.resolve('.') : os.homedir();
+  // v2.4.1: AGENTS.md / HOOKS-SOFT-GUIDANCE.md 装到 ~/.codex/ 里（不再污染 $HOME 根）
+  // Codex CLI 全局 AGENTS.md 的标准路径就是 ~/.codex/AGENTS.md。project scope 仍写到项目根（Codex 从 cwd 向上找）。
+  const targetRoot = scope === 'project' ? path.resolve('.') : path.join(os.homedir(), '.codex');
   log('info', `Codex 目标: ${targetDir}`);
 
   const timestamp = makeBackupTimestamp();
@@ -675,7 +677,7 @@ async function installCodex(distDir, scope, options) {
         try { fs.renameSync(fromDir, toDir); }
         catch { copyDirRecursive(fromDir, toDir); fs.rmSync(fromDir, { recursive: true, force: true }); }
       }
-      log('ok', `  ✓ ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
+      log('ok', `  ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
     }
   }
 
