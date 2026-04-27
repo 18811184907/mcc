@@ -16,28 +16,34 @@ iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 |
 curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash
 ```
 
-### 流程（最多一问）
+### 流程（不问问题）
 
 1. 检查 `git` + `node ≥ 18`
 2. clone 到 `~/.mcc-install`（已有则 `git pull`）
-3. **唯一交互**：TTY 里问"装到全局（默认 N）还是当前项目（y）？"
-   - `iwr | iex` 或 `curl | bash` 非交互模式 → 静默走默认 global
-4. 跑 installer，**3 个默认全开**：
-   - 信任模式 `settings.json`
-   - 独占模式（备份原 4 目录后装纯 MCC）
+3. 跑 installer 走 **smart-split** 默认：
+   - 用户级能力（agents/commands/skills/modes/settings/MCP/rules/CLAUDE.md/.mcc-hooks）→ 强制装 `~/.claude/`
+   - 项目级残骸（PRPs/ 工作产物目录）→ 当前 cwd 下建（cwd 是 `$HOME` 时跳过）
+4. 默认 3 件事全做：
+   - 信任模式 `settings.json`（permissions.allow=["*"] + bypassPermissions）
+   - 独占模式（备份原 `~/.claude/{agents,commands,skills,modes}` 后装纯 MCC）
    - 自动写 `~/.claude/CLAUDE.md`（如不存在）
 
 ### 装完做了什么
 
-- `~/.claude/agents/` — 19 agents（独占模式覆盖原有，旧的备份到 `.exclusive-backup-{时间戳}/agents/`）
-- `~/.claude/commands/` — 13 commands
-- `~/.claude/skills/` — 18 skill 目录
-- `~/.claude/.mcc-hooks/` — 25 hook scripts
-- `~/.claude/rules/` — common 1 + python 5 + typescript 5
-- `~/.claude/templates/` — CLAUDE.global.example.md（推荐模板源）
-- `~/.claude/settings.json` — 信任模式（深度合并 + 你已设字段保留）
-- `~/.claude/settings.json.backup-{时间戳}` — 原 settings 备份
-- `~/.claude/CLAUDE.md` — 推荐模板（仅在原本不存在时写）
+**用户级 `~/.claude/`**：
+- `agents/` — 19 agents（独占模式覆盖原有，旧的备份到 `.exclusive-backup-{时间戳}/agents/`）
+- `commands/` — 13 commands（VS Code 扩展从这里扫，所以 `/` 自动补全立刻有）
+- `skills/` — 18 skill 目录
+- `modes/` — 3 个 behavioral mode
+- `.mcc-hooks/` — 25 hook scripts + hooks.json
+- `rules/` — common 1 + python 5 + typescript 5
+- `templates/` — CLAUDE.global.example.md（推荐模板源）
+- `settings.json` — 信任模式（深度合并 + 你已设字段保留：theme/allow 项/skipDangerousModePermissionPrompt 等）
+- `settings.json.backup-{时间戳}` — 原 settings 备份
+- `CLAUDE.md` — 推荐模板（仅在原本不存在时写）
+
+**项目级 `<cwd>/.claude/`**（smart 默认会建；`global` 模式跳过；`project` 模式整套都装这里）：
+- `PRPs/{prds,plans,reports,reviews,onboarding,features}/` — 6 个工作产物子目录 + .gitkeep
 
 **重启 Claude Code 立即生效**。**重跑同一命令 = 更新到最新**。
 
@@ -48,6 +54,9 @@ curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh |
 | `--no-exclusive` | 不清空你已有的 agents/commands/skills/modes（共存模式，同名跳过） |
 | `--strict` | 关信任模式，回到细粒度白名单 + askForPermission |
 | `--skip-claudemd` | 不自动写 `~/.claude/CLAUDE.md` |
+| `--no-project-stub` | smart 模式下不在当前 cwd 建 PRPs/（等价于 `--scope global`） |
+| `--scope global` | 只装 `~/.claude/`，不动当前目录 |
+| `--scope project` | 团队共享：全套装到 `<cwd>/.claude/`（要 commit 给同事） |
 
 ---
 
@@ -112,11 +121,32 @@ iwr ... | iex
 
 适合：企业 / 安全敏感场景 / 共享机器。**99% 个人开发者用默认信任就好**。
 
-### `--scope project` 装到当前项目
+### `--scope smart` (v2.4 默认 / 推荐)
 
-装到 `./.claude/`（项目级）而不是 `~/.claude/`（全局）。
-- 适合：团队协作（committing project-level 配置）
-- 用 `cd 项目 && curl ... | bash -s -- --scope project`
+不传 `--scope` 即走 smart。语义：
+
+- 用户级能力（agents / commands / skills / modes / settings / MCP / rules / `.mcc-hooks` / `~/.claude/CLAUDE.md`）→ 强制装 `~/.claude/`
+- 项目级残骸（`PRPs/{prds,plans,reports,reviews,onboarding,features}/`）→ 当前 cwd 下建
+- 如果 cwd 是 `$HOME`，跳过项目级残骸（避免污染 home）
+
+为什么这是默认：trust 模式 + `/` 自动补全 + 跨项目能力都需要装在全局；项目工作产物（PRD/plan/reports）天然属于具体项目。把这两件事按"内容性质"分开，比"装一处或装另一处"二选一对用户友好。
+
+### `--scope global` (只装全局，不动 cwd)
+
+老 v2.3 的"global" 行为。装 `~/.claude/`，**不**在当前目录建 PRPs/。
+- 适合：在 `$HOME` 跑 / 不想在当前项目目录留任何东西
+- 用 `MCC_BOOTSTRAP_ARGS="--scope global" iwr ... | iex`
+
+### `--scope project` (team-shared 模式)
+
+把全套**包括** `agents/commands/skills/modes/settings.json` 都装到 `<cwd>/.claude/`，**不**动 `~/.claude/`。
+- 适合：团队 lead 把 MCC 配置 commit 到团队仓库
+- 用 `cd 团队仓库 && MCC_BOOTSTRAP_ARGS="--scope project" curl ... | bash`
+- ⚠ 注意：这种模式下 trust 模式只对该项目生效；跨项目时 Claude Code 用回全局原配置
+
+### `--no-project-stub` (smart 模式但跳过 cwd PRPs/)
+
+等价于 `--scope global`，更显式。
 
 ### `--skip-claudemd` 不要自动写 CLAUDE.md
 
@@ -178,10 +208,11 @@ cd mcc
 
 ```
 ./install.sh
-  --scope <global|project|hybrid>           安装位置（默认 global）
+  --scope <smart|global|project|hybrid>     安装模式（默认 smart）
   --target <auto|claude-code|codex|both>    目标工具（默认 auto）
   --force                                   覆盖同名（默认跳过）
   --exclusive                               独占模式
+  --no-project-stub                         smart 下跳过 cwd 的 PRPs/
   --strict                                  严格权限
   --skip-claudemd                           跳过自动写 CLAUDE.md
   --dry-run                                 只打印计划，不动文件
@@ -190,13 +221,27 @@ cd mcc
 
 ---
 
-## scope 三档对比
+## scope 四档对比
 
-| Scope | Claude Code | Codex | 适合谁 |
-|---|---|---|---|
-| **global**（默认） | `~/.claude/` | `~/.codex/` | 个人使用 |
-| **project** | `./.claude/` | `./.codex/` + `./AGENTS.md` | 团队协作 / 多项目不同配置 |
-| **hybrid** | 通用全局 + rules 项目级 | 同上 | 进阶用户 |
+| Scope | Claude Code | Codex | cwd 下产物 | 适合谁 |
+|---|---|---|---|---|
+| **smart**（v2.4 默认） | `~/.claude/` | `~/.codex/` | `PRPs/` | 99% 个人开发者 |
+| **global** | `~/.claude/` | `~/.codex/` | 无 | 在 `$HOME` 跑 / 只装能力 |
+| **project**（team） | `./.claude/` | `./.codex/` + `./AGENTS.md` | 全套 | 团队 lead 推 MCC 给同事 |
+| **hybrid** | alias of smart | alias of smart | 同 smart | 老调用方兼容 |
+
+---
+
+## v2.4 升级说明（从 v2.3.x 来）
+
+如果你用 v2.3.x 装过 MCC：
+
+- 老的 `--scope global`（默认）在 v2.4 改名 `--scope smart`，并新增 cwd 下 PRPs/ 残骸
+  - 不想要 cwd 残骸 → 显式传 `--scope global`
+- 老的 `--scope project` 行为不变，但语义重新定位为"团队共享"模式
+- v2.3.5 之前在选 `project` 时遇到的 trust 模式不全局生效 / `/` 不补全 / cwd 错乱 等 bug，全部由 smart-split 解决
+
+旧 backup（`~/.claude.exclusive-backup-{时间戳}`）依然能用 `./uninstall.sh --timestamp <ts>` 回滚。
 
 ---
 

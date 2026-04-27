@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-27T02:54:45.739Z",
+  "generatedAt": "2026-04-27T06:03:14.953Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -170,8 +170,8 @@
       "kind": "command",
       "dist": ".claude/commands/init.md",
       "install": ".claude/commands/init.md",
-      "size": 6064,
-      "sha256": "216c75378a760bb7272f45c33d8516ae2cc160572b9b7443e098a588350cf2e2"
+      "size": 7054,
+      "sha256": "3fd63f895b0ae2986a11ab559b16517e205c43ac8888e119b4d23a4c2d5e7205"
     },
     {
       "kind": "command",
@@ -359,8 +359,8 @@
       "kind": "skills",
       "dist": ".claude/skills/help/SKILL.md",
       "install": ".claude/skills/help/SKILL.md",
-      "size": 4602,
-      "sha256": "ed497191a73704a827b63c40f28e6d5dc22a64e7e0b14c7d2aa36943db00b8ae"
+      "size": 6029,
+      "sha256": "cb29540c16c9be9c315319600c29346687094e6793dc1457c1cfebaf84f9d3e5"
     },
     {
       "kind": "skills",
@@ -849,6 +849,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 846520
+    "totalBytes": 848937
   }
 }

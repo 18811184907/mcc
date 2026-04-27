@@ -4,7 +4,7 @@
 > 中文主场景，Python + TypeScript + AI 应用全栈定向优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-2.3.5-blue)
+![Version](https://img.shields.io/badge/version-2.4.0-blue)
 ![Target](https://img.shields.io/badge/target-Claude_Code_%2B_Codex-purple)
 
 ---
@@ -29,7 +29,7 @@
 
 ---
 
-## 安装（一条命令 · 最多一问）
+## 安装（一条命令 · 不问问题）
 
 **Windows**：
 ```powershell
@@ -41,26 +41,37 @@ iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 |
 curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash
 ```
 
-bootstrap 在终端里**最多问一个问题**：
+v2.4 起默认走 **smart-split** 模式 —— 自动分两处装：
 
 ```
-Where to install?
-  [N] Global  -> ~/.claude/  (default, recommended)
-  [y] Project -> ./.claude/  (current dir)
+~/.claude/                              ← 用户级能力（永久，所有项目共享）
+  ├── agents/  19 个
+  ├── commands/  13 个 → / 自动补全
+  ├── skills/  18 个
+  ├── modes/  3 个
+  ├── settings.json    (信任模式：permissions.allow=["*"] + bypassPermissions)
+  ├── .mcc-hooks/  25 scripts
+  ├── rules/  11 个（含 mcc-principles）
+  └── CLAUDE.md  (推荐模板，如不存在才写)
+
+<当前目录>/.claude/PRPs/                  ← 项目工作产物（PRDs/plans/reports 落盘点）
+  ├── prds/        plans/        reports/
+  └── reviews/     onboarding/   features/
 ```
 
-回车走默认（或回 y 装到当前项目），然后**一步装好**：
+**重启 Claude Code 立即生效**。重跑同一条命令 = 自动 `git pull` + 重装。
 
-- ✓ 信任模式 `settings.json`（`permissions.allow=["*"]` + `bypassPermissions`，不再每次弹窗）
-- ✓ 独占模式（备份你已有的 `~/.claude/{agents,commands,skills,modes}` → `.exclusive-backup-{时间戳}` 后装纯 MCC，回滚一条命令）
-- ✓ 推荐 `~/.claude/CLAUDE.md`（如不存在则写入；已存在不动）
-- ✓ 19 agents + 13 commands + 18 skills + 5 MCPs + 11 rules + 25 hook scripts
+> 前置：Node.js 18+ · 装了 Claude Code 或 Codex（任一即可）
 
-**重启 Claude Code 立即生效**。重跑同一条命令 = 更新到最新。
+### 三种 scope（默认无需选）
 
-> 前置：Node.js 18+ · 装了 Claude Code 或 Codex
->
-> 想关默认？任选 flag：`--no-exclusive`（不清空你已有的）· `--strict`（不开 bypassPermissions）· `--skip-claudemd`（不写 CLAUDE.md）· `/plugin` 或 `git clone` 备选——全部见 **[INSTALL.md](./INSTALL.md)**
+| Scope | 装到哪 | 适合谁 |
+|---|---|---|
+| **smart**（默认） | `~/.claude/` 全套 + `<cwd>/.claude/PRPs/` 工作产物 | 99% 个人开发者 |
+| **global** | 只 `~/.claude/`，不动当前目录 | 在 `$HOME` 跑 / 不想污染当前目录 |
+| **project**（team） | 全套到 `<cwd>/.claude/`（`commit` 给团队） | 团队 lead 推 MCC 给全队 |
+
+切换：`MCC_BOOTSTRAP_ARGS="--scope project" iwr/curl ... | iex/bash`。其他 flag（`--strict` / `--skip-claudemd` / `--no-exclusive` / `--no-project-stub`）见 **[INSTALL.md](./INSTALL.md)**。
 
 ### 验证装好了
 

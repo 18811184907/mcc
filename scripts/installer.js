@@ -18,7 +18,7 @@ const MANIFEST_PATH = path.join(ROOT, 'manifest.json');
 
 function parseArgs(argv) {
   const args = {
-    scope: 'global',
+    scope: 'smart',       // v2.4: smart 是新默认 = 用户级强制 ~/.claude + 项目 cwd 建 PRPs/
     target: 'auto',
     force: false,
     dryRun: false,
@@ -26,6 +26,7 @@ function parseArgs(argv) {
     exclusive: false,
     strict: false,        // v2.3: --strict 用细粒度白名单（替代默认信任模式）
     skipClaudemd: false,  // v2.3: --skip-claudemd 跳过自动写 ~/.claude/CLAUDE.md
+    noProjectStub: false, // v2.4: --no-project-stub 跳过 cwd 建 PRPs/（仅 smart 场景生效）
   };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
@@ -37,13 +38,14 @@ function parseArgs(argv) {
     else if (a === '--exclusive') args.exclusive = true;
     else if (a === '--strict') args.strict = true;
     else if (a === '--skip-claudemd') args.skipClaudemd = true;
+    else if (a === '--no-project-stub') args.noProjectStub = true;
     else if (a === '-h' || a === '--help') {
       printHelp();
       process.exit(0);
     }
   }
-  if (!['global', 'project', 'hybrid'].includes(args.scope)) {
-    throw new Error(`--scope 必须是 global/project/hybrid，不是 "${args.scope}"`);
+  if (!['smart', 'global', 'project', 'hybrid'].includes(args.scope)) {
+    throw new Error(`--scope 必须是 smart/global/project/hybrid，不是 "${args.scope}"`);
   }
   if (!['auto', 'claude-code', 'codex', 'both'].includes(args.target)) {
     throw new Error(`--target 必须是 auto/claude-code/codex/both，不是 "${args.target}"`);
@@ -52,29 +54,35 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
-  console.log(`MCC Installer v1.2.0
+  console.log(`MCC Installer
 
 用法:
   node scripts/installer.js [选项]
 
 选项:
-  --scope <global|project|hybrid>    安装位置（默认 global = ~/.claude）
-                                     global: 装到 ~/.claude 和 ~/.codex
-                                     project: 装到当前目录的 .claude 和 .codex
-                                     hybrid: 通用资产全局 + rules/PRPs 项目级
+  --scope <smart|global|project|hybrid>  安装模式（默认 smart）
+                                     smart   (推荐): 用户级强制装 ~/.claude/（agents/commands/
+                                              skills/modes/settings/MCP/rules-common/CLAUDE.md）
+                                              + 当前项目下建 .claude/PRPs/（工作产物目录）
+                                     global  : 只装 ~/.claude/，不动当前目录
+                                     project : 全套装到当前目录 .claude/，团队 commit 场景
+                                     hybrid  : (alias of smart, 兼容老调用方)
   --target <auto|claude-code|codex|both>  目标工具（默认 auto = 检测已装的）
   --force                            同名文件覆盖（默认跳过用户已有的）
   --exclusive                        独占模式：先备份并清空 agents/commands/skills/modes 目录
                                      再装 MCC。rules/ 和 settings.json 保留。
-                                     只用 MCC、想清干净现有 agent/command/skill 的场景。
+  --no-project-stub                  smart 模式下跳过 cwd 建 PRPs/（等价于 --scope global）
+  --strict                           严格权限模式（细粒度白名单 + 不开 bypassPermissions）
+  --skip-claudemd                    跳过自动写 ~/.claude/CLAUDE.md
   --dry-run                          只打印计划，不动任何文件
   --verbose                          详细日志
   -h, --help                         显示此帮助
 
 示例:
-  node scripts/installer.js                          # 自动检测 + 全局装（共存模式，同名跳过）
-  node scripts/installer.js --exclusive              # 全局 + 独占（清空 agent/command/skill/mode 再装）
-  node scripts/installer.js --scope project          # 装到当前项目
+  node scripts/installer.js                          # smart 模式（推荐）
+  node scripts/installer.js --scope global           # 只装全局，不动当前目录
+  node scripts/installer.js --scope project          # 团队共享：全套到 ./.claude/
+  node scripts/installer.js --exclusive              # smart + 独占（清空已有 agent/command/skill/mode）
   node scripts/installer.js --target codex           # 只装 Codex 侧
 `);
 }
@@ -793,6 +801,36 @@ function promptYesNo(question, defaultYes = true) {
 //   - 已存在 → 不动用户文件，但提示有模板可参考
 //   - --skip-claudemd 时全跳过
 
+// v2.4: smart-split — smart scope 在 cwd 建 PRPs/ 工作目录残骸（不重复全局已装的能力）
+// 关键日志带 [project-stub] 英文 marker 便于跨 locale 测试 grep
+function installProjectStub(cwd, dryRun) {
+  if (cwd === os.homedir()) {
+    log('info', `[project-stub] cwd is $HOME, skipping (smart mode only stubs real project dirs)`);
+    return null;
+  }
+  const projectClaude = path.join(cwd, '.claude');
+  const prpsDir = path.join(projectClaude, 'PRPs');
+  const subdirs = ['prds', 'plans', 'reports', 'reviews', 'onboarding', 'features'];
+
+  if (dryRun) {
+    log('info', `[project-stub] (dry-run) will create ${subdirs.length} PRPs/ subdirs under ${prpsDir}`);
+    return prpsDir;
+  }
+
+  ensureDir(prpsDir);
+  for (const d of subdirs) {
+    const sub = path.join(prpsDir, d);
+    ensureDir(sub);
+    const gitkeep = path.join(sub, '.gitkeep');
+    if (!pathExists(gitkeep)) {
+      fs.writeFileSync(gitkeep, '', 'utf8');
+    }
+  }
+  log('ok', `[project-stub] 📁 PRPs/ work-product dir created: ${prpsDir} (${subdirs.length} subdirs)`);
+  log('info', `   /prd writes to PRPs/prds/, /plan writes to PRPs/plans/, etc.`);
+  return prpsDir;
+}
+
 function ensureGlobalClaudemd(args) {
   const home = os.homedir();
   const globalClaudemd = path.join(home, '.claude', 'CLAUDE.md');
@@ -907,6 +945,28 @@ async function main() {
     targets = [args.target];
   }
 
+  // v2.4: smart-split — smart 内部走 global 完成主安装；之后再单独装项目级 PRPs/ 残骸
+  // hybrid 是 smart 的别名（兼容老调用方）
+  const isSmart = (args.scope === 'smart' || args.scope === 'hybrid');
+  const effectiveScope = isSmart ? 'global' : args.scope;
+  const cwd = process.cwd();
+  const willStubProject = isSmart && !args.noProjectStub && cwd !== os.homedir();
+
+  if (isSmart) {
+    log('info', `📦 smart-split 模式：用户级能力强制装 ~/.claude/，项目工作产物落在当前目录`);
+    log('info', `   ~/.claude/                        ← 19 agents + 13 commands + 18 skills + settings + MCP`);
+    if (willStubProject) {
+      log('info', `   ${path.join(cwd, '.claude', 'PRPs')}/   ← PRDs/plans/reports 工作产物目录`);
+    } else if (cwd === os.homedir()) {
+      log('info', `   (cwd 是 $HOME，跳过项目级 PRPs/ 建立)`);
+    } else if (args.noProjectStub) {
+      log('info', `   (--no-project-stub：跳过当前目录 PRPs/ 建立)`);
+    }
+  } else if (args.scope === 'project') {
+    log('info', `📦 project (team-shared) 模式：全套装到 ${path.resolve('.claude')}/（要 commit 给团队）`);
+  } else {
+    log('info', `📦 global 模式：全套装到 ~/.claude/，不动当前目录`);
+  }
   log('info', `将安装到: ${targets.join(', ')}`);
   console.log('');
 
@@ -930,9 +990,9 @@ async function main() {
     }
     try {
       if (target === 'claude-code') {
-        reports.push(await installClaudeCode(distDir, args.scope, args));
+        reports.push(await installClaudeCode(distDir, effectiveScope, args));
       } else if (target === 'codex') {
-        reports.push(await installCodex(distDir, args.scope, args));
+        reports.push(await installCodex(distDir, effectiveScope, args));
       }
       writeStateLog('target_done', { target });
       console.log('');
@@ -951,6 +1011,13 @@ async function main() {
   // v2.3: 装即可用 — 自动写 ~/.claude/CLAUDE.md（如不存在），让推荐模板（优先复用 / 中文 / TodoWrite）立即生效
   if (!args.skipClaudemd && targets.includes('claude-code')) {
     ensureGlobalClaudemd(args);
+  }
+
+  // v2.4 smart-split: 主装完成后建项目级 PRPs/ 残骸（让本项目有工作产物落盘点）
+  if (willStubProject && targets.includes('claude-code')) {
+    console.log('');
+    console.log(`── 项目级残骸 ─────────────`);
+    installProjectStub(cwd, args.dryRun);
   }
 
   writeStateLog('completed', { targets, reports: reports.length });

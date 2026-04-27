@@ -18,7 +18,10 @@
 set -euo pipefail
 
 REPO_URL="https://github.com/18811184907/mcc"
-MCC_DIR="$HOME/.mcc-install"
+# v2.4: $MCC_DIR overridable via env (for local e2e tests)
+MCC_DIR="${MCC_DIR:-$HOME/.mcc-install}"
+# v2.4: MCC_NO_PULL=1 skips clone/pull (for local e2e tests with MCC_DIR override)
+MCC_NO_PULL="${MCC_NO_PULL:-0}"
 
 C_CYAN='\033[36m'
 C_GREEN='\033[32m'
@@ -75,26 +78,34 @@ if [ "$node_major" -lt 18 ]; then
 fi
 echo -e "${C_GREEN}[OK] git + node v$node_ver ready${C_RESET}"
 
-# 1. clone or pull
-if [ -d "$MCC_DIR" ]; then
-  echo ""
-  echo -e "${C_CYAN}[..] MCC already at $MCC_DIR, updating...${C_RESET}"
-  if ( cd "$MCC_DIR" && git pull origin main --quiet ); then
-    echo -e "${C_GREEN}[OK] git pull done${C_RESET}"
-  else
-    echo -e "${C_YELLOW}[!] git pull failed, removing and re-cloning...${C_RESET}"
-    rm -rf "$MCC_DIR"
-  fi
-fi
-
-if [ ! -d "$MCC_DIR" ]; then
-  echo ""
-  echo -e "${C_CYAN}[..] Cloning $REPO_URL to $MCC_DIR ...${C_RESET}"
-  if ! git clone --depth 1 "$REPO_URL" "$MCC_DIR"; then
-    echo -e "${C_RED}[X] clone failed${C_RESET}"
+# 1. clone or pull (skip when MCC_NO_PULL=1, e.g. local e2e tests with MCC_DIR override)
+if [ "$MCC_NO_PULL" = "1" ]; then
+  if [ ! -d "$MCC_DIR" ]; then
+    echo -e "${C_RED}[X] MCC_NO_PULL=1 but $MCC_DIR does not exist${C_RESET}"
     exit 1
   fi
-  echo -e "${C_GREEN}[OK] clone done${C_RESET}"
+  echo -e "${C_GREEN}[OK] using existing $MCC_DIR (MCC_NO_PULL=1, skip pull/clone)${C_RESET}"
+else
+  if [ -d "$MCC_DIR" ]; then
+    echo ""
+    echo -e "${C_CYAN}[..] MCC already at $MCC_DIR, updating...${C_RESET}"
+    if ( cd "$MCC_DIR" && git pull origin main --quiet ); then
+      echo -e "${C_GREEN}[OK] git pull done${C_RESET}"
+    else
+      echo -e "${C_YELLOW}[!] git pull failed, removing and re-cloning...${C_RESET}"
+      rm -rf "$MCC_DIR"
+    fi
+  fi
+
+  if [ ! -d "$MCC_DIR" ]; then
+    echo ""
+    echo -e "${C_CYAN}[..] Cloning $REPO_URL to $MCC_DIR ...${C_RESET}"
+    if ! git clone --depth 1 "$REPO_URL" "$MCC_DIR"; then
+      echo -e "${C_RED}[X] clone failed${C_RESET}"
+      exit 1
+    fi
+    echo -e "${C_GREEN}[OK] clone done${C_RESET}"
+  fi
 fi
 
 # 2. Collect args: $@ (bash -s -- pass-through) + MCC_BOOTSTRAP_ARGS (env, curl|bash friendly)
@@ -105,25 +116,27 @@ if [ -n "${MCC_BOOTSTRAP_ARGS:-}" ]; then
   installer_args+=("${env_args[@]}")
 fi
 
-# 3. ONE question (only if TTY and no --scope already provided): install to current project?
+# 3. v2.4 smart-split is the new default (no question). User can override via env var:
+#    MCC_BOOTSTRAP_ARGS="--scope global" curl ... | bash    # only ~/.claude/
+#    MCC_BOOTSTRAP_ARGS="--scope project" curl ... | bash   # team mode: full ./.claude/
+#    MCC_BOOTSTRAP_ARGS="--no-project-stub" curl ... | bash # smart but skip cwd PRPs/
 has_scope=0
 for a in "${installer_args[@]:-}"; do
   if [ "$a" = "--scope" ]; then has_scope=1; break; fi
 done
 
-if [ "$has_scope" -eq 0 ] && [ -t 0 ]; then
+if [ "$has_scope" -eq 0 ]; then
+  # Default is smart (installer.js default). Print where it will install for transparency.
   echo ""
-  echo -e "${C_YELLOW}Where to install?${C_RESET}"
-  echo "  [N] Global  -> ~/.claude/  (default, recommended for personal use)"
-  echo "  [y] Project -> ./.claude/  (in current dir: $(pwd))"
-  read -p "Install to current project? (y/N): " ans </dev/tty || ans="N"
-  case "$ans" in
-    y|Y|yes|Yes|YES) installer_args+=("--scope" "project") ;;
-    *) installer_args+=("--scope" "global") ;;
-  esac
-elif [ "$has_scope" -eq 0 ]; then
-  # Non-TTY (curl|bash with no tty stdin) -> default global silently
-  installer_args+=("--scope" "global")
+  echo -e "${C_YELLOW}MCC will install to:${C_RESET}"
+  echo "  ~/.claude/                              user-level (agents/commands/skills/settings)"
+  if [ "$(pwd)" != "$HOME" ]; then
+    echo "  $(pwd)/.claude/PRPs/   project work-products dir"
+  else
+    echo "  (cwd is \$HOME -> skipping project PRPs/ stub)"
+  fi
+  echo ""
+  echo "  team-shared install? -> rerun with: MCC_BOOTSTRAP_ARGS='--scope project'"
 fi
 
 # 4. Default to --exclusive (clean install) unless user explicitly opted out via --no-exclusive or already provided --exclusive

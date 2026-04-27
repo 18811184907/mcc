@@ -109,3 +109,30 @@ Rule 6: reviews/ 有文件 → 7-ship
 - **推荐在新 context window 跑每个重磅命令**（/prd、/plan、/implement 等）
 - **匹配用户语气**：用户随意就随意；用户要精准就结构化
 - **不要凭空说项目细节**：没有的信息直接说"没找到 prds/，看起来是全新项目"，不编造
+
+### required vs optional 的判定规则
+
+**严格按 `workflow-map.json` 的 `phases[].required` 字段判定，不要自己加码**：
+
+| workflow-map 标 | help 输出标 |
+|---|---|
+| `required: true` | **必选（required）** |
+| `required: false` | **可选（optional）** |
+
+**禁止把 `required: false` 的命令冒充成必选**。常见反例：
+- ❌ `1-discover` 阶段把 `/init` 标 required（workflow-map 里就 optional）
+- ❌ "项目还没有 CLAUDE.md → /init 必选" — 不对，CLAUDE.md 不是必须，"装即可用"是 MCC 哲学
+- ❌ 把 `/prd` / `/plan` 当 required 推（用户可能就是来探索 / 临时测试，不做完整流程）
+
+**对空项目 / 测试场景的特殊处理**：
+- 空项目（`PRPs/` 全空 + 无业务代码）+ 用户没说"要做什么"：
+  - 不要列"必选"段（甚至可以直接说"装好了，告诉我你想做什么"）
+  - 可以提一句"要建项目骨架可以跑 /init（可选）"
+  - **绝对不要列 4 条选项让用户挑** — 这是噪音
+- 用户语气像"试试 / 看看 / 测一下"：跳过工作流推荐，直接演示 MCC 招牌（并行 agent 等）
+
+### 输出长度控制
+
+- 用户随意问 → 3 句话以内说清"在哪 + 下一步"
+- 不要总是用满"📍 当前阶段 / 🎯 建议下一步 / 🧰 涉及工具 / 🚀 快速启动"四段框架
+- 信息少 → 输出短；用户问得明确 → 直接给答案不绕圈

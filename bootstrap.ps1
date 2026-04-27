@@ -17,7 +17,10 @@
 $ErrorActionPreference = "Stop"
 
 $REPO_URL = "https://github.com/18811184907/mcc"
-$MCC_DIR  = Join-Path $HOME ".mcc-install"
+# v2.4: $MCC_DIR overridable via env (for local e2e tests)
+$MCC_DIR  = if ($env:MCC_DIR) { $env:MCC_DIR } else { Join-Path $HOME ".mcc-install" }
+# v2.4: $MCC_NO_PULL=1 skips clone/pull (for local e2e tests with MCC_DIR override)
+$skipPull = ($env:MCC_NO_PULL -eq "1")
 
 Write-Host ""
 Write-Host "====================================" -ForegroundColor Cyan
@@ -50,32 +53,40 @@ if ($nodeMajor -lt 18) {
 }
 Write-Host "[OK] git + node v$nodeVer ready" -ForegroundColor Green
 
-# 1. clone or pull
-if (Test-Path $MCC_DIR) {
-  Write-Host ""
-  Write-Host "[..] MCC already at $MCC_DIR, updating..." -ForegroundColor Cyan
-  Push-Location $MCC_DIR
-  try {
-    git pull origin main --quiet
-    Write-Host "[OK] git pull done" -ForegroundColor Green
-  } catch {
-    Pop-Location
-    Write-Host "[!] git pull failed, removing and re-cloning..." -ForegroundColor Yellow
-    Remove-Item -Recurse -Force $MCC_DIR
-  } finally {
-    if ((Get-Location).Path -eq $MCC_DIR) { Pop-Location }
-  }
-}
-
-if (-not (Test-Path $MCC_DIR)) {
-  Write-Host ""
-  Write-Host "[..] Cloning $REPO_URL to $MCC_DIR ..." -ForegroundColor Cyan
-  git clone --depth 1 $REPO_URL $MCC_DIR
-  if ($LASTEXITCODE -ne 0) {
-    Write-Host "[X] clone failed" -ForegroundColor Red
+# 1. clone or pull (skip when MCC_NO_PULL=1, e.g. local e2e tests with MCC_DIR override)
+if ($skipPull) {
+  if (-not (Test-Path $MCC_DIR)) {
+    Write-Host "[X] MCC_NO_PULL=1 but $MCC_DIR does not exist" -ForegroundColor Red
     exit 1
   }
-  Write-Host "[OK] clone done" -ForegroundColor Green
+  Write-Host "[OK] using existing $MCC_DIR (MCC_NO_PULL=1, skip pull/clone)" -ForegroundColor Green
+} else {
+  if (Test-Path $MCC_DIR) {
+    Write-Host ""
+    Write-Host "[..] MCC already at $MCC_DIR, updating..." -ForegroundColor Cyan
+    Push-Location $MCC_DIR
+    try {
+      git pull origin main --quiet
+      Write-Host "[OK] git pull done" -ForegroundColor Green
+    } catch {
+      Pop-Location
+      Write-Host "[!] git pull failed, removing and re-cloning..." -ForegroundColor Yellow
+      Remove-Item -Recurse -Force $MCC_DIR
+    } finally {
+      if ((Get-Location).Path -eq $MCC_DIR) { Pop-Location }
+    }
+  }
+
+  if (-not (Test-Path $MCC_DIR)) {
+    Write-Host ""
+    Write-Host "[..] Cloning $REPO_URL to $MCC_DIR ..." -ForegroundColor Cyan
+    git clone --depth 1 $REPO_URL $MCC_DIR
+    if ($LASTEXITCODE -ne 0) {
+      Write-Host "[X] clone failed" -ForegroundColor Red
+      exit 1
+    }
+    Write-Host "[OK] clone done" -ForegroundColor Green
+  }
 }
 
 # 2. Collect args: $args (direct) + $env:MCC_BOOTSTRAP_ARGS (iwr|iex friendly)
@@ -86,30 +97,29 @@ if ($env:MCC_BOOTSTRAP_ARGS) {
   $installerArgs += ($env:MCC_BOOTSTRAP_ARGS -split '\s+' | Where-Object { $_ })
 }
 
-# 3. ONE question (only if TTY and no --scope already): install to current project?
+# 3. v2.4 smart-split is the new default (no question). User can override with flags:
+#    $env:MCC_BOOTSTRAP_ARGS = "--scope global"   -> only ~/.claude/, skip current dir
+#    $env:MCC_BOOTSTRAP_ARGS = "--scope project"  -> team mode: full install to ./.claude/
+#    $env:MCC_BOOTSTRAP_ARGS = "--no-project-stub" -> smart but skip current dir PRPs/
 $hasScope = ($installerArgs -contains '--scope')
 if (-not $hasScope) {
-  $isInteractive = $false
-  try { $isInteractive = -not [Console]::IsInputRedirected } catch { $isInteractive = $false }
-
-  if ($isInteractive) {
-    Write-Host ""
-    Write-Host "Where to install?" -ForegroundColor Yellow
-    Write-Host "  [N] Global  -> ~/.claude/  (default, recommended)"
-    Write-Host "  [y] Project -> ./.claude/  (current dir: $(Get-Location))"
-    $ans = Read-Host "Install to current project? (y/N)"
-    if ($ans -match '^(y|yes)$') {
-      $installerArgs += '--scope', 'project'
-    } else {
-      $installerArgs += '--scope', 'global'
-    }
+  # Default scope is smart (installer.js default). No flag needed.
+  # Print where it will install for transparency:
+  $cwd = (Get-Location).Path
+  $homeDir = $HOME
+  Write-Host ""
+  Write-Host "MCC will install to:" -ForegroundColor Yellow
+  Write-Host "  ~/.claude/                              user-level (agents/commands/skills/settings)"
+  if ($cwd -ne $homeDir) {
+    Write-Host "  $cwd\.claude\PRPs/   project work-products dir"
   } else {
-    # iwr|iex non-interactive -> default global silently
-    $installerArgs += '--scope', 'global'
+    Write-Host "  (cwd is `$HOME -> skipping project PRPs/ stub)" -ForegroundColor DarkGray
   }
+  Write-Host ""
+  Write-Host "  team-shared install? -> rerun with: `$env:MCC_BOOTSTRAP_ARGS = '--scope project'" -ForegroundColor DarkGray
 }
 
-# 4. Default to --exclusive unless user opted out
+# 4. Default to --exclusive unless user opted out (clean install of MCC's user-level dirs)
 $hasExclusive  = ($installerArgs -contains '--exclusive')
 $hasOptOut     = ($installerArgs -contains '--no-exclusive')
 if (-not $hasExclusive -and -not $hasOptOut) {

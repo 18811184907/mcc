@@ -4,7 +4,7 @@
 
 ---
 
-## 1. 装（一条命令 · 最多一问 · 30 秒）
+## 1. 装（一条命令 · 不问问题 · 30 秒）
 
 **Windows**：
 ```powershell
@@ -16,16 +16,17 @@ iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 |
 curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash
 ```
 
-终端里会**最多问一个问题**：装到全局（默认）还是当前项目？回车走默认，然后**一步装好**：
+v2.4 默认 **smart-split**，自动分两处装：
 
-- ✓ **信任模式**（不再每次工具调用弹窗）
-- ✓ **独占模式**（备份你已有的 → `.exclusive-backup-{时间戳}` 后装纯 MCC）
-- ✓ **写 `~/.claude/CLAUDE.md`**（如不存在）
-- ✓ 19 agent + 13 命令 + 18 skill + 25 hook + 11 rules + 5 MCPs
+```
+~/.claude/         用户级 19 agents / 13 commands / 18 skills / 信任模式 settings    ← 永久所有项目可用
+<cwd>/.claude/PRPs/   项目工作产物目录（prds/plans/reports/reviews/onboarding/features） ← 给本项目用
+```
 
-**重启 Claude Code 立即生效**。重跑同一条命令 = 更新到最新。
+**重启 Claude Code 立即生效**。重跑同一条命令 = 自动 `git pull` + 重装。
 
-> 想关默认行为？`--no-exclusive` / `--strict` / `--skip-claudemd` 等见 [INSTALL.md](./INSTALL.md)
+> 团队共享场景？`MCC_BOOTSTRAP_ARGS="--scope project"` → 全套装项目里 commit 给同事
+> 其他 flag（`--strict` / `--skip-claudemd` / `--no-exclusive` / `--no-project-stub`）见 [INSTALL.md](./INSTALL.md)
 
 ---
 

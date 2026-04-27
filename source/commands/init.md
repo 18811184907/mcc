@@ -26,10 +26,14 @@ fi
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   file_count=$(git ls-files | wc -l)
 else
+  # 排除 MCC / Codex 框架自身文件，避免误判 "项目内容"
   file_count=$(find . -type f \
     -not -path './.git/*' \
     -not -path './node_modules/*' \
     -not -path './.claude/*' \
+    -not -path './.codex/*' \
+    -not -name 'AGENTS.md' \
+    -not -name 'HOOKS-SOFT-GUIDANCE.md' \
     -not -path './dist/*' \
     -not -path './build/*' \
     -not -path './.next/*' \
@@ -110,6 +114,17 @@ fi
 [tree 关键目录 + 一句话解释]
 ```
 
+**重要：写"目录结构"段时必须 EXCLUDE 以下 MCC / Codex 框架文件**（它们是 AI 协作基础设施，不属于"项目结构"）：
+- `.claude/`（agents/commands/skills/rules/PRPs 等 — MCC 装的）
+- `.codex/`（agents/prompts/rules — MCC 装的 Codex 适配层）
+- `AGENTS.md`（Codex 自动生成）
+- `HOOKS-SOFT-GUIDANCE.md`（hooks 说明）
+
+如果排除完发现"项目结构"是空的（用户的 src/、tests/、配置都还没创建），写：
+```
+> 业务代码目录（src/ / app/ / tests/ 等）尚未创建。
+```
+
 ## 编码约定
 - 命名：[规则]
 - 错误处理：[模式]
@@ -144,13 +159,18 @@ fi
 - 栈：[探测到的]
 - 约定：[提取的]
 - TBD 项：[你要补的]
-
-建议下一步：
-1. 审阅并补充 TBD 项
-2. 已有项目想要更深度接手 → /onboard（4 阶段并行扫，产出详细 onboarding 报告）
-3. 大项目反复操作 → /index-repo（生成 PROJECT_INDEX，每 session 省 50K+ tokens）
-4. 想做新功能 → /prd（PRD）→ /plan → /implement
 ```
+
+**汇报后不要硬塞工作流**（不要主动列 /prd / /plan / /onboard 选项让用户挑）。MCC 设计原则是"装即可用"——用户跑完 /init 通常就想直接干活。
+
+可以给的反馈仅限**信息性**两条：
+- "TBD 项你定了方向就告诉我，我帮你补"
+- "想直接开干就直说目标（一句话），我判断该走哪条路"
+
+**禁止行为**：
+- 不要列出 4 条建议下一步选项让用户挑（这是噪音）
+- 不要主动推荐 /prd / /plan / /onboard / /index-repo
+- 不要写"建议下一步" 这种工作流引导段
 
 ## 与 onboard / index-repo 的路由决策
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.3.5",
+  "version": "2.4.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,24 @@
   },
 
   "version_history": [
+    {
+      "version": "2.4.0",
+      "date": "2026-04-27",
+      "changes": [
+        "v2.4.0 · scope 模型重设计为 smart-split + bootstrap UX 整修 + 第一道 e2e 防回归",
+        "ARCHITECTURE: 新增 scope='smart' 模式，并设为默认。语义：用户级能力（agents/commands/skills/modes/settings/MCP/rules）强制装 ~/.claude/，项目级产物（PRPs/）落 cwd。修复用户报告的'选 project 装完 trust 模式不生效 + / 没自动补全 + 离开项目失效'连锁问题",
+        "scope 兼容矩阵：smart (新默认) | global (只 ~/.claude) | project (team-shared 全套到 cwd) | hybrid (alias of smart)",
+        "新增 --no-project-stub flag：smart 模式下不在 cwd 建 PRPs/",
+        "bootstrap.ps1 / bootstrap.sh 默认走 smart，删原来的'最多一问'交互（信息明确显示要装哪两处 + 怎么换 team 模式）",
+        "bootstrap 新增 MCC_DIR 和 MCC_NO_PULL 环境变量 override（给本地 e2e 测试用，不影响生产）",
+        "/init skill 修：项目结构段必须 EXCLUDE MCC/Codex 框架文件（.claude/ / .codex/ / AGENTS.md / HOOKS-SOFT-GUIDANCE.md），并禁止汇报后硬塞 /prd / /plan / /onboard 工作流（违背'装即可用'哲学）",
+        "help skill 修：required vs optional 严格按 workflow-map.json 的 required 字段判定，禁止把 required:false 命令冒充必选；空项目 + 测试场景下不列 4 条选项噪音",
+        "新增 tests/bootstrap-e2e.{ps1,sh}：第一次有真实 bootstrap → installer e2e 测试，4 个场景验证 scope 路径正确（终结 v2.3.2-2.3.5 测试盲区）",
+        "installProjectStub 关键日志带 [project-stub] 英文 marker 便于跨 locale grep 测试",
+        ".ps1 测试文件强制纯 ASCII（PowerShell 5.1 zh-CN GBK 编码 bug 永久预防）",
+        "version: 2.3.5 → 2.4.0 (minor bump 因 scope 语义变化算 user-visible breaking-ish)"
+      ]
+    },
     {
       "version": "2.3.5",
       "date": "2026-04-27",
