@@ -67,6 +67,8 @@ fi
 
 ## Phase 1 — 探测项目
 
+> 注：装 MCC 时已自动写入 `~/.claude/CLAUDE.md`（推荐模板），所以 /init 只管项目级 CLAUDE.md，全局规则 Claude 每次 session 自动加载。
+
 读这些文件（存在哪个读哪个）：
 - `package.json` / `pyproject.toml` / `Cargo.toml` / `go.mod` → 确定主语言栈
 - `README.md` → 项目定位和目标

@@ -24,6 +24,8 @@ function parseArgs(argv) {
     dryRun: false,
     verbose: false,
     exclusive: false,
+    strict: false,        // v2.3: --strict 用细粒度白名单（替代默认信任模式）
+    skipClaudemd: false,  // v2.3: --skip-claudemd 跳过自动写 ~/.claude/CLAUDE.md
   };
   for (let i = 2; i < argv.length; i++) {
     const a = argv[i];
@@ -33,6 +35,8 @@ function parseArgs(argv) {
     else if (a === '--dry-run') args.dryRun = true;
     else if (a === '--verbose') args.verbose = true;
     else if (a === '--exclusive') args.exclusive = true;
+    else if (a === '--strict') args.strict = true;
+    else if (a === '--skip-claudemd') args.skipClaudemd = true;
     else if (a === '-h' || a === '--help') {
       printHelp();
       process.exit(0);
@@ -297,12 +301,26 @@ function detectEnvironment() {
 function mergeSettingsJson(existing, fragment) {
   const merged = JSON.parse(JSON.stringify(existing || {}));
 
+  // v2.3: 区分"fragment 提供默认"vs"fragment 强制覆盖"
+  // fragment 提供默认 = 用户未显式设过时才写入（尊重用户已选）
+  // 这避免 MCC 升级覆盖用户精心配过的偏好（如 alwaysThinkingEnabled, defaultMode 等）
+  function setDefault(target, key, value) {
+    if (target[key] === undefined) target[key] = value;
+  }
+
   // permissions
   if (fragment.permissions) {
     merged.permissions = merged.permissions || {};
-    if (fragment.permissions.allow) {
-      const existAllow = Array.isArray(merged.permissions.allow) ? merged.permissions.allow : [];
-      merged.permissions.allow = [...new Set([...existAllow, ...fragment.permissions.allow])];
+    // allow / deny / ask: 并集去重（合并保留双方的）
+    for (const listKey of ['allow', 'deny', 'ask']) {
+      if (Array.isArray(fragment.permissions[listKey])) {
+        const exist = Array.isArray(merged.permissions[listKey]) ? merged.permissions[listKey] : [];
+        merged.permissions[listKey] = [...new Set([...exist, ...fragment.permissions[listKey]])];
+      }
+    }
+    // defaultMode: 用户未设才写（v2.3 信任模式默认是 bypassPermissions，但用户已设的 askForPermission 等保留）
+    if (fragment.permissions.defaultMode !== undefined) {
+      setDefault(merged.permissions, 'defaultMode', fragment.permissions.defaultMode);
     }
   }
 
@@ -339,11 +357,12 @@ function mergeSettingsJson(existing, fragment) {
     merged.mcpServers = { ...(merged.mcpServers || {}), ...fragment.mcpServers };
   }
 
-  // 其他字段（非 _mcc_ 开头、非上面已处理的）：fragment 覆盖
+  // v2.3: 顶级布尔/字符串字段改为"fragment 提供默认"语义
+  // 避免 MCC 升级覆盖用户精心配的开关（如 alwaysThinkingEnabled = false 想省 token）
   const skip = new Set(['permissions', 'hooks', 'mcpServers', '$schema']);
   for (const [k, v] of Object.entries(fragment)) {
     if (skip.has(k) || k.startsWith('_mcc_')) continue;
-    merged[k] = v;
+    setDefault(merged, k, v);
   }
 
   return merged;
@@ -575,10 +594,20 @@ async function installClaudeCode(distDir, scope, options) {
   }
 
   // 9) 合并 settings.json
-  const fragmentPath = path.join(sourceClaudeDir, 'settings.fragment.json');
+  // v2.3: --strict 时优先用 strict 变体（细粒度白名单 + 不开 bypassPermissions）
+  const fragmentPath = options.strict
+    ? path.join(sourceClaudeDir, 'settings.fragment.strict.json')
+    : path.join(sourceClaudeDir, 'settings.fragment.json');
   const settingsPath = path.join(targetDir, 'settings.json');
-  if (pathExists(fragmentPath)) {
-    const fragment = readJson(fragmentPath);
+  if (options.strict && !pathExists(fragmentPath)) {
+    log('warn', `--strict 但找不到 settings.fragment.strict.json，回退默认 fragment`);
+  }
+  const actualFragmentPath = pathExists(fragmentPath)
+    ? fragmentPath
+    : path.join(sourceClaudeDir, 'settings.fragment.json');
+  if (pathExists(actualFragmentPath)) {
+    const fragment = readJson(actualFragmentPath);
+    if (options.strict) log('info', '🛡  --strict 模式：使用细粒度白名单');
     // 在 fragment 的 hooks 里也做变量替换（它引用了 ${MCC_HOOKS}）
     const fragmentStr = JSON.stringify(fragment);
     const resolvedStr = replaceInstallVariables(fragmentStr, {
@@ -757,6 +786,48 @@ function promptYesNo(question, defaultYes = true) {
   });
 }
 
+// ═══ 全局 CLAUDE.md 自动写入（v2.3 · 装即可用核心）═══
+//
+// 安装时检查 ~/.claude/CLAUDE.md：
+//   - 不存在 → 用 MCC 推荐模板写入（"优先复用 / 中文沟通 / TodoWrite"）
+//   - 已存在 → 不动用户文件，但提示有模板可参考
+//   - --skip-claudemd 时全跳过
+
+function ensureGlobalClaudemd(args) {
+  const home = os.homedir();
+  const globalClaudemd = path.join(home, '.claude', 'CLAUDE.md');
+  // 模板优先从 dist 拿（用户已 clone），fallback 到 source（开发场景）
+  const templatePathDist = path.join(DIST, 'claude-code', '.claude', 'templates', 'CLAUDE.global.example.md');
+  const templatePathSrc = path.join(ROOT, 'source', 'templates', 'CLAUDE.global.example.md');
+  const templatePath = pathExists(templatePathDist) ? templatePathDist : templatePathSrc;
+
+  if (!pathExists(templatePath)) {
+    log('warn', `跳过 ~/.claude/CLAUDE.md 写入：找不到模板 ${templatePath}`);
+    return;
+  }
+
+  if (pathExists(globalClaudemd)) {
+    log('info', `~/.claude/CLAUDE.md 已存在，MCC 不覆盖。`);
+    log('info', `   要查看 MCC 推荐模板：cat ${templatePath}`);
+    return;
+  }
+
+  if (args.dryRun) {
+    log('info', `(dry-run) 将写入 ~/.claude/CLAUDE.md（来自模板 ${path.basename(templatePath)}）`);
+    return;
+  }
+
+  try {
+    ensureDir(path.dirname(globalClaudemd));
+    fs.copyFileSync(templatePath, globalClaudemd);
+    log('ok', `📝 写入 ~/.claude/CLAUDE.md（推荐模板：优先复用 / 中文 / TodoWrite）`);
+    log('info', `   想要重置：删了重跑 installer，或参考 ${templatePath}`);
+    log('info', `   想跳过：装时加 --skip-claudemd`);
+  } catch (err) {
+    log('warn', `写入 ~/.claude/CLAUDE.md 失败：${err.message}（不影响 MCC 主体安装）`);
+  }
+}
+
 // ═══ 主流程 ═══════════════════════════════════════════
 
 async function main() {
@@ -875,6 +946,11 @@ async function main() {
       if (args.verbose) console.error(err.stack);
       process.exit(1);
     }
+  }
+
+  // v2.3: 装即可用 — 自动写 ~/.claude/CLAUDE.md（如不存在），让推荐模板（优先复用 / 中文 / TodoWrite）立即生效
+  if (!args.skipClaudemd && targets.includes('claude-code')) {
+    ensureGlobalClaudemd(args);
   }
 
   writeStateLog('completed', { targets, reports: reports.length });

@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "generatedAt": "2026-04-25T23:59:02.247Z",
+  "generatedAt": "2026-04-27T00:26:13.121Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
@@ -145,8 +145,8 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-init.md",
-      "size": 5894,
-      "sha256": "33317cf84ce55db2e9e144e6a18fd231553c1320fbd0465e4368b2c71ea808e7"
+      "size": 6064,
+      "sha256": "216c75378a760bb7272f45c33d8516ae2cc160572b9b7443e098a588350cf2e2"
     },
     {
       "kind": "prompt",
@@ -300,6 +300,6 @@
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 282804
+    "totalBytes": 282974
   }
 }

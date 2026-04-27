@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "generatedAt": "2026-04-25T23:59:02.077Z",
+  "generatedAt": "2026-04-27T00:26:12.945Z",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -170,8 +170,8 @@
       "kind": "command",
       "dist": ".claude/commands/init.md",
       "install": ".claude/commands/init.md",
-      "size": 5894,
-      "sha256": "33317cf84ce55db2e9e144e6a18fd231553c1320fbd0465e4368b2c71ea808e7"
+      "size": 6064,
+      "sha256": "216c75378a760bb7272f45c33d8516ae2cc160572b9b7443e098a588350cf2e2"
     },
     {
       "kind": "command",
@@ -674,8 +674,22 @@
       "kind": "settings-fragment",
       "dist": ".claude/settings.fragment.json",
       "install": ".claude/settings.fragment.json",
-      "size": 5677,
-      "sha256": "86640dab2f26be832f2e0b3fe685fec27b8664c14f4825038416cd2b3ffd5090"
+      "size": 5662,
+      "sha256": "32f0cfcd85d121ede1e080cc8054710e9fd15487865aea404ca78a1dfaf9dc8a"
+    },
+    {
+      "kind": "settings-fragment-strict",
+      "dist": ".claude/settings.fragment.strict.json",
+      "install": ".claude/settings.fragment.strict.json",
+      "size": 1802,
+      "sha256": "bf839cde7773d766eb62b8bc645dbc20752ff8421a22af4a48f2a97c04518e80"
+    },
+    {
+      "kind": "templates",
+      "dist": ".claude/templates/CLAUDE.global.example.md",
+      "install": ".claude/templates/CLAUDE.global.example.md",
+      "size": 4046,
+      "sha256": "c57e7a6c3048400b8462c5ff1486fb41f587d86ccb41db4ff714a2a301306769"
     },
     {
       "kind": "mcp-config",
@@ -820,7 +834,7 @@
   ],
   "notes": [],
   "summary": {
-    "total": 116,
+    "total": 118,
     "byKind": {
       "agents": 19,
       "command": 13,
@@ -829,10 +843,12 @@
       "hooks": 25,
       "hooks-config": 1,
       "settings-fragment": 1,
+      "settings-fragment-strict": 1,
+      "templates": 1,
       "mcp-config": 1,
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 840517
+    "totalBytes": 846520
   }
 }

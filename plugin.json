@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "2.2.0",
-  "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 13 commands + 18 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules（Python ↔ TypeScript 完整对等）。v2.0 接手已有项目（/onboard + /index-repo）+ v2.1 一行命令引导 + v2.2 路线图清单全做（TS patterns 5 模式 / TS hooks 4 模板 / DB PG12+ / Bun v1.0+ / product-lens ICE 矩阵）。",
+  "version": "2.3.0",
+  "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 13 commands + 18 skills + 3 behavioral modes + 8 hooks + 5 MCP servers + curated rules（Python ↔ TypeScript 完整对等）。v2.3 装即可用：信任模式默认（permissions.allow=['*'] + bypassPermissions）+ 自动写 ~/.claude/CLAUDE.md 推荐模板 + --strict 严格模式可选。",
   "author": {
     "name": "MCC",
     "url": "https://github.com/18811184907/mcc"

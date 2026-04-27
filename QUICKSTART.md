@@ -27,6 +27,11 @@ bootstrap 自动检查依赖、clone、装好。**更新就重跑同一条命令
 - 5 个 MCP 服务器（Serena / Context7 / GitHub / Sequential / Playwright）
 - 8 条 hook（3 个默认关，避免捣乱）
 - Python + TypeScript 代码规则
+- **信任模式 settings.json**（v2.3 起默认）：`permissions.allow=["*"]` + `bypassPermissions`，不再每次工具调用弹窗
+
+**保护你已有偏好**：v2.3 起 `mergeSettingsJson` 改为"fragment-provides-default"语义——你已显式设过的字段（`defaultMode` / `alwaysThinkingEnabled` 等）会被保留，**不会被 MCC 覆盖**。
+
+> 担心太宽松？加 `--strict` 装严格模式（细粒度白名单 + 仍弹窗确认）。99% 个人开发者用默认就好。
 
 **重启 Claude Code** 让新命令生效。
 

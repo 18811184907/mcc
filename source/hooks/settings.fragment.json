@@ -1,40 +1,21 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "_mcc_fragment_note": "installer 会把这个片段深度合并到 ~/.claude/settings.json。hooks 数组按 matcher 去重追加，permissions.allow 并集去重，mcpServers 对象合并。",
+  "_mcc_fragment_note": "installer 会把这个片段深度合并到 ~/.claude/settings.json。permissions.allow 并集去重；defaultMode 和顶级开关只在用户未显式设过时写入（fragment-provides-default 语义）；hooks 按 matcher 去重追加；mcpServers 对象合并。",
 
-  "_mcc_v1_3_hook_changes": "v1.3 起 3 个捣乱王默认关：pre:config-protection / stop:format-typecheck / pre:bash:safety。脚本仍在 .mcc-hooks/ 下，想开就从 _mcc_optional_hooks 复制对应段到上面的 hooks.* 里。详见 README 的 'Hook 开关' 节。",
+  "_mcc_v1_3_hook_changes": "v1.3 起 3 个捣乱王默认关：pre:config-protection / stop:format-typecheck / pre:bash:safety。",
+
+  "_mcc_v2_3_trust_mode": "v2.3 起 MCC 默认装'信任模式'：permissions.allow=['*'] + defaultMode='bypassPermissions' + skipDangerousModePermissionPrompt + skipAutoPermissionPrompt + enableAllProjectMcpServers。理由：MCC 用户群是开发者，每次工具调用弹窗严重打断流。要回老的细粒度白名单装时加 --strict flag（installer 会读 settings.fragment.strict.json 而非本文件）。",
 
   "permissions": {
-    "allow": [
-      "Read(*)",
-      "Grep(*)",
-      "Glob(*)",
-      "Write(*.md)",
-      "Edit(*.md)",
-      "Bash(gh *)",
-      "Bash(git *)",
-      "Bash(ls *)",
-      "Bash(npm *)",
-      "Bash(pnpm *)",
-      "Bash(yarn *)",
-      "Bash(bun *)",
-      "Bash(uv *)",
-      "Bash(uvx *)",
-      "Bash(pip *)",
-      "Bash(python *)",
-      "Bash(pytest *)",
-      "Bash(ruff *)",
-      "Bash(mypy *)",
-      "Bash(pyright *)",
-      "Bash(black *)",
-      "Bash(prettier *)",
-      "Bash(biome *)",
-      "Bash(eslint *)",
-      "Bash(tsc *)",
-      "Bash(playwright *)",
-      "WebFetch(*)"
-    ]
+    "allow": ["*"],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "bypassPermissions"
   },
+
+  "enableAllProjectMcpServers": true,
+  "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true,
 
   "hooks": {
     "SessionStart": [

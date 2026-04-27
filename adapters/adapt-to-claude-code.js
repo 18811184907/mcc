@@ -108,6 +108,24 @@ async function adaptToClaudeCode(sourceDir, distDir) {
   log.step('hooks: settings.fragment.json → .claude/settings.fragment.json');
   recordFile(manifest, settingsFragSrc, settingsFragDst, distDir, 'settings-fragment');
 
+  // 7b) settings.fragment.strict.json → .claude/settings.fragment.strict.json（v2.3 引入）
+  const settingsFragStrictSrc = path.join(sourceDir, 'hooks', 'settings.fragment.strict.json');
+  if (pathExists(settingsFragStrictSrc)) {
+    const settingsFragStrictDst = path.join(claudeRoot, 'settings.fragment.strict.json');
+    copyFile(settingsFragStrictSrc, settingsFragStrictDst);
+    log.step('hooks: settings.fragment.strict.json → .claude/settings.fragment.strict.json');
+    recordFile(manifest, settingsFragStrictSrc, settingsFragStrictDst, distDir, 'settings-fragment-strict');
+  }
+
+  // 7c) templates/CLAUDE.global.example.md → .claude/templates/（v2.3 引入，installer 装时自动写到 ~/.claude/CLAUDE.md）
+  const templatesSrc = path.join(sourceDir, 'templates');
+  if (pathExists(templatesSrc)) {
+    const templatesDst = path.join(claudeRoot, 'templates');
+    copySimpleDir(templatesSrc, templatesDst, 'templates', manifest, log, {
+      filter: (f) => f.endsWith('.md'),
+    });
+  }
+
   // 8) mcp.json → .claude/mcp-configs/mcp.json
   const mcpSrc = path.join(sourceDir, 'mcp', 'mcp.json');
   const mcpDst = path.join(claudeRoot, 'mcp-configs', 'mcp.json');

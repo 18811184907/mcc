@@ -4,7 +4,7 @@
 > 中文主场景，Python + TypeScript + AI 应用全栈定向优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-2.2.0-blue)
+![Version](https://img.shields.io/badge/version-2.3.0-blue)
 ![Target](https://img.shields.io/badge/target-Claude_Code_%2B_Codex-purple)
 
 ---
@@ -87,6 +87,47 @@ iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 |
 > 两侧 bootstrap 都同时支持**直接参数**和**`MCC_BOOTSTRAP_ARGS` env 变量**，统一脚本时可二选一。
 
 bootstrap 自动：检查 git/node ≥18 → clone 到 `~/.mcc-install` → 跑 installer → 给下一步指引。**重新跑同一命令即更新到最新**（自动 git pull）。
+
+#### 信任模式（v2.3 起默认）
+
+MCC 安装时**默认写入信任模式 settings.json**：
+
+```json
+{
+  "permissions": {
+    "allow": ["*"],
+    "defaultMode": "bypassPermissions"
+  },
+  "enableAllProjectMcpServers": true,
+  "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true
+}
+```
+
+**为什么默认信任**：MCC 用户群是开发者，每次工具调用弹窗严重打断流。设计哲学就是"用户少敲，Claude 多主动"——这跟"每次问要不要"冲突。
+
+**不会覆盖你已设过的字段**（v2.3 起 `mergeSettingsJson` 改为"fragment-provides-default"语义）：
+- 你设过 `defaultMode: "askForPermission"` → 保留你的
+- 你设过 `alwaysThinkingEnabled: false` → 保留你的
+- 你 allow 列表已有项 → 与 MCC 的并集（`["*"]` 已覆盖一切，但保留冗余无害）
+
+#### 严格模式（`--strict`）
+
+担心信任模式太宽松？装时加 `--strict`：
+
+```bash
+curl ... | bash -s -- --strict          # bash
+$env:MCC_BOOTSTRAP_ARGS = "--strict"    # pwsh
+iwr ... | iex
+```
+
+启用后：
+- `permissions.allow` 用细粒度白名单（`Read(*)` / `Bash(gh *)` / `Bash(git *)` / `Bash(npm *)` / ...）
+- 不写 `defaultMode: bypassPermissions`
+- 不写 `skipDangerousModePermissionPrompt` / `skipAutoPermissionPrompt`
+- 每次新工具调用 / 危险命令仍会弹窗确认
+
+适合：企业 / 安全敏感场景 / 共享机器。**99% 个人开发者用默认信任就好**。
 
 #### 独占模式（`--exclusive`）做什么
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,25 @@
   },
 
   "version_history": [
+    {
+      "version": "2.3.0",
+      "date": "2026-04-27",
+      "changes": [
+        "v2.3 主题：装即可用（zero-config）—— 信任模式默认 + 全局 CLAUDE.md 自动写入",
+        "settings.fragment.json 改信任模式：permissions.allow=['*'] + defaultMode=bypassPermissions + enableAllProjectMcpServers + skipDangerousModePermissionPrompt + skipAutoPermissionPrompt（开发者用 MCC 不再被弹窗打断）",
+        "新增 settings.fragment.strict.json：--strict flag 启用时用细粒度白名单 + askForPermission（企业 / 安全敏感场景）",
+        "mergeSettingsJson 改 fragment-provides-default 语义：top-level 字段 + permissions.defaultMode 用户已设过则保留（不覆盖你精配的开关，如 alwaysThinkingEnabled=false 想省 token）",
+        "permissions.deny / ask 也并集合并（之前只 merge allow）",
+        "新增 source/templates/CLAUDE.global.example.md：仿用户最佳实践（优先复用 / 中文 / TodoWrite / 工具偏好）",
+        "installer 加 ensureGlobalClaudemd：装 MCC 时自动检查 ~/.claude/CLAUDE.md，不存在则写入推荐模板（已存在不动）。--skip-claudemd 可禁用",
+        "adapter 加拷 templates/ + settings.fragment.strict.json 到 dist/",
+        "/init 命令简化：注释提示装时已写好 ~/.claude/CLAUDE.md，本命令只管项目级",
+        "README + QUICKSTART 加信任模式说明 + --strict / --skip-claudemd 选项 + 风险免责",
+        "smoke 加 8d/8e 检查：settings.fragment 双版本字段验证 + CLAUDE.global.example.md 模板内容核心条款",
+        "无新增 / 删除 skill / agent / command（保持 13 / 18 / 19）",
+        "version: 2.2.0 → 2.3.0（minor bump：装即可用 + zero-config 哲学）"
+      ]
+    },
     {
       "version": "2.2.0",
       "date": "2026-04-25",

@@ -197,6 +197,48 @@ if (isFile(bootstrapSh)) {
 const prpsOnboardingDistCC = path.join(ROOT, 'dist', 'claude-code', '.claude', 'PRPs', 'onboarding');
 assert(isDir(prpsOnboardingDistCC), 'dist/claude-code/.claude/PRPs/onboarding/ 占位目录缺失（v2.0 应有）');
 
+// --- 8d. settings.fragment 信任模式 + strict 双版本（v2.3 引入）---
+
+const fragmentJsonPath = path.join(src, 'hooks', 'settings.fragment.json');
+const fragmentStrictPath = path.join(src, 'hooks', 'settings.fragment.strict.json');
+assert(isFile(fragmentJsonPath), 'source/hooks/settings.fragment.json 缺失');
+assert(isFile(fragmentStrictPath), 'source/hooks/settings.fragment.strict.json 缺失（v2.3 引入）');
+
+if (isFile(fragmentJsonPath)) {
+  const frag = readJSON(fragmentJsonPath);
+  // 信任模式必备 5 个字段
+  assert(Array.isArray(frag.permissions?.allow) && frag.permissions.allow.includes('*'),
+    'settings.fragment 信任模式应有 permissions.allow=["*"]');
+  assert(frag.permissions?.defaultMode === 'bypassPermissions',
+    'settings.fragment 信任模式应有 defaultMode=bypassPermissions');
+  assert(frag.enableAllProjectMcpServers === true,
+    'settings.fragment 应有 enableAllProjectMcpServers=true');
+  assert(frag.skipDangerousModePermissionPrompt === true,
+    'settings.fragment 应有 skipDangerousModePermissionPrompt=true');
+  assert(frag.skipAutoPermissionPrompt === true,
+    'settings.fragment 应有 skipAutoPermissionPrompt=true');
+}
+
+if (isFile(fragmentStrictPath)) {
+  const fragS = readJSON(fragmentStrictPath);
+  assert(Array.isArray(fragS.permissions?.allow) && !fragS.permissions.allow.includes('*'),
+    'settings.fragment.strict 严格模式不应含 ["*"]');
+  assert(fragS.permissions?.defaultMode !== 'bypassPermissions',
+    'settings.fragment.strict 不应有 bypassPermissions');
+  assert(!fragS.skipDangerousModePermissionPrompt,
+    'settings.fragment.strict 不应 skip dangerous prompt');
+}
+
+// --- 8e. CLAUDE.global.example.md 模板（v2.3 引入）---
+
+const globalTemplate = path.join(src, 'templates', 'CLAUDE.global.example.md');
+assert(isFile(globalTemplate), 'source/templates/CLAUDE.global.example.md 缺失（v2.3 引入）');
+if (isFile(globalTemplate)) {
+  const tpl = readText(globalTemplate);
+  assert(tpl.includes('优先复用'), 'CLAUDE.global.example 应含核心条款"优先复用"');
+  assert(tpl.length > 1000, 'CLAUDE.global.example 内容过短');
+}
+
 // --- 9. rules 完整性（TS + Python 对齐）---
 
 const pyRulesDir = path.join(src, 'rules', 'python');
