@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "2.4.4",
-  "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 13 commands + 18 skills + 3 behavioral modes + 25 hook scripts + 5 MCP servers + curated rules（Python ↔ TypeScript 完整对等）。v2.4 smart-split：用户级能力强制装 ~/.claude/（agents/commands/skills/settings/MCP）+ 项目工作产物落 cwd/.claude/PRPs/。装时预写完整 Tool(*) allow 清单 + .claude/.codex path-glob 规则，杀掉所有 .claude/ 弹窗。",
+  "version": "2.5.0",
+  "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 13 commands + 19 skills + 3 behavioral modes + 27 hook scripts + 5 MCP servers + curated rules（Python ↔ TypeScript 完整对等）。v2.5 PROJECT_VAULT：所有项目级敏感配置（API key / DB / SSH / IP）只写一处 .claude/PROJECT_VAULT.md，hook 自动同步到 .env.local + ~/.ssh/config + .env.example + SECRETS-INDEX.md，强制 gitignore。v2.4 smart-split：用户级能力 ~/.claude + 项目工作产物 cwd/.claude/PRPs/。",
   "author": {
     "name": "MCC",
     "url": "https://github.com/18811184907/mcc"

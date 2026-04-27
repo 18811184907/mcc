@@ -47,7 +47,7 @@
   - [mcc-session-resume](#mcc-session-resume)
   - [mcc-session-save](#mcc-session-save)
   - [mcc-tdd](#mcc-tdd)
-- [Skill 场景指引（18）](#skill-场景指引)
+- [Skill 场景指引（19）](#skill-场景指引)
   - [architecture-decision-records](#architecture-decision-records)
   - [code-review-workflow](#code-review-workflow)
   - [coding-standards](#coding-standards)
@@ -61,6 +61,7 @@
   - [party-mode](#party-mode)
   - [product-lens](#product-lens)
   - [project-onboarding](#project-onboarding)
+  - [project-vault](#project-vault)
   - [subagent-driven-development](#subagent-driven-development)
   - [tdd-workflow](#tdd-workflow)
   - [using-git-worktrees](#using-git-worktrees)
@@ -265,6 +266,9 @@ MCC 主动性手册：Claude 遇任务时查'该派什么 agent / 激活什么 s
 
 ### project-onboarding
 接手已有项目（brownfield）的 4 阶段方法论：Reconnaissance → Architecture Mapping → Convention Detection → Output。
+
+### project-vault
+项目级敏感配置统一管理 skill。
 
 ### subagent-driven-development
 **串行**执行 implementation plan 的 task 链：每 task 派 fresh subagent 实现 + 两轮 review（spec + code quality）。

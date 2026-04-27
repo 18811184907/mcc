@@ -11,8 +11,8 @@
     {
       "name": "mcc",
       "source": "./",
-      "description": "19 agents + 13 commands + 18 skills + 3 behavioral modes + 25 hook scripts + 5 MCP servers + curated rules（Python + TypeScript）。v2.4 smart-split：用户级能力 → ~/.claude/，项目级产物 → cwd/.claude/PRPs/。装时预写完整 Tool(*) allow + path-glob 规则杀掉 .claude/ 弹窗。中文主场景 + Python + TS + AI 全栈定向优化。",
-      "version": "2.4.4",
+      "description": "19 agents + 13 commands + 19 skills + 3 behavioral modes + 27 hook scripts + 5 MCP servers + curated rules（Python + TypeScript）。v2.5 PROJECT_VAULT：所有 secret/IP/SSH 写一处 .claude/PROJECT_VAULT.md，hook 自动同步 .env.local + ~/.ssh/config + .env.example + SECRETS-INDEX.md，永不上 git。中文主场景 + Python + TS + AI 全栈定向优化。",
+      "version": "2.5.0",
       "author": {
         "name": "MCC"
       },

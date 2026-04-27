@@ -70,6 +70,34 @@
       }
     ],
 
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${MCC_HOOKS}/hooks/pre-vault-leak-detect.js",
+            "async": false,
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${MCC_HOOKS}/hooks/post-vault-sync.js",
+            "async": false,
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+
     "Stop": [
       {
         "matcher": "*",

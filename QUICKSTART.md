@@ -19,7 +19,7 @@ curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh |
 v2.4 默认 **smart-split**，自动分两处装：
 
 ```
-~/.claude/         用户级 19 agents / 13 commands / 18 skills / 信任模式 settings    ← 永久所有项目可用
+~/.claude/         用户级 19 agents / 13 commands / 19 skills / 信任模式 settings    ← 永久所有项目可用
 <cwd>/.claude/PRPs/   项目工作产物目录（prds/plans/reports/reviews/onboarding/features） ← 给本项目用
 ```
 
@@ -148,7 +148,7 @@ help（中文/英文都行，"我在哪 / 下一步该做什么"）
 ## 7. 想深入
 
 - `README.md` —— 完整设计 / 历史 / Roadmap
-- `USAGE.md` —— 13 命令 + 18 skill 完整参考
+- `USAGE.md` —— 13 命令 + 19 skill 完整参考
 - `ARCHITECTURE.md` —— 单源双目标、4 层架构
 - 装完后可在 Claude Code 里激活 `help` skill：`help 我该做什么`
 

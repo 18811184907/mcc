@@ -1,6 +1,6 @@
 # MCC Usage · 命令速查
 
-> 13 个命令 + 18 个 skill + 3 个 behavioral mode 的使用手册。
+> 13 个命令 + 19 个 skill + 3 个 behavioral mode 的使用手册。
 > 新手建议先看 [README.md](./README.md) 的"典型工作流"章节。
 >
 > **v1.5 后只留真正高频、产出 artifact、或需要显式触发的命令。冷门能力转 skill 自动激活**（说"验证一下" → verification-loop；说"审一下" → code-review-workflow；说"写 E2E" → e2e-testing；说"记下这个" → continuous-learning-v2）。

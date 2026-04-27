@@ -4,7 +4,7 @@
 > 中文主场景，Python + TypeScript + AI 应用全栈定向优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-2.4.4-blue)
+![Version](https://img.shields.io/badge/version-2.5.0-blue)
 ![Target](https://img.shields.io/badge/target-Claude_Code_%2B_Codex-purple)
 
 ---
@@ -21,7 +21,7 @@
 |---|---|
 | **19 个角色 agent** | planner / code-reviewer / debugger / security-reviewer / ai-engineer / python-pro / typescript-pro / fastapi-pro / frontend-developer / backend-architect / database-optimizer / performance-engineer / …… |
 | **13 个 slash 命令** | `/prd` `/plan` `/implement` `/pr`（PRP 四件套流水线）、`/review`（并行派 code-reviewer + security-reviewer）、`/tdd`、`/fix-bug`（4 域分诊）、`/session-save` `/session-resume`、`/init`（空项目轻量初始化）、`/explain`（中文讲解）、**`/onboard`**（v2.0 · 接手已有项目 4 阶段并行扫）、**`/index-repo`**（v2.0 · 大项目 token 节省索引） |
-| **18 个 skill** | **核心编排（4）**：`orchestration-playbook`（Claude 自查：派什么 agent / 激活什么 skill）、`help`（用户导航）、`dispatching-parallel-agents`（并行决策+组合）、`party-mode`（辩论）<br><br>**工作流（6）**：`confidence-check`、`tdd-workflow`、`verification-loop`、`code-review-workflow`、`subagent-driven-development`、`continuous-learning-v2`<br><br>**专项（8）**：`architecture-decision-records`、`coding-standards`（Python + TS）、`product-lens`、`writing-skills`、`e2e-testing`、`using-git-worktrees`、`finishing-a-development-branch`、**`project-onboarding`**（v2.0 · 4 阶段接手已有项目方法论） |
+| **19 个 skill** | **核心编排（4）**：`orchestration-playbook` / `help` / `dispatching-parallel-agents` / `party-mode`<br>**工作流（6）**：`confidence-check` / `tdd-workflow` / `verification-loop` / `code-review-workflow` / `subagent-driven-development` / `continuous-learning-v2`<br>**专项（9）**：`architecture-decision-records` / `coding-standards` / `product-lens` / `writing-skills` / `e2e-testing` / `using-git-worktrees` / `finishing-a-development-branch` / `project-onboarding` / **`project-vault`**（v2.5 · 项目级敏感配置统一） |
 | **3 个 behavioral mode** | `brainstorming` · `task-management` · `token-efficiency`（按关键词/上下文自动激活） |
 | **8 条 hook** | `pre:config-protection` 独家（阻止 Claude 修改 config 绕过 lint/security）、`stop:format-typecheck`（批量 lint+tsc，不每次 edit 跑）、`pre:bash:safety`（破坏性命令拦截）等 |
 | **5 个 MCP 服务器** | Serena（语义记忆）、Context7（实时查文档）、GitHub、Sequential（深推理）、Playwright |
