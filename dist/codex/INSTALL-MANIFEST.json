@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "mccVersion": "2.5.7",
+  "mccVersion": "2.5.8",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
@@ -278,8 +278,8 @@
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 16179,
-      "sha256": "0945e1c8c05eb9b03683f7daba2a58d7a8fa1679a37d45d7c162f633bfce3f1f"
+      "size": 16348,
+      "sha256": "d5ec6be52add1f4a5cc9af98bd7b92b5e58d569203327272695fbc3fdd11faf8"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -312,6 +312,6 @@
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 296807
+    "totalBytes": 296976
   }
 }

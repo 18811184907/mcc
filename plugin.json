@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "2.5.7",
-  "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 15 commands + 21 skills + 3 behavioral modes + 27 hook scripts + 5 MCP servers + curated rules。v2.5.7 Codex mcc 工作流触发修复：显式输入 mcc-prd / mcc-plan / mcc-implement 等命令时强制先读取完整 prompt，避免只按 AGENTS.md 摘要发挥。CLAUDE.md 带 'AI 主导接管' 偏好段，禁止让用户手动拷模板 / 编 .env / .ssh/config。",
+  "version": "2.5.8",
+  "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 15 commands + 21 skills + 3 behavioral modes + 27 hook scripts + 5 MCP servers + curated rules。v2.5.8 Codex mcc 工作流触发修复：显式输入 mcc-prd / mcc-plan / mcc-implement 等命令时强制先读取完整 prompt，避免只按 AGENTS.md 摘要发挥。CLAUDE.md 带 'AI 主导接管' 偏好段，禁止让用户手动拷模板 / 编 .env / .ssh/config。",
   "author": {
     "name": "MCC",
     "url": "https://github.com/18811184907/mcc"

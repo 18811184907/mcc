@@ -439,7 +439,7 @@ function buildAgentsMd(sourceDir) {
   L.push('');
   L.push('Codex 调用：`mcc-xxx`（文件：`~/.codex/prompts/mcc-xxx.md`；项目级安装时可用 `.codex/prompts/mcc-xxx.md` 覆盖）。');
   L.push('');
-  L.push('**强制触发规则**：当用户消息开头或正文明确出现 `mcc-xxx` 时，必须先读取对应完整 prompt 文件（优先 `.codex/prompts/mcc-xxx.md`，否则 `~/.codex/prompts/mcc-xxx.md`），再按该文件流程执行；不要只凭本 AGENTS.md 摘要生成结果。若完整 prompt 不存在或无法读取，先明确报告缺失路径，再用摘要作为降级方案。');
+  L.push('**强制触发规则**：当用户消息开头或正文明确出现 `mcc-xxx` 时，必须先读取对应完整 prompt 文件，再按该文件流程执行；不要只凭本 AGENTS.md 摘要生成结果。读取前先检查路径是否存在，优先 `.codex/prompts/mcc-xxx.md`，不存在则检查 `~/.codex/prompts/mcc-xxx.md`；项目级文件不存在是正常情况，不要把失败的读取命令或错误堆栈展示给用户。若两个路径都不存在或选中的文件无法读取，先明确报告缺失路径，再用摘要作为降级方案。');
   L.push('');
   for (const { name, desc } of cmdEntries) {
     const promptName = name.startsWith('mcc-') ? name : `mcc-${name}`;
