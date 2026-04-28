@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "mccVersion": "2.5.8",
+  "mccVersion": "2.5.9",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
