@@ -33,13 +33,14 @@
   - [test-automator](#test-automator)
   - [typescript-pro](#typescript-pro)
   - [vector-database-engineer](#vector-database-engineer)
-- [工作流 Prompts（14）](#工作流-prompts)
+- [工作流 Prompts（15）](#工作流-prompts)
   - [mcc-claudemd-sync](#mcc-claudemd-sync)
   - [mcc-explain](#mcc-explain)
   - [mcc-fix-bug](#mcc-fix-bug)
   - [mcc-implement](#mcc-implement)
   - [mcc-index-repo](#mcc-index-repo)
   - [mcc-init](#mcc-init)
+  - [mcc-help](#mcc-help)
   - [mcc-onboard](#mcc-onboard)
   - [mcc-plan](#mcc-plan)
   - [mcc-pr](#mcc-pr)
@@ -205,6 +206,9 @@ Codex 调用：`mcc-xxx`（文件：`.codex/prompts/mcc-xxx.md`）。
 
 ### mcc-init
 为项目初始化 MCC：探测栈 + 生成 CLAUDE.md。空项目走轻量初始化；已有大项目（src/ 满）自动建议跑 /onboard 做 4 阶段深度接手。
+
+### mcc-help
+MCC 进度导航：扫当前项目的 PRPs/ 与 docs/mistakes/ 推断已做了什么、下一步建议做什么。基于实际文件给建议，不要自由发挥成'选项编号 1234 你回我编号'式硬塞。
 
 ### mcc-onboard
 接手已有项目（brownfield）：4 阶段并行扫架构 / 数据 / 安全 / 约定，产出 onboarding 报告 + ≤100 行 CLAUDE.md。让 Claude 几分钟内理解陌生代码库。

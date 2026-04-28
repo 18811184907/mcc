@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.5.4",
+  "mccVersion": "2.5.5",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -179,6 +179,13 @@
       "install": ".claude/commands/init.md",
       "size": 7054,
       "sha256": "3fd63f895b0ae2986a11ab559b16517e205c43ac8888e119b4d23a4c2d5e7205"
+    },
+    {
+      "kind": "command",
+      "dist": ".claude/commands/mcc-help.md",
+      "install": ".claude/commands/mcc-help.md",
+      "size": 4621,
+      "sha256": "cbaa095e57a4c28c8889164b513bdf7c3888ea1cd80ec41d981b0d1ecc6ae910"
     },
     {
       "kind": "command",
@@ -897,10 +904,10 @@
   ],
   "notes": [],
   "summary": {
-    "total": 127,
+    "total": 128,
     "byKind": {
       "agents": 19,
-      "command": 14,
+      "command": 15,
       "skills": 37,
       "modes": 3,
       "hooks": 28,
@@ -912,6 +919,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 908329
+    "totalBytes": 912950
   }
 }

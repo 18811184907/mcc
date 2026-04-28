@@ -1,6 +1,6 @@
 # MCC Usage · 命令速查
 
-> 13 个命令 + 20 个 skill + 3 个 behavioral mode 的使用手册。
+> 15 个命令 + 21 个 skill + 3 个 behavioral mode 的使用手册。
 > 新手建议先看 [README.md](./README.md) 的"典型工作流"章节。
 >
 > **v1.5 后只留真正高频、产出 artifact、或需要显式触发的命令。冷门能力转 skill 自动激活**（说"验证一下" → verification-loop；说"审一下" → code-review-workflow；说"写 E2E" → e2e-testing；说"记下这个" → continuous-learning-v2）。
@@ -15,7 +15,7 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 
 ---
 
-## 13 个命令按类型
+## 15 个命令按类型
 
 ### 🎯 PRP 流水线（4 个）· 中小功能的主力流
 
@@ -80,6 +80,13 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 | `/onboard` | **接手陌生大代码库**（brownfield）：4 阶段并行扫架构/数据/约定/危险信号，~5 min 产出 onboarding 报告 + ≤100 行 CLAUDE.md。借鉴 ECC `codebase-onboarding`。带 `--quick` 模式跳到 ~1 min。 |
 | `/index-repo` | **大项目（>1k 文件）token 节省索引**：生成 `PROJECT_INDEX.md` + `.json`，2K 一次性投入 → 每 session 省 ~10-15K tokens（多 session 摊平 ROI 5-7x）。借鉴 SuperClaude `/sc:index-repo`。 |
 
+### 🧭 工具 / 同步（2 个）
+
+| 命令 | 场景 |
+|---|---|
+| `/mcc-help` | MCC 导航：先扫 `.claude/PRPs/`、`docs/mistakes/`、`docs/adr/` 等项目事实，再给 ≤30 行下一步建议。Codex 侧用 `mcc-help`。 |
+| `/claudemd-sync` | 同步/维护项目级 `CLAUDE.md`，避免跨设备或团队场景下提示文件漂移。Codex 侧用 `mcc-claudemd-sync`。 |
+
 ---
 
 ## v1.5 删除的命令 → 能力都在（靠 skill 自动激活）
@@ -98,7 +105,7 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 
 ---
 
-## 17 个 skill（Claude 自动激活，无需手动调）
+## 21 个 skill（Claude 自动激活，无需手动调）
 
 | Skill | 自动激活关键词 / 时机 |
 |---|---|
@@ -115,6 +122,10 @@ Codex 侧：`mcc-xxx`（作为 prompt 调用，不带 `:`）
 | **code-review-workflow** | "审一下 / 帮我看看代码 / 收到审查意见"：派 subagent + 收反馈两端 |
 | **subagent-driven-development** | 任务拆分后每 task fresh subagent + 两阶段 review |
 | **dispatching-parallel-agents** | 多个独立任务并行分发（和 party-mode 辩论互补） |
+| **project-onboarding** | 接手已有项目（brownfield）的 4 阶段方法论，是 `/onboard` 的底层方法 |
+| **project-vault** | 项目级敏感配置统一管理：`.claude/PROJECT_VAULT.md` + 同步 `.env.local` / `~/.ssh/config` |
+| **database-schema-doc** | 维护 `docs/SCHEMA.md`，记录 DB schema、业务含义和迁移约定 |
+| **claudemd-sync** | 跨设备/团队同步 `CLAUDE.md`，避免项目提示文件丢失或漂移 |
 | **using-git-worktrees** | 需要同时开多个分支隔离开发 |
 | **finishing-a-development-branch** | 分支收尾（merge/PR/cleanup） |
 | **writing-skills** | "建个 skill / 提炼约定 / 创作流程文档" |
@@ -225,7 +236,7 @@ v1.5 起 `/troubleshoot` 和 `/build-fix` 已合并进 `/fix-bug`。
 ### 🗣 方向有分歧
 
 ```
-help               # 查当前阶段 + 推荐（原 mcc-help，v1.9 简化为 help）
+/mcc-help          # 查当前阶段 + 推荐（Codex 侧用 mcc-help）
 ```
 
 然后：

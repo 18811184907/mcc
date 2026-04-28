@@ -140,7 +140,8 @@ async function adaptToCodex(sourceDir, distDir) {
     content = content.replace(/`\/mcc:([a-z0-9-]+)`/gi, '`mcc-$1` prompt');
     content = content.replace(/\/mcc:([a-z0-9-]+)/gi, '`mcc-$1` prompt');
 
-    const newName = 'mcc-' + rel;
+    // v2.5.5: 已经以 mcc- 开头的源文件不重复加前缀（如 mcc-help.md → mcc-help.md，不变成 mcc-mcc-help.md）
+    const newName = rel.startsWith('mcc-') ? rel : 'mcc-' + rel;
     const dstPath = path.join(promptsDst, newName);
     writeText(dstPath, content);
     recordFile(manifest, srcPath, dstPath, distDir, 'prompt');
@@ -357,7 +358,10 @@ function buildAgentsMd(sourceDir) {
   L.push(`- [角色（${agentEntries.length}）](#角色agents)`);
   for (const { name } of agentEntries) L.push(`  - [${name}](#${name})`);
   L.push(`- [工作流 Prompts（${cmdEntries.length}）](#工作流-prompts)`);
-  for (const { name } of cmdEntries) L.push(`  - [mcc-${name}](#mcc-${name})`);
+  for (const { name } of cmdEntries) {
+    const promptName = name.startsWith('mcc-') ? name : `mcc-${name}`;
+    L.push(`  - [${promptName}](#${promptName})`);
+  }
   L.push(`- [Skill 场景指引（${skillEntries.length}）](#skill-场景指引)`);
   for (const { name } of skillEntries) L.push(`  - [${name}](#${name})`);
   L.push(`- [心智模式（${modeEntries.length}）](#心智模式)`);
@@ -435,7 +439,8 @@ function buildAgentsMd(sourceDir) {
   L.push('Codex 调用：`mcc-xxx`（文件：`.codex/prompts/mcc-xxx.md`）。');
   L.push('');
   for (const { name, desc } of cmdEntries) {
-    L.push(`### mcc-${name}`);
+    const promptName = name.startsWith('mcc-') ? name : `mcc-${name}`;
+    L.push(`### ${promptName}`);
     L.push(shortDesc(desc));
     L.push('');
   }

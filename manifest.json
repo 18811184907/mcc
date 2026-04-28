@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.5.4",
+  "version": "2.5.5",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -39,7 +39,7 @@
 
   "components": {
     "agents": 19,
-    "commands": 14,
+    "commands": 15,
     "skills": 21,
     "modes": 3,
     "hooks": 8,
@@ -106,7 +106,19 @@
 
   "version_history": [
     {
-      "version": "2.4.4",
+      "version": "2.5.5",
+      "date": "2026-04-28",
+      "changes": [
+        "v2.5.5 · Codex-only 双线对等修复（用户报同事用 Codex 装完 3 个直接 break）",
+        "BUG 1 (CRITICAL): Codex-only 安装项目目录是空的。根因 installer.js 1150 行 `installProjectStub` 多了 `&& targets.includes('claude-code')` gate，让 Codex-only 用户跳过 PRPs/PROJECT_VAULT.md/SCHEMA.md/.gitignore 的全部建立。FIX：去 gate；installProjectStub 接受 `{ targets }` 参数，按 targets 双线适配 PRPs 入口提示语（Claude /prd vs Codex mcc-prd）",
+        "BUG 2: bootstrap.{ps1,sh} Next steps 只列 Claude Code 命令（'/onboard ; /init'），Codex-only 用户被误导。FIX：拆双段，Claude Code 段用 /onboard /init /mcc-help，Codex 段用 mcc-onboard mcc-init mcc-help",
+        "BUG 3: Codex 用户敲 mcc-help / help 时 LLM 自由发挥成'4 个选项编号 1234 你回我编号'式硬塞工作流（用户报同事真实出现）。FIX 1：source/commands/mcc-help.md 新增（双线统一），强制 anti-pattern：先扫 PRPs/docs/mistakes 再给 ≤30 行结构化输出，禁止'回我编号'交互劫持。FIX 2：adapt-to-codex.js 识别源命名已带 mcc- 前缀的不重复加，所以 mcc-help.md → 不变成 mcc-mcc-help.md。Claude Code 端用 /mcc-help 故意不冲突 CC 内置 /help",
+        "命令数 14 → 15（+mcc-help）",
+        "version: 2.5.4 → 2.5.5"
+      ]
+    },
+    {
+      "version": "2.5.4",
       "date": "2026-04-27",
       "changes": [
         "v2.4.4 · settings.fragment allow 大幅扩充 + 改用 Tool(*) 格式",

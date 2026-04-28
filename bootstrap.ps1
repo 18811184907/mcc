@@ -230,9 +230,16 @@ Write-Host "  [OK] MCC installed" -ForegroundColor Green
 Write-Host "====================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Yellow
-Write-Host "  1. Restart Claude Code (so new commands take effect)"
-Write-Host "  2. Type 'help' in Claude Code to see navigation"
-Write-Host "  3. Existing project: /onboard ; New project: /init"
+Write-Host "  Restart your client (Claude Code or Codex) so new commands/prompts load."
+Write-Host ""
+Write-Host "  Claude Code users:" -ForegroundColor Cyan
+Write-Host "    Existing project: /onboard ; New project: /init"
+Write-Host "    MCC navigation:   /mcc-help"
+Write-Host ""
+Write-Host "  Codex users:" -ForegroundColor Cyan
+Write-Host "    Existing project: type 'mcc-onboard' ; New project: 'mcc-init'"
+Write-Host "    MCC navigation:   type 'mcc-help'"
+Write-Host "    (Codex prompts are invoked by name 'mcc-<cmd>', not by '/' slash)"
 Write-Host ""
 Write-Host "MCC location: $MCC_DIR"
 Write-Host "Update MCC:   re-run this bootstrap command (auto git pull)"

@@ -32,8 +32,8 @@ curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh |
 
 **用户级 `~/.claude/`**：
 - `agents/` — 19 agents（独占模式覆盖原有，旧的备份到 `.exclusive-backup-{时间戳}/agents/`）
-- `commands/` — 13 commands（VS Code 扩展从这里扫，所以 `/` 自动补全立刻有）
-- `skills/` — 20 skill 目录
+- `commands/` — 15 commands（VS Code 扩展从这里扫，所以 `/` 自动补全立刻有）
+- `skills/` — 21 skill 目录
 - `modes/` — 3 个 behavioral mode
 - `.mcc-hooks/` — 27 hook scripts + hooks.json（含 v2.5 vault-sync 和 vault-leak-detect）
 - `rules/` — common 1 + python 5 + typescript 5
@@ -93,7 +93,7 @@ bootstrap 现在**默认**带 `--exclusive`。逻辑：
 
 1. 备份 `~/.claude/{agents,commands,skills,modes}` → `~/.claude.exclusive-backup-{时间戳}`
 2. 清空这 4 个目录（`rules/` 和 `settings.json` 保留）
-3. 装 MCC（19/13/18/3 全装零冲突）
+3. 装 MCC（19/15/21/3 全装零冲突）
 4. 回滚：`./uninstall.sh --timestamp {时间戳}`
 
 ⚠ 第一次装 MCC 且原本 `~/.claude/agents/` 等里有自定义内容？已经备份了，但**确认你能从备份目录恢复**才放心。
@@ -250,14 +250,14 @@ cd mcc
 在 Claude Code 里打：
 
 ```
-help
+/mcc-help
 ```
 
-会激活 `help` skill，扫 `.claude/PRPs/` 推断当前项目阶段并给建议。
+会激活 MCC 导航，扫 `.claude/PRPs/` 推断当前项目阶段并给建议。Codex 侧用 `mcc-help`。
 
 或直接看：
 - `~/.claude/agents/` 应该有 19 个 .md
-- `~/.claude/commands/` 应该有 13 个 .md
+- `~/.claude/commands/` 应该有 15 个 .md
 - `~/.claude/CLAUDE.md` 应该有内容（如之前不存在）
 
 ---
@@ -280,6 +280,6 @@ help
 ## 还有问题？
 
 - [QUICKSTART.md](./QUICKSTART.md) — 1 页装完使用
-- [USAGE.md](./USAGE.md) — 13 命令 + 20 skill 完整参考
+- [USAGE.md](./USAGE.md) — 15 命令 + 21 skill 完整参考
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — 单源双目标 / 4 层架构
 - GitHub Issues — 报 bug / 提需求

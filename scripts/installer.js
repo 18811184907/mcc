@@ -839,11 +839,20 @@ function promptYesNo(question, defaultYes = true) {
 // v2.4: smart-split — smart scope 在 cwd 建 PRPs/ 工作目录残骸（不重复全局已装的能力）
 // 关键日志带 [project-stub] 英文 marker 便于跨 locale 测试 grep
 // v2.4.3: 同时写一个项目级 .claude/settings.json，加 ./.claude/** Read/Write 允许规则
-function installProjectStub(cwd, dryRun) {
+function installProjectStub(cwd, dryRun, opts = {}) {
   if (cwd === os.homedir()) {
     log('info', `[project-stub] cwd is $HOME, skipping (smart mode only stubs real project dirs)`);
     return null;
   }
+  // v2.5.5: opts.targets 让"PRPs/ 入口提示语"双线适配
+  // - 仅 codex   : 用 mcc-prd / mcc-plan / mcc-init 提示（Codex prompts，无 slash 概念）
+  // - 仅 claude  : 用 /prd / /plan / /onboard 提示
+  // - 双线       : 两边都写
+  const targets = Array.isArray(opts.targets) && opts.targets.length > 0
+    ? opts.targets
+    : ['claude-code'];
+  const hasClaude = targets.includes('claude-code');
+  const hasCodex = targets.includes('codex');
   const projectClaude = path.join(cwd, '.claude');
   const prpsDir = path.join(projectClaude, 'PRPs');
   const subdirs = ['prds', 'plans', 'reports', 'reviews', 'onboarding', 'features'];
@@ -927,7 +936,16 @@ function installProjectStub(cwd, dryRun) {
   // v2.5.3: 强制 .gitignore 加 vault 相关条目（不依赖 vault-sync hook 首次触发）
   ensureProjectGitignore(cwd);
 
-  log('info', `   /prd writes to PRPs/prds/, /plan writes to PRPs/plans/, etc.`);
+  // v2.5.5: 入口提示语按 targets 双线适配
+  if (hasClaude && hasCodex) {
+    log('info', `   Claude Code: /prd → PRPs/prds/, /plan → PRPs/plans/`);
+    log('info', `   Codex:       mcc-prd / mcc-plan 写到同样位置`);
+  } else if (hasCodex) {
+    log('info', `   Codex prompt: mcc-prd → PRPs/prds/, mcc-plan → PRPs/plans/`);
+    log('info', `   (Codex 没有 slash 命令；在 codex 里输入 mcc-<name> 触发 prompt)`);
+  } else {
+    log('info', `   /prd writes to PRPs/prds/, /plan writes to PRPs/plans/, etc.`);
+  }
   return prpsDir;
 }
 
@@ -1147,10 +1165,12 @@ async function main() {
   }
 
   // v2.4 smart-split: 主装完成后建项目级 PRPs/ 残骸（让本项目有工作产物落盘点）
-  if (willStubProject && targets.includes('claude-code')) {
+  // v2.5.5: 不再限定 claude-code —— Codex-only 用户也需要 PRPs/PROJECT_VAULT/SCHEMA/.gitignore，
+  // 否则 mcc-prd / mcc-plan / project-vault 这些 prompt 跑出来无处落盘。
+  if (willStubProject) {
     console.log('');
     console.log(`── 项目级残骸 ─────────────`);
-    installProjectStub(cwd, args.dryRun);
+    installProjectStub(cwd, args.dryRun, { targets });
   }
 
   writeStateLog('completed', { targets, reports: reports.length });

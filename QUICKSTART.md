@@ -19,7 +19,7 @@ curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh |
 v2.4 默认 **smart-split**，自动分两处装：
 
 ```
-~/.claude/         用户级 19 agents / 13 commands / 20 skills / 信任模式 settings    ← 永久所有项目可用
+~/.claude/         用户级 19 agents / 15 commands / 21 skills / 信任模式 settings    ← 永久所有项目可用
 <cwd>/.claude/PRPs/   项目工作产物目录（prds/plans/reports/reviews/onboarding/features） ← 给本项目用
 ```
 
@@ -70,7 +70,7 @@ v2.4 默认 **smart-split**，自动分两处装：
 ### E. 不知道下一步
 
 ```
-help（中文/英文都行，"我在哪 / 下一步该做什么"）
+/mcc-help（中文/英文都行，"我在哪 / 下一步该做什么"）
 # 扫 .claude/PRPs/ 推断当前阶段，给具体建议
 ```
 
@@ -124,7 +124,7 @@ help（中文/英文都行，"我在哪 / 下一步该做什么"）
 | 现象 | 检查 | 修法 |
 |---|---|---|
 | `/onboard` 等命令打了但不识别 | 重启 Claude Code | 装完必须重启 |
-| 命令识别但激活失败 | `ls ~/.claude/commands/` 看有没有 13 个 .md | 没有 → 重跑 install.ps1 |
+| 命令识别但激活失败 | `ls ~/.claude/commands/` 看有没有 15 个 .md | 没有 → 重跑 install.ps1 |
 | Claude 不主动派 agent | 看 `~/.claude/rules/common/mcc-principles.md` 是否存在 | 没有 → 重跑 install |
 | settings.json 被覆盖了 | 看 `~/.claude/settings.json.backup-{date}` | installer 自动备份；rename 回来 |
 
@@ -148,9 +148,9 @@ help（中文/英文都行，"我在哪 / 下一步该做什么"）
 ## 7. 想深入
 
 - `README.md` —— 完整设计 / 历史 / Roadmap
-- `USAGE.md` —— 13 命令 + 20 skill 完整参考
+- `USAGE.md` —— 15 命令 + 21 skill 完整参考
 - `ARCHITECTURE.md` —— 单源双目标、4 层架构
-- 装完后可在 Claude Code 里激活 `help` skill：`help 我该做什么`
+- 装完后可在 Claude Code 里跑 `/mcc-help`，Codex 里用 `mcc-help`：`我该做什么`
 
 ---
 
@@ -160,4 +160,4 @@ help（中文/英文都行，"我在哪 / 下一步该做什么"）
 2. **默认并行**（多 agent 视角并发出 finding，主 session 合流，不串行排队）
 3. **可视化真并行**（⚡派发 + ✓合流 让你看得见）
 
-**装上重启敲 `help`，就够开始了。**
+**装上重启敲 `/mcc-help`（Codex 用 `mcc-help`），就够开始了。**
