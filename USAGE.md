@@ -320,7 +320,7 @@ A: 装完 MCC 后，Codex 会读：
 - `~/.codex/agents/*.md` — 角色定义
 - `~/.codex/prompts/mcc-*.md` — 命令 prompt
 - `~/.codex/config.toml` — MCP（含 MCC 的 5 个）
-- `~/AGENTS.md` 或项目根 `AGENTS.md` — 总索引
+- `~/.codex/AGENTS.md` 或 project scope 的项目根 `AGENTS.md` — 总索引
 
 用 Codex 时**不能**像 Claude Code 那样敲 `/xxx`（Codex 没有 slash command）。改成用"自然语言 + 引用 prompt 名"：
 

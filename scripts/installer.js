@@ -61,11 +61,11 @@ function printHelp() {
 
 选项:
   --scope <smart|global|project|hybrid>  安装模式（默认 smart）
-                                     smart   (推荐): 用户级强制装 ~/.claude/（agents/commands/
-                                              skills/modes/settings/MCP/rules-common/CLAUDE.md）
+                                     smart   (推荐): 用户级强制装 ~/.claude/（Claude Code）
+                                              + ~/.codex/（Codex agents/prompts/rules/AGENTS.md/MCP）
                                               + 当前项目下建 .claude/PRPs/（工作产物目录）
-                                     global  : 只装 ~/.claude/，不动当前目录
-                                     project : 全套装到当前目录 .claude/，团队 commit 场景
+                                     global  : 只装 ~/.claude/ + ~/.codex/，不动当前目录
+                                     project : 全套装到当前目录 .claude/ + .codex/，团队 commit 场景
                                      hybrid  : (alias of smart, 兼容老调用方)
   --target <auto|claude-code|codex|both>  目标工具（默认 auto = 检测已装的）
   --force                            同名文件覆盖（默认跳过用户已有的）
@@ -81,7 +81,7 @@ function printHelp() {
 示例:
   node scripts/installer.js                          # smart 模式（推荐）
   node scripts/installer.js --scope global           # 只装全局，不动当前目录
-  node scripts/installer.js --scope project          # 团队共享：全套到 ./.claude/
+  node scripts/installer.js --scope project          # 团队共享：全套到 ./.claude/ + ./.codex/
   node scripts/installer.js --exclusive              # smart + 独占（清空已有 agent/command/skill/mode）
   node scripts/installer.js --target codex           # 只装 Codex 侧
 `);
@@ -392,7 +392,8 @@ function mergeSettingsJson(existing, fragment) {
 
 /**
  * 把 TOML fragment 追加到现有 TOML。按 [section.name] 去重。
- *  - 如果 existing 已有同名 [mcp_servers.xxx]，跳过（不覆盖用户已有）除非 force
+ *  - 默认已有同名 section 就跳过，避免覆盖用户改过的 MCP 配置
+ *  - mcp_servers.serena 是 MCC 管理项；v2.5.4 起需要补 dashboard-disable 参数，所以允许自动更新
  *  - 其他 [section] 追加到末尾
  */
 function appendTomlFragment(existingToml, fragment, force) {
@@ -401,20 +402,27 @@ function appendTomlFragment(existingToml, fragment, force) {
 
   const toAppend = [];
   const skipped = [];
+  const updated = [];
+  let merged = existingToml;
 
   for (const [name, body] of Object.entries(fragmentSections.sections)) {
-    if (name in existingSections.sections && !force) {
-      skipped.push(name);
+    if (name in existingSections.sections) {
+      const shouldUpdate = force || name === 'mcp_servers.serena';
+      if (shouldUpdate && existingSections.sections[name].trim() !== body.trim()) {
+        merged = replaceTomlSection(merged, name, body);
+        updated.push(name);
+      } else {
+        skipped.push(name);
+      }
       continue;
     }
     toAppend.push({ name, body });
   }
 
   if (toAppend.length === 0) {
-    return { merged: existingToml, added: [], skipped };
+    return { merged, added: [], updated, skipped };
   }
 
-  let merged = existingToml;
   if (merged.length > 0 && !merged.endsWith('\n')) merged += '\n';
   if (!merged.endsWith('\n\n')) merged += '\n';
   merged += '# ═══ MCC MCP servers (added by installer) ═══\n\n';
@@ -422,7 +430,28 @@ function appendTomlFragment(existingToml, fragment, force) {
     merged += `[${name}]\n${body}\n`;
   }
 
-  return { merged, added: toAppend.map((t) => t.name), skipped };
+  return { merged, added: toAppend.map((t) => t.name), updated, skipped };
+}
+
+function replaceTomlSection(toml, sectionName, newBody) {
+  const lines = toml.split(/\r?\n/);
+  const out = [];
+  let i = 0;
+  const sectionHeader = `[${sectionName}]`;
+
+  while (i < lines.length) {
+    if (lines[i].trim() === sectionHeader) {
+      out.push(sectionHeader);
+      out.push(...newBody.split(/\r?\n/));
+      i += 1;
+      while (i < lines.length && !/^\s*\[[^\[\]]+\]\s*$/.test(lines[i])) i += 1;
+      continue;
+    }
+    out.push(lines[i]);
+    i += 1;
+  }
+
+  return out.join('\n');
 }
 
 function extractTomlSections(toml) {
@@ -734,7 +763,7 @@ async function installCodex(distDir, scope, options) {
     copied: { agents: [], prompts: [], rules: [] },
     skipped: { agents: [], prompts: [], rules: [] },
     agentsMd: null,
-    mergedToml: { added: [], skipped: [] },
+    mergedToml: { added: [], updated: [], skipped: [] },
   };
 
   // 1) .codex/agents/ → targetDir/agents/（同名跳过）
@@ -775,8 +804,16 @@ async function installCodex(distDir, scope, options) {
     const mccContent = readText(agentsMdSrc);
     if (pathExists(agentsMdDst)) {
       const existing = readText(agentsMdDst);
-      if (existing.includes('# AGENTS.md') && existing.includes('MCC 自动生成')) {
-        log('warn', `AGENTS.md 已含 MCC section，跳过（用 --force 强制覆盖）`);
+      const mccMarker = '\n\n---\n\n# MCC Section\n\n';
+      if (existing.includes(mccMarker) && existing.includes('MCC 自动生成')) {
+        const merged = existing.slice(0, existing.indexOf(mccMarker)) + mccMarker + mccContent;
+        if (!options.dryRun) writeText(agentsMdDst, merged);
+        log('ok', `AGENTS.md 已更新 MCC section`);
+        report.agentsMd = 'updated-section';
+      } else if (existing.trimStart().startsWith('# AGENTS.md') && existing.includes('MCC 自动生成')) {
+        if (!options.dryRun) writeText(agentsMdDst, mccContent);
+        log('ok', `AGENTS.md 已更新 MCC 生成内容`);
+        report.agentsMd = 'updated';
       } else {
         const merged = existing + '\n\n---\n\n# MCC Section\n\n' + mccContent;
         if (!options.dryRun) writeText(agentsMdDst, merged);
@@ -805,10 +842,10 @@ async function installCodex(distDir, scope, options) {
     const fragment = readText(tomlFragSrc);
     let existing = '';
     if (pathExists(configTomlDst)) existing = readText(configTomlDst);
-    const { merged, added, skipped } = appendTomlFragment(existing, fragment, options.force);
+    const { merged, added, updated, skipped } = appendTomlFragment(existing, fragment, options.force);
     if (!options.dryRun) writeText(configTomlDst, merged);
-    report.mergedToml = { added, skipped };
-    log('ok', `config.toml: +${added.length} sections, ${skipped.length} already present`);
+    report.mergedToml = { added, updated, skipped };
+    log('ok', `config.toml: +${added.length} sections, ${updated.length} updated, ${skipped.length} already present`);
   }
 
   return report;
@@ -1104,8 +1141,9 @@ async function main() {
   const willStubProject = isSmart && !args.noProjectStub && cwd !== os.homedir();
 
   if (isSmart) {
-    log('info', `📦 smart-split 模式：用户级能力强制装 ~/.claude/，项目工作产物落在当前目录`);
-    log('info', `   ~/.claude/                        ← 19 agents + 13 commands + 18 skills + settings + MCP`);
+    log('info', `📦 smart-split 模式：用户级能力强制装 ~/.claude/ + ~/.codex/，项目工作产物落在当前目录`);
+    log('info', `   ~/.claude/                        ← Claude Code: 19 agents + 15 commands + skills + settings + MCP`);
+    log('info', `   ~/.codex/                         ← Codex: 19 agents + 15 prompts + AGENTS.md + MCP`);
     if (willStubProject) {
       log('info', `   ${path.join(cwd, '.claude', 'PRPs')}/   ← PRDs/plans/reports 工作产物目录`);
     } else if (cwd === os.homedir()) {
@@ -1114,9 +1152,9 @@ async function main() {
       log('info', `   (--no-project-stub：跳过当前目录 PRPs/ 建立)`);
     }
   } else if (args.scope === 'project') {
-    log('info', `📦 project (team-shared) 模式：全套装到 ${path.resolve('.claude')}/（要 commit 给团队）`);
+    log('info', `📦 project (team-shared) 模式：全套装到 ${path.resolve('.claude')}/ + ${path.resolve('.codex')}/（要 commit 给团队）`);
   } else {
-    log('info', `📦 global 模式：全套装到 ~/.claude/，不动当前目录`);
+    log('info', `📦 global 模式：全套装到 ~/.claude/ + ~/.codex/，不动当前目录`);
   }
   log('info', `将安装到: ${targets.join(', ')}`);
   console.log('');
@@ -1195,6 +1233,7 @@ async function main() {
     }
     if (r.mergedToml) {
       if (r.mergedToml.added.length > 0) console.log(`  ✓ config.toml: +${r.mergedToml.added.length} MCP`);
+      if (r.mergedToml.updated.length > 0) console.log(`  ✓ config.toml: updated ${r.mergedToml.updated.length} MCP`);
       if (r.mergedToml.skipped.length > 0) console.log(`  ⋯ config.toml 已有 ${r.mergedToml.skipped.length} MCP`);
     }
     if (r.backup) console.log(`  💾 备份: ${r.backup}`);

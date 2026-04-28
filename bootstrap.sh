@@ -117,8 +117,8 @@ if [ -n "${MCC_BOOTSTRAP_ARGS:-}" ]; then
 fi
 
 # 3. v2.4 smart-split is the new default (no question). User can override via env var:
-#    MCC_BOOTSTRAP_ARGS="--scope global" curl ... | bash    # only ~/.claude/
-#    MCC_BOOTSTRAP_ARGS="--scope project" curl ... | bash   # team mode: full ./.claude/
+#    MCC_BOOTSTRAP_ARGS="--scope global" curl ... | bash    # only ~/.claude/ + ~/.codex/
+#    MCC_BOOTSTRAP_ARGS="--scope project" curl ... | bash   # team mode: full ./.claude/ + ./.codex/
 #    MCC_BOOTSTRAP_ARGS="--no-project-stub" curl ... | bash # smart but skip cwd PRPs/
 has_scope=0
 for a in "${installer_args[@]:-}"; do
@@ -129,7 +129,8 @@ if [ "$has_scope" -eq 0 ]; then
   # Default is smart (installer.js default). Print where it will install for transparency.
   echo ""
   echo -e "${C_YELLOW}MCC will install to:${C_RESET}"
-  echo "  ~/.claude/                              user-level (agents/commands/skills/settings)"
+  echo "  ~/.claude/                              Claude Code user-level (agents/commands/skills/settings)"
+  echo "  ~/.codex/                               Codex user-level (agents/prompts/AGENTS.md/config)"
   if [ "$(pwd)" != "$HOME" ]; then
     echo "  $(pwd)/.claude/PRPs/   project work-products dir"
   else

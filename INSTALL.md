@@ -21,7 +21,8 @@ curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh |
 1. 检查 `git` + `node ≥ 18`
 2. clone 到 `~/.mcc-install`（已有则 `git pull`）
 3. 跑 installer 走 **smart-split** 默认：
-   - 用户级能力（agents/commands/skills/modes/settings/MCP/rules/CLAUDE.md/.mcc-hooks）→ 强制装 `~/.claude/`
+   - Claude Code 用户级能力（agents/commands/skills/modes/settings/MCP/rules/CLAUDE.md/.mcc-hooks）→ 强制装 `~/.claude/`
+   - Codex 用户级能力（agents/prompts/rules/AGENTS.md/MCP config）→ 强制装 `~/.codex/`
    - 项目级残骸（PRPs/ 工作产物目录）→ 当前 cwd 下建（cwd 是 `$HOME` 时跳过）
 4. 默认 3 件事全做：
    - 信任模式 `settings.json`（permissions.allow=["*"] + bypassPermissions）
@@ -42,8 +43,18 @@ curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh |
 - `settings.json.backup-{时间戳}` — 原 settings 备份
 - `CLAUDE.md` — 推荐模板（仅在原本不存在时写）
 
+**用户级 `~/.codex/`**：
+- `agents/` — 19 agents（转为 Codex 角色指引）
+- `prompts/` — 15 个 `mcc-*` prompt（Codex 侧用 `mcc-prd` / `mcc-plan` 这种名字触发）
+- `rules/` — common 1 + python 5 + typescript 5
+- `AGENTS.md` — 编译版索引；会提示优先读 `~/.codex/agents/` 和 `~/.codex/prompts/`
+- `config.toml` — 追加 MCC MCP servers
+
 **项目级 `<cwd>/.claude/`**（smart 默认会建；`global` 模式跳过；`project` 模式整套都装这里）：
 - `PRPs/{prds,plans,reports,reviews,onboarding,features}/` — 6 个工作产物子目录 + .gitkeep
+
+**项目级 `<cwd>/.codex/`**（仅 `--scope project` 团队共享模式）：
+- `agents/` / `prompts/` / `rules/` — 全套 Codex 适配层，配合项目根 `AGENTS.md` commit 给团队
 
 **重启 Claude Code 立即生效**。**重跑同一命令 = 更新到最新**。
 
@@ -55,8 +66,8 @@ curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh |
 | `--strict` | 关信任模式，回到细粒度白名单 + askForPermission |
 | `--skip-claudemd` | 不自动写 `~/.claude/CLAUDE.md` |
 | `--no-project-stub` | smart 模式下不在当前 cwd 建 PRPs/（等价于 `--scope global`） |
-| `--scope global` | 只装 `~/.claude/`，不动当前目录 |
-| `--scope project` | 团队共享：全套装到 `<cwd>/.claude/`（要 commit 给同事） |
+| `--scope global` | 只装 `~/.claude/` + `~/.codex/`，不动当前目录 |
+| `--scope project` | 团队共享：全套装到 `<cwd>/.claude/` + `<cwd>/.codex/`（要 commit 给同事） |
 
 ---
 

@@ -99,7 +99,7 @@ $HOME/.claude
     ""
 
 # Test 2: --scope global
-run_test "scope=global: only ~/.claude, no project stub" \
+run_test "scope=global: only ~/.claude + ~/.codex, no project stub" \
     "--scope global --dry-run" \
     "$HOME/.claude" \
     "项目级残骸"
@@ -112,7 +112,7 @@ mcc-e2e" \
     "项目级残骸"
 
 # Test 4: --no-project-stub
-run_test "smart + --no-project-stub: ~/.claude only" \
+run_test "smart + --no-project-stub: ~/.claude + ~/.codex only" \
     "--no-project-stub --dry-run" \
     "smart-split
 $HOME/.claude" \

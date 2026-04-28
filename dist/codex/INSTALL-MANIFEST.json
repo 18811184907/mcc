@@ -278,8 +278,8 @@
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 15358,
-      "sha256": "284dab67dabe685617da08d7c085078e04d2feacd2f371e21d1cede2ae36ff4b"
+      "size": 15786,
+      "sha256": "42d9178f72bfe516255b9d6e070bbc62a66e48a84f372c966f4ddcd54a2fa5fc"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -312,6 +312,6 @@
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 295986
+    "totalBytes": 296414
   }
 }

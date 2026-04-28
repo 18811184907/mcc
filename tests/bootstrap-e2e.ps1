@@ -98,9 +98,9 @@ Test-Case `
         "ParameterArgumentValidationError"
     )
 
-# Test 2: --scope global - target ~/.claude only, NO project stub
+# Test 2: --scope global - target ~/.claude + ~/.codex only, NO project stub
 Test-Case `
-    -Name "scope=global: only ~/.claude, no project stub" `
+    -Name "scope=global: only ~/.claude + ~/.codex, no project stub" `
     -BootstrapArgs "--scope global --dry-run" `
     -MustContain @(
         "Claude Code"
@@ -110,9 +110,9 @@ Test-Case `
         "ParameterBindingValidationException"
     )
 
-# Test 3: --scope project (team mode) - target cwd .claude, no separate stub
+# Test 3: --scope project (team mode) - target cwd .claude + .codex, no separate stub
 Test-Case `
-    -Name "scope=project (team mode): full install to cwd .claude/" `
+    -Name "scope=project (team mode): full install to cwd .claude/ + .codex/" `
     -BootstrapArgs "--scope project --dry-run" `
     -MustContain @(
         "mcc-e2e"
@@ -124,7 +124,7 @@ Test-Case `
 
 # Test 4: --no-project-stub - smart but skip cwd PRPs/
 Test-Case `
-    -Name "smart + --no-project-stub: ~/.claude only" `
+    -Name "smart + --no-project-stub: ~/.claude + ~/.codex only" `
     -BootstrapArgs "--no-project-stub --dry-run" `
     -MustContain @(
         "smart-split"

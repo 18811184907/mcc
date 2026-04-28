@@ -20,10 +20,11 @@ v2.4 默认 **smart-split**，自动分两处装：
 
 ```
 ~/.claude/         用户级 19 agents / 15 commands / 21 skills / 信任模式 settings    ← 永久所有项目可用
+~/.codex/          用户级 19 agents / 15 prompts / AGENTS.md / MCP config           ← Codex 所有项目可用
 <cwd>/.claude/PRPs/   项目工作产物目录（prds/plans/reports/reviews/onboarding/features） ← 给本项目用
 ```
 
-**重启 Claude Code 立即生效**。重跑同一条命令 = 自动 `git pull` + 重装。
+**重启 Claude Code 或 Codex 立即生效**。重跑同一条命令 = 自动 `git pull` + 重装。
 
 > 团队共享场景？`MCC_BOOTSTRAP_ARGS="--scope project"` → 全套装项目里 commit 给同事
 > 其他 flag（`--strict` / `--skip-claudemd` / `--no-exclusive` / `--no-project-stub`）见 [INSTALL.md](./INSTALL.md)

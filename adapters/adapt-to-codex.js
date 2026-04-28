@@ -341,13 +341,14 @@ function buildAgentsMd(sourceDir) {
   L.push('# AGENTS.md');
   L.push('');
   L.push('> MCC 自动生成，编辑 `source/` 后跑 `node adapters/build.js` 刷新。');
-  L.push('> Codex 会话加载此文件 + `.codex/agents/*.md` + `.codex/prompts/*.md`。');
+  L.push('> Codex 会话加载此文件；完整 agents/prompts 默认在用户级 `~/.codex/agents/`、`~/.codex/prompts/`。');
+  L.push('> 只有使用 `--scope project` 的团队共享安装时，完整文件才在当前项目的 `.codex/agents/`、`.codex/prompts/`。');
   L.push('');
   L.push('**快速使用**：');
   L.push('- 需要某个 role 的视角？在下面【角色】查它的触发条件和场景');
   L.push('- 要跑 PRP 工作流？在【工作流 Prompts】找 `mcc-xxx`');
   L.push('- 遇到某个开发场景？在【Skill 场景指引】看该用什么思路');
-  L.push('- 描述里说 "完整 prompt 见" 的文件在 `.codex/agents/` 或 `.codex/prompts/`');
+  L.push('- 描述里说 "完整 prompt 见" 时，优先读 `~/.codex/agents/` 或 `~/.codex/prompts/`；若当前项目存在 `.codex/`，才用项目级文件覆盖');
   L.push('');
 
   // ── TOC
@@ -372,7 +373,7 @@ function buildAgentsMd(sourceDir) {
   // ── 核心原则
   L.push('## 核心原则');
   L.push('');
-  L.push('完整 8 章见 `.codex/rules/common/mcc-principles.md`。要点：');
+  L.push('完整 8 章见 `~/.codex/rules/common/mcc-principles.md`（项目级安装则见 `.codex/rules/common/mcc-principles.md`）。要点：');
   L.push('- **证据 > 假设 > 代码 > 文档 > 效率 > 冗长**');
   L.push('- **SOLID + KISS + DRY + YAGNI**');
   L.push('- **5 维度置信度 ≥90% 才开工**（confidence-check）');
@@ -425,7 +426,7 @@ function buildAgentsMd(sourceDir) {
   // ── 角色
   L.push('## 角色（Agents）');
   L.push('');
-  L.push('对应场景自动以该角色视角工作。描述后附触发条件；完整 prompt 在 `.codex/agents/{name}.md`。');
+  L.push('对应场景自动以该角色视角工作。描述后附触发条件；完整 prompt 在 `~/.codex/agents/{name}.md`（项目级 `.codex/agents/{name}.md` 可覆盖）。');
   L.push('');
   for (const { name, desc } of agentEntries) {
     L.push(`### ${name}`);
@@ -436,7 +437,7 @@ function buildAgentsMd(sourceDir) {
   // ── 工作流 Prompts
   L.push('## 工作流 Prompts');
   L.push('');
-  L.push('Codex 调用：`mcc-xxx`（文件：`.codex/prompts/mcc-xxx.md`）。');
+  L.push('Codex 调用：`mcc-xxx`（文件：`~/.codex/prompts/mcc-xxx.md`；项目级安装时可用 `.codex/prompts/mcc-xxx.md` 覆盖）。');
   L.push('');
   for (const { name, desc } of cmdEntries) {
     const promptName = name.startsWith('mcc-') ? name : `mcc-${name}`;

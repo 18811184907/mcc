@@ -98,8 +98,8 @@ if ($env:MCC_BOOTSTRAP_ARGS) {
 }
 
 # 3. v2.4 smart-split is the new default (no question). User can override with flags:
-#    $env:MCC_BOOTSTRAP_ARGS = "--scope global"   -> only ~/.claude/, skip current dir
-#    $env:MCC_BOOTSTRAP_ARGS = "--scope project"  -> team mode: full install to ./.claude/
+#    $env:MCC_BOOTSTRAP_ARGS = "--scope global"   -> only ~/.claude/ + ~/.codex/, skip current dir
+#    $env:MCC_BOOTSTRAP_ARGS = "--scope project"  -> team mode: full install to ./.claude/ + ./.codex/
 #    $env:MCC_BOOTSTRAP_ARGS = "--no-project-stub" -> smart but skip current dir PRPs/
 $hasScope = ($installerArgs -contains '--scope')
 if (-not $hasScope) {
@@ -109,7 +109,8 @@ if (-not $hasScope) {
   $homeDir = $HOME
   Write-Host ""
   Write-Host "MCC will install to:" -ForegroundColor Yellow
-  Write-Host "  ~/.claude/                              user-level (agents/commands/skills/settings)"
+  Write-Host "  ~/.claude/                              Claude Code user-level (agents/commands/skills/settings)"
+  Write-Host "  ~/.codex/                               Codex user-level (agents/prompts/AGENTS.md/config)"
   if ($cwd -ne $homeDir) {
     Write-Host "  $cwd\.claude\PRPs/   project work-products dir"
   } else {
