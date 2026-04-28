@@ -104,8 +104,10 @@ function loadState() {
       }
       return state;
     }
-  } catch (_) {
-    /* ignore */
+  } catch (err) {
+    // State file is corrupted (e.g. interrupted write). Resetting is the right
+    // call, but log it so users seeing a sudden gate-reset have a breadcrumb.
+    process.stderr.write(`[GateGuard] state file unreadable, resetting: ${err.message}\n`);
   }
   return { checked: [], last_active: Date.now() };
 }
@@ -149,7 +151,11 @@ function saveState(state) {
         throw error;
       }
     }
-  } catch (_) {
+  } catch (err) {
+    // Surface write failures — silently swallowing them was making gate state
+    // randomise from the user's perspective (mark-as-checked appeared to work
+    // but didn't persist, so the next call re-triggered the gate).
+    process.stderr.write(`[GateGuard] state write failed: ${err.message}\n`);
     if (tmpFile) {
       try {
         fs.unlinkSync(tmpFile);

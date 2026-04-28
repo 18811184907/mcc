@@ -472,6 +472,16 @@ function extractTomlSections(toml) {
   const preamble = [];
 
   for (const line of lines) {
+    // Skip comment lines so that a literal "[mcp_servers.example]" inside a
+    // TOML comment isn't mistaken for a real section header (would otherwise
+    // cause the next real definition with the same name to be treated as a
+    // duplicate and silently dropped).
+    const trimmed = line.trim();
+    if (trimmed.startsWith('#')) {
+      if (currentName === null) preamble.push(line);
+      else currentBody.push(line);
+      continue;
+    }
     const secMatch = /^\[([^\[\]]+)\]\s*$/.exec(line);
     if (secMatch) {
       if (currentName) {
@@ -763,8 +773,16 @@ async function installCodex(distDir, scope, options) {
       const toDir = path.join(excBackupRoot, d);
       if (!options.dryRun) {
         ensureDir(path.dirname(toDir));
-        try { fs.renameSync(fromDir, toDir); }
-        catch { copyDirRecursive(fromDir, toDir); fs.rmSync(fromDir, { recursive: true, force: true }); }
+        try {
+          fs.renameSync(fromDir, toDir);
+        } catch (err) {
+          // Mirror the Claude Code side: only fall back to copy+verify+rm on
+          // EXDEV (cross-device) or EPERM (Windows). Naked `catch{}` was masking
+          // permission/disk errors and then `rmSync` deleted the source even
+          // when the copy failed half-way — silent data loss.
+          if (err.code !== 'EXDEV' && err.code !== 'EPERM') throw err;
+          backupDirAtomicCrossDevice(fromDir, toDir);
+        }
       }
       log('ok', `  ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
     }

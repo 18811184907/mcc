@@ -94,8 +94,20 @@ function runSync() {
     return;
   }
 
-  // Copy ~/.claude/CLAUDE.md → dotfiles/CLAUDE.md
-  const dotfilesClaudemd = path.join(dotfilesDir, config.syncFile || 'CLAUDE.md');
+  // Validate syncFile is a safe plain filename (defense against path traversal,
+  // e.g. "../../.ssh/authorized_keys" overwriting arbitrary files via copyFileSync).
+  const SAFE_SYNC_FILE = /^[A-Za-z0-9_\-.]+\.md$/;
+  const syncFileName = config.syncFile || 'CLAUDE.md';
+  if (!SAFE_SYNC_FILE.test(syncFileName)) {
+    process.stderr.write(`[claudemd-sync] invalid syncFile "${syncFileName}" — must be a plain .md filename, no path separators\n`);
+    return;
+  }
+  const dotfilesClaudemd = path.resolve(dotfilesDir, syncFileName);
+  const dotfilesDirResolved = path.resolve(dotfilesDir);
+  if (!dotfilesClaudemd.startsWith(dotfilesDirResolved + path.sep) && dotfilesClaudemd !== dotfilesDirResolved) {
+    process.stderr.write(`[claudemd-sync] syncFile path escapes dotfiles dir, refusing\n`);
+    return;
+  }
   if (!fs.existsSync(targetClaudemd)) {
     process.stderr.write(`[claudemd-sync] ~/.claude/CLAUDE.md not found, skipping\n`);
     return;
@@ -103,7 +115,7 @@ function runSync() {
   fs.copyFileSync(targetClaudemd, dotfilesClaudemd);
 
   // Stage to compute diff
-  const addRes = git(dotfilesDir, ['add', config.syncFile || 'CLAUDE.md']);
+  const addRes = git(dotfilesDir, ['add', '--', syncFileName]);
   if (addRes.status !== 0) {
     process.stderr.write(`[claudemd-sync] git add failed: ${addRes.stderr || addRes.stdout}\n`);
     return;
@@ -124,7 +136,28 @@ function runSync() {
   const deleted = parseInt(parts[1], 10) || 0;
 
   if (deleted === 0) {
-    // Pure additive — auto-commit + auto-push
+    // Pure additive — auto-commit + auto-push.
+    // SAFETY: verify remote URL matches the one user opted into at /claudemd-sync init time.
+    // Without this check, anyone able to mutate ~/.claude/.claudemd-sync.config (incl. prompt
+    // injection during a Claude session) can silently exfiltrate the user's global CLAUDE.md
+    // to an attacker-controlled repo on every append.
+    const remoteName = config.remoteName || 'origin';
+    const remoteUrlRes = git(dotfilesDir, ['remote', 'get-url', remoteName]);
+    const actualRemoteUrl = (remoteUrlRes.stdout || '').trim();
+    if (remoteUrlRes.status !== 0 || !actualRemoteUrl) {
+      process.stderr.write(`[claudemd-sync] cannot resolve remote "${remoteName}", refusing auto-push\n`);
+      return;
+    }
+    if (config.repoUrl && config.repoUrl !== actualRemoteUrl) {
+      process.stderr.write(
+        `[claudemd-sync] ⚠ remote URL drift detected, refusing auto-push:\n`
+        + `[claudemd-sync]    config.repoUrl = ${config.repoUrl}\n`
+        + `[claudemd-sync]    git remote ${remoteName} = ${actualRemoteUrl}\n`
+        + `[claudemd-sync]    if intentional: re-run /claudemd-sync init to update config\n`
+      );
+      return;
+    }
+
     const commitRes = git(dotfilesDir, [
       'commit',
       '-m',
@@ -135,7 +168,8 @@ function runSync() {
       return;
     }
 
-    const pushRes = git(dotfilesDir, ['push'], { timeoutMs: 15000 });
+    process.stderr.write(`[claudemd-sync] pushing to ${actualRemoteUrl}\n`);
+    const pushRes = git(dotfilesDir, ['push', remoteName], { timeoutMs: 15000 });
     if (pushRes.status !== 0) {
       process.stderr.write(
         `[claudemd-sync] ⚠ commit OK but push failed: ${pushRes.stderr || pushRes.stdout}\n`

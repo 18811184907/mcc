@@ -42,7 +42,13 @@ process.stdin.on('data', chunk => {
 });
 
 process.stdin.on('end', () => {
-  try { runScan(); } catch (_) { /* swallow */ }
+  try {
+    runScan();
+  } catch (err) {
+    // Never silently drop scan failures — this is a security hook, a swallowed
+    // error means real secrets get sent through with no warning to the user.
+    process.stderr.write(`[vault-leak-detect] scan error: ${err && err.stack ? err.stack : err}\n`);
+  }
   clearTimeout(watchdog);
   try { process.stdout.write(data); } catch (_) { /* noop */ }
   process.exit(0);

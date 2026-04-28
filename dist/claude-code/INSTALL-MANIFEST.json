@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.5.10",
+  "mccVersion": "2.5.11",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\claude-code",
   "installBase": ".claude/",
@@ -534,8 +534,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/auto-tmux-dev.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/auto-tmux-dev.js",
-      "size": 4336,
-      "sha256": "e3d967a98ae821713b5c587b2747e92bf735444b5c819322a704aca2f0fcd760"
+      "size": 5145,
+      "sha256": "48e6d19e28b37a4e4b83f664f96fe0000ac5c6d3b802d741c1451b9b271a9508"
     },
     {
       "kind": "hooks",
@@ -576,8 +576,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/gateguard-fact-force.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/gateguard-fact-force.js",
-      "size": 13114,
-      "sha256": "ffa7a23cb7d4d3224ad23bebc8800ff853756bdf1b3b36bf1dd3f017c6ced0db"
+      "size": 13664,
+      "sha256": "7c2639cb238b546fe073cd58fa4e65ce4533e43229c6daee3daf3c98eaaa650c"
     },
     {
       "kind": "hooks",
@@ -590,15 +590,15 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/post-claudemd-sync.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/post-claudemd-sync.js",
-      "size": 6550,
-      "sha256": "496b6a0daa17ef574c94b4c46a495e7c9da5d2a48c189a2ba729fb9b7833db52"
+      "size": 8500,
+      "sha256": "52b1f5746462600b5bcb279232b2b873565c31b7f78768471140069a2a1869ad"
     },
     {
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/post-vault-sync.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/post-vault-sync.js",
-      "size": 12466,
-      "sha256": "0cbfd0c8d53ed18a92848aa5a3a0981574730e8a32d29613c41e6b0ddc4071fb"
+      "size": 14215,
+      "sha256": "53b9b3cf899101f0abcdeaf3a71f5fd21cdf2c791d3d64794c689c88e7007539"
     },
     {
       "kind": "hooks",
@@ -632,8 +632,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/pre-vault-leak-detect.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/pre-vault-leak-detect.js",
-      "size": 4404,
-      "sha256": "277af569d0295bcdacc578ec9dc248f446588e6a1996b7d4718c4ed9f5cb46ed"
+      "size": 4667,
+      "sha256": "fe933fa2236fce489c55323ac18b7b85db71e3f83964059064ff3a2c818dde26"
     },
     {
       "kind": "hooks",
@@ -653,8 +653,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/session-end.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/session-end.js",
-      "size": 11976,
-      "sha256": "1590e678191b300b1e0813f8f1ef70465d8f1b33214e0913286c2dba2975bea7"
+      "size": 12216,
+      "sha256": "7be14dc1c334eae6428ad2fc79290fa969ae7b41d5b17c7f7de06752743f27e7"
     },
     {
       "kind": "hooks",
@@ -667,8 +667,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/session-start.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/session-start.js",
-      "size": 17932,
-      "sha256": "8d5bfef432ec3f8a416b0ffe67ce740f78203883637db436eacb6ea3eeac4dfe"
+      "size": 18167,
+      "sha256": "0e92b7ef0077c19da62df232d56aee7b5ef95d43dd1d111bd4479810180ae3de"
     },
     {
       "kind": "hooks",
@@ -933,6 +933,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 943661
+    "totalBytes": 949457
   }
 }

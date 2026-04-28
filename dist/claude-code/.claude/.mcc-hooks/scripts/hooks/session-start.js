@@ -507,6 +507,9 @@ function writeSessionStartPayload(additionalContext) {
 }
 
 main().catch(err => {
-  console.error('[SessionStart] Error:', err.message);
+  // Log full stack: only `err.message` previously made silent SessionStart
+  // failures invisible, so when context injection broke the user just saw a
+  // session "without memory" with no diagnostic trail.
+  console.error('[SessionStart] Error:', err && err.stack ? err.stack : err);
   process.exitCode = 0; // Don't block on errors
 });

@@ -40,7 +40,19 @@ function run(rawInput) {
     // Use word boundary (\b) to avoid matching partial commands
     const devServerRegex = /(npm run dev\b|pnpm( run)? dev\b|yarn dev\b|bun run dev\b)/;
 
+    // SAFETY: only transform commands that are *only* a known dev-server invocation
+    // (with optional whitespace + flags). Refuse to wrap anything containing shell
+    // metacharacters — wrapping `npm run dev & calc.exe` inside `cmd /k "..."`
+    // would still execute both because `&` is a cmd.exe separator that double-quote
+    // escaping does not neutralize.
+    const SHELL_METACHARS = /[&|<>^;`$()]/;
+    const SAFE_DEV_CMD = /^(npm run dev|pnpm( run)? dev|yarn dev|bun run dev)([\s][\w@/.\-=]+)*\s*$/;
+
     if (devServerRegex.test(cmd)) {
+      if (!SAFE_DEV_CMD.test(cmd) || SHELL_METACHARS.test(cmd)) {
+        // Looks like a dev command but contains extra payload — pass through unchanged.
+        return JSON.stringify(input);
+      }
       // Get session name from current directory basename, sanitize for shell safety
       // e.g., /home/user/Portfolio → "Portfolio", /home/user/my-app-v2 → "my-app-v2"
       const rawName = path.basename(process.cwd());
@@ -48,8 +60,9 @@ function run(rawInput) {
       const sessionName = rawName.replace(/[^a-zA-Z0-9_-]/g, '_') || 'dev';
 
       if (process.platform === 'win32') {
-        // Windows: open in a new cmd window (non-blocking)
-        // Escape double quotes in cmd for cmd /k syntax
+        // Windows: open in a new cmd window (non-blocking).
+        // cmd has been validated as a plain dev-server invocation above, so the
+        // double-quote escaping is sufficient.
         const escapedCmd = cmd.replace(/"/g, '""');
         return JSON.stringify({
           ...input,

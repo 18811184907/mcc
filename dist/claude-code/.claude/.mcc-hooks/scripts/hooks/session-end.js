@@ -138,7 +138,10 @@ process.stdin.on('end', () => {
 
 function runMain() {
   main().catch(err => {
-    console.error('[SessionEnd] Error:', err.message);
+    // Log full stack: previously only `err.message` was emitted, which hid the
+    // root cause when session writes silently failed and users wondered why
+    // their session memory was missing on the next run.
+    console.error('[SessionEnd] Error:', err && err.stack ? err.stack : err);
     process.exit(0);
   });
 }

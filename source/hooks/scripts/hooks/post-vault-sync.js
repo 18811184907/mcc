@@ -238,15 +238,38 @@ function syncSshConfig(sshHosts, projectName) {
   );
   existing = existing.replace(blockRegex, '\n');
 
-  // Build new block
+  // Build new block.
+  // SAFETY: every field is sanitized — values originate from PROJECT_VAULT.md, which a malicious
+  // contributor or compromised editor session can mutate. Newlines or null bytes inside a value
+  // would otherwise inject arbitrary ssh_config directives (e.g. ProxyJump to attacker host).
   const blockLines = ['', startMarker];
   for (const host of sshHosts) {
     if (!host.name) continue;
-    blockLines.push(`Host ${host.name}`);
-    if (host.host) blockLines.push(`    HostName ${host.host}`);
-    if (host.user) blockLines.push(`    User ${host.user}`);
-    if (host.key) blockLines.push(`    IdentityFile ${expandHome(host.key)}`);
-    if (host.port) blockLines.push(`    Port ${host.port}`);
+    const safeName = sanitizeSshField('name', host.name);
+    if (!safeName || !/^[A-Za-z0-9_.\-*?]+$/.test(safeName)) {
+      process.stderr.write(`[vault-sync] skipping ssh host with invalid name: ${JSON.stringify(host.name)}\n`);
+      continue;
+    }
+    const safeHost = sanitizeSshField('host', host.host);
+    const safeUser = sanitizeSshField('user', host.user);
+    const safeKey  = sanitizeSshField('key',  host.key);
+    const safePort = sanitizeSshField('port', host.port);
+    if (safePort && !/^\d{1,5}$/.test(safePort)) {
+      process.stderr.write(`[vault-sync] skipping invalid port "${host.port}" for host ${safeName}\n`);
+      continue;
+    }
+    blockLines.push(`Host ${safeName}`);
+    if (safeHost) blockLines.push(`    HostName ${safeHost}`);
+    if (safeUser) blockLines.push(`    User ${safeUser}`);
+    if (safeKey) {
+      const expanded = expandHome(safeKey);
+      if (expanded.includes('..')) {
+        process.stderr.write(`[vault-sync] skipping IdentityFile with traversal: ${JSON.stringify(safeKey)}\n`);
+      } else {
+        blockLines.push(`    IdentityFile ${expanded}`);
+      }
+    }
+    if (safePort) blockLines.push(`    Port ${safePort}`);
     blockLines.push('');
   }
   blockLines.push(endMarker, '');
@@ -353,4 +376,17 @@ function expandHome(p) {
 
 function escapeRegex(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Reject newlines and NUL — these are the chars that allow ssh_config directive injection.
+// Values come from PROJECT_VAULT.md which is user-trusted but might be edited by Claude under
+// prompt injection; defense in depth.
+function sanitizeSshField(name, value) {
+  if (value === undefined || value === null || value === '') return '';
+  const s = String(value);
+  if (/[\r\n\0]/.test(s)) {
+    process.stderr.write(`[vault-sync] ssh field "${name}" contains forbidden control chars, dropping\n`);
+    return '';
+  }
+  return s.trim();
 }

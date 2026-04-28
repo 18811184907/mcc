@@ -209,8 +209,15 @@ async function uninstallClaudeCode(targetDir, args) {
 // ═══ Codex 卸载 ══════════════════════════════════════
 
 async function uninstallCodex(targetDir, args) {
-  const targetRoot = path.dirname(targetDir) === targetDir ? targetDir : path.dirname(targetDir);
-  log('info', `Codex target: ${targetDir}`);
+  // NOTE: AGENTS.md / HOOKS-SOFT-GUIDANCE.md sit one level above targetDir
+  // (e.g. ~/AGENTS.md when targetDir=~/.codex, or ./AGENTS.md when targetDir=./.codex).
+  // The earlier ad-hoc `path.dirname(targetDir) === targetDir` ternary collapsed
+  // to $HOME for global scope, which would delete ~/AGENTS.md if anything ever
+  // hooked it up. We now derive targetRoot the same way as the installer.
+  const targetRoot = args.scope === 'project'
+    ? path.resolve('.')
+    : os.homedir();
+  log('info', `Codex target: ${targetDir} (root: ${targetRoot})`);
 
   const summary = { restored: [], removed: [], skipped: [] };
 

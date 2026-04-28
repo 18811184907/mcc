@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.5.10",
+  "version": "2.5.11",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -116,6 +116,24 @@
     "build_command": "node adapters/build.js"
   },
   "version_history": [
+    {
+      "version": "2.5.11",
+      "date": "2026-04-29",
+      "changes": [
+        "v2.5.11 - 安全 + 静默失败专项审计修复（10 个 P0 Critical）",
+        "SEC: post-claudemd-sync.js — config.syncFile 路径穿越修复，加白名单正则 + path.resolve 越界校验，杜绝覆写 ~/.ssh/authorized_keys。",
+        "SEC: post-claudemd-sync.js — 自动 push 前比对 config.repoUrl 与 git remote 实际 URL，drift 时拒绝 push；防被篡改的 config 静默泄漏 CLAUDE.md 到攻击者仓库。",
+        "SEC: post-vault-sync.js — SSH config 字段（host/user/key/port）净化换行 + null byte，拒绝 ProxyJump 等指令注入；name 走严格白名单，port 必须是数字。",
+        "SEC: auto-tmux-dev.js — Windows cmd /k 包装前严格校验命令只是纯 dev-server 调用，含 shell 元字符（& | < > ^ ; ` $）一律 pass-through 不重写。",
+        "FIX: scripts/installer.js — Codex exclusive 备份的 catch 块按 EXDEV/EPERM 过滤错误，防止跨盘符复制中途失败时 rmSync 把源目录删空（之前 catch{} 吞掉所有错误）。",
+        "FIX: scripts/uninstaller.js — Codex 卸载的 targetRoot 计算重写为按 scope 推导（之前 path.dirname 链对全局 scope 落到 $HOME，是埋好的删错文件定时炸弹）。",
+        "FIX: installer.extractTomlSections 跳过注释行，注释里的 [section] 不再被误识别为重复 section 导致 MCP 配置静默丢失。",
+        "FIX: pre-vault-leak-detect.js — 扫描错误改为 stderr 打 stack 而非吞错，安全 hook 不再透明化失效。",
+        "FIX: gateguard-fact-force.js — saveState/loadState 失败时打 stderr，gate 状态不再随机化（之前用户感知 gate 时灵时不灵）。",
+        "FIX: session-start.js / session-end.js — 顶层 .catch 改打完整 stack 而非只打 err.message，session 记忆静默失败时有诊断线索。",
+        "TEST: 既有 vault-hook / installer-dry-run / codex-patches-followup 三套测试全过。"
+      ]
+    },
     {
       "version": "2.5.10",
       "date": "2026-04-28",
