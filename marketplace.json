@@ -12,7 +12,7 @@
       "name": "mcc",
       "source": "./",
       "description": "19 agents + 13 commands + 20 skills + 3 behavioral modes + 27 hook scripts + 5 MCP servers + curated rules。v2.5.1 AI 主导开发：用户说一句 Claude 自动写（secret → PROJECT_VAULT.md，DB schema → docs/SCHEMA.md，决策 → docs/adr/）。CLAUDE.md 含 'AI 主导接管' 偏好。中文主场景 + Python + TS + AI 全栈定向优化。",
-      "version": "2.5.3",
+      "version": "2.5.4",
       "author": {
         "name": "MCC"
       },

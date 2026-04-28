@@ -12,7 +12,11 @@
         "serena",
         "start-mcp-server",
         "--context",
-        "ide-assistant"
+        "ide-assistant",
+        "--enable-web-dashboard",
+        "False",
+        "--enable-gui-log-window",
+        "False"
       ],
       "description": "语义化代码理解 + 项目记忆 + session 持久化",
       "required": false,
@@ -20,6 +24,7 @@
         "deps": ["Python 3.11+", "uv (astral.sh)"],
         "windows": "winget install astral-sh.uv",
         "china_mirror": "首次从 GitHub 拉 serena 仓库可能慢，可设置 GOPROXY 或用 git mirror",
+        "v2.5.4_dashboard_disable_reason": "Claude Code + Codex 双线场景下两边各启动一个 serena 进程会弹两个 dashboard 浏览器窗口（互相不知对方存在）。--enable-web-dashboard False 完全禁掉，serena MCP 工具不受影响。要看 dashboard 时可手动启 serena 单独命令。",
         "env": {}
       }
     },

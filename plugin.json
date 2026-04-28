@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "2.5.3",
+  "version": "2.5.4",
   "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 13 commands + 20 skills + 3 behavioral modes + 27 hook scripts + 5 MCP servers + curated rules。v2.5.1 AI 主导开发：用户说一句 Claude 自动写。secret 一处统一 .claude/PROJECT_VAULT.md（自动同步 .env.local / ~/.ssh/config）；DB schema 一处统一 docs/SCHEMA.md（自动维护表结构 + 业务含义）。CLAUDE.md 带 'AI 主导接管' 偏好段，禁止让用户手动拷模板 / 编 .env / .ssh/config。",
   "author": {
     "name": "MCC",

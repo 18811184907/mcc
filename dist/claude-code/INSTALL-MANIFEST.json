@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.5.3",
+  "mccVersion": "2.5.4",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -758,8 +758,8 @@
       "kind": "mcp-config",
       "dist": ".claude/mcp-configs/mcp.json",
       "install": ".claude/mcp-configs/mcp.json",
-      "size": 3152,
-      "sha256": "4b1953d0ab71d3f43cbd11fa217585dd9bb34f11183fd77fe41471207514f9a7"
+      "size": 3574,
+      "sha256": "2f8dc7fcfd62eab136f71f109e78c4b469d4b25af2652f9389439082c1559425"
     },
     {
       "kind": "rules",
@@ -912,6 +912,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 907907
+    "totalBytes": 908329
   }
 }

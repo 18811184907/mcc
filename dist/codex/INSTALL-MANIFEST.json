@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "mccVersion": "2.5.3",
+  "mccVersion": "2.5.4",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
@@ -286,8 +286,8 @@
       "kind": "mcp-toml",
       "dist": "config.fragment.toml",
       "install": "合并到 ~/.codex/config.toml（追加 [mcp_servers.*] 段）",
-      "size": 1236,
-      "sha256": "d81eeb9d32eb208376954449ecf73571645e8a0e07cc1eb874a5255f0d5e5266"
+      "size": 1307,
+      "sha256": "a5fbdfa9e800f12bf59a3cd7179d10e4333e70faf78e0e8529523bd6709cbfa4"
     }
   ],
   "notes": [
@@ -306,6 +306,6 @@
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 291041
+    "totalBytes": 291112
   }
 }
