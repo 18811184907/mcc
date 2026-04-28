@@ -860,9 +860,27 @@ function installProjectStub(cwd, dryRun) {
     'Edit(.codex/**)',
   ];
 
+  // v2.5.3: 装时同时拷 PROJECT_VAULT.md 空模板（如不存在）+ docs/SCHEMA.md（如不存在）
+  // + 强制 .gitignore 加 vault 相关条目（不依赖 hook 触发，装好即生效）
+  const vaultTemplate = path.join(DIST, 'claude-code', '.claude', 'templates', 'PROJECT_VAULT.example.md');
+  const vaultTemplateSrc = path.join(ROOT, 'source', 'templates', 'PROJECT_VAULT.example.md');
+  const vaultTemplatePath = pathExists(vaultTemplate) ? vaultTemplate : vaultTemplateSrc;
+  const vaultDst = path.join(projectClaude, 'PROJECT_VAULT.md');
+
+  const schemaTemplate = path.join(DIST, 'claude-code', '.claude', 'templates', 'SCHEMA.example.md');
+  const schemaTemplateSrc = path.join(ROOT, 'source', 'templates', 'SCHEMA.example.md');
+  const schemaTemplatePath = pathExists(schemaTemplate) ? schemaTemplate : schemaTemplateSrc;
+  const schemaDst = path.join(cwd, 'docs', 'SCHEMA.md');
+
   if (dryRun) {
     log('info', `[project-stub] (dry-run) will create ${subdirs.length} PRPs/ subdirs under ${prpsDir}`);
     log('info', `[project-stub] (dry-run) will write/merge ${projectSettingsPath} with ${projectAllow.length} allow rules`);
+    if (!pathExists(vaultDst) && pathExists(vaultTemplatePath)) {
+      log('info', `[project-stub] (dry-run) will create ${vaultDst} from template`);
+    }
+    if (!pathExists(schemaDst) && pathExists(schemaTemplatePath)) {
+      log('info', `[project-stub] (dry-run) will create ${schemaDst} from template`);
+    }
     return prpsDir;
   }
 
@@ -886,8 +904,64 @@ function installProjectStub(cwd, dryRun) {
   const merged = mergeSettingsJson(existing, fragment);
   writeJson(projectSettingsPath, merged);
   log('ok', `[project-stub] 🔓 project settings.json: 注入 ${projectAllow.length} 条 .claude/.codex 允许规则`);
+
+  // v2.5.3: 拷 PROJECT_VAULT.md 空模板（仅当不存在）
+  if (!pathExists(vaultDst) && pathExists(vaultTemplatePath)) {
+    fs.copyFileSync(vaultTemplatePath, vaultDst);
+    log('ok', `[project-stub] 🔐 ${vaultDst} created from template (gitignored)`);
+    log('info', `   填 secret 直接编辑或告诉 Claude；hook 自动 sync 到 .env.local + ~/.ssh/config`);
+  } else if (pathExists(vaultDst)) {
+    log('info', `[project-stub] ${vaultDst} 已存在，跳过`);
+  }
+
+  // v2.5.3: 拷 docs/SCHEMA.md 空模板（仅当不存在）
+  if (!pathExists(schemaDst) && pathExists(schemaTemplatePath)) {
+    ensureDir(path.dirname(schemaDst));
+    fs.copyFileSync(schemaTemplatePath, schemaDst);
+    log('ok', `[project-stub] 📊 ${schemaDst} created from template (committed)`);
+    log('info', `   加表/字段告诉 Claude；它会自动追加业务含义`);
+  } else if (pathExists(schemaDst)) {
+    log('info', `[project-stub] ${schemaDst} 已存在，跳过`);
+  }
+
+  // v2.5.3: 强制 .gitignore 加 vault 相关条目（不依赖 vault-sync hook 首次触发）
+  ensureProjectGitignore(cwd);
+
   log('info', `   /prd writes to PRPs/prds/, /plan writes to PRPs/plans/, etc.`);
   return prpsDir;
+}
+
+// v2.5.3: 项目级 .gitignore 强制加 vault / .env 相关条目
+function ensureProjectGitignore(cwd) {
+  const gitignorePath = path.join(cwd, '.gitignore');
+  const required = [
+    '.claude/PROJECT_VAULT.md',
+    '.env.local',
+    '.env.*.local',
+    '.deploy.local.md',
+  ];
+
+  let existing = '';
+  if (pathExists(gitignorePath)) {
+    existing = fs.readFileSync(gitignorePath, 'utf8');
+  }
+
+  const existingLines = new Set(
+    existing.split(/\r?\n/).map(l => l.trim()).filter(Boolean)
+  );
+  const missing = required.filter(p => !existingLines.has(p));
+
+  if (missing.length === 0) return false;
+
+  const additions = [
+    '',
+    '# MCC PROJECT_VAULT (auto-managed — secrets must never enter git)',
+    ...missing,
+    '',
+  ];
+  fs.writeFileSync(gitignorePath, existing.trimEnd() + '\n' + additions.join('\n'));
+  log('ok', `[project-stub] 🚫 .gitignore +${missing.length} 行（vault / env.local / deploy.local.md）`);
+  return true;
 }
 
 function ensureGlobalClaudemd(args) {

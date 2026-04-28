@@ -4,7 +4,7 @@
 > 中文主场景，Python + TypeScript + AI 应用全栈定向优化。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-2.5.2-blue)
+![Version](https://img.shields.io/badge/version-2.5.3-blue)
 ![Target](https://img.shields.io/badge/target-Claude_Code_%2B_Codex-purple)
 
 ---

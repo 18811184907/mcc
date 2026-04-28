@@ -74,7 +74,9 @@ function runSync() {
 
   let config;
   try {
-    config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    // Strip UTF-8 BOM if present (PowerShell Set-Content -Encoding UTF8 writes BOM by default)
+    const raw = fs.readFileSync(configPath, 'utf8').replace(/^﻿/, '');
+    config = JSON.parse(raw);
   } catch (err) {
     process.stderr.write(`[claudemd-sync] config parse error: ${err.message}\n`);
     return;

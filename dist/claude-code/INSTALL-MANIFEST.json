@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.5.2",
+  "mccVersion": "2.5.3",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -576,8 +576,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/post-claudemd-sync.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/post-claudemd-sync.js",
-      "size": 6227,
-      "sha256": "7690e461529428b04ad031b1fb24ef2422ce56fe3ff925bb3d38ecc88e284306"
+      "size": 6364,
+      "sha256": "8009566b757cb98c53e9c9a687e0dd791aa3222e18bfc478498c3021bbf1276a"
     },
     {
       "kind": "hooks",
@@ -912,6 +912,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 907770
+    "totalBytes": 907907
   }
 }
