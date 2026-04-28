@@ -390,10 +390,20 @@ function mergeSettingsJson(existing, fragment) {
 
 // ═══ TOML 追加合并（config.toml）═════════════════════════
 
+// MCC 管理项白名单：装时允许自动覆盖用户已存在的同名 section（补缺失参数）。
+// 其他 section 一律不覆盖，除非传 --force。
+// 加新管理项时只需把 section 名加进来。
+const MCC_MANAGED_TOML_SECTIONS = new Set([
+  'mcp_servers.serena',  // v2.5.4 起需要补 --enable-web-dashboard False / --enable-gui-log-window False
+]);
+
+// 匹配独立一行的 TOML 表头：[xxx] 或 [[xxx]]（array of tables）
+const TOML_SECTION_HEADER_RE = /^\s*\[\[?[^\[\]]+\]\]?\s*$/;
+
 /**
  * 把 TOML fragment 追加到现有 TOML。按 [section.name] 去重。
  *  - 默认已有同名 section 就跳过，避免覆盖用户改过的 MCP 配置
- *  - mcp_servers.serena 是 MCC 管理项；v2.5.4 起需要补 dashboard-disable 参数，所以允许自动更新
+ *  - MCC_MANAGED_TOML_SECTIONS 里的 section 允许自动更新
  *  - 其他 [section] 追加到末尾
  */
 function appendTomlFragment(existingToml, fragment, force) {
@@ -407,7 +417,7 @@ function appendTomlFragment(existingToml, fragment, force) {
 
   for (const [name, body] of Object.entries(fragmentSections.sections)) {
     if (name in existingSections.sections) {
-      const shouldUpdate = force || name === 'mcp_servers.serena';
+      const shouldUpdate = force || MCC_MANAGED_TOML_SECTIONS.has(name);
       if (shouldUpdate && existingSections.sections[name].trim() !== body.trim()) {
         merged = replaceTomlSection(merged, name, body);
         updated.push(name);
@@ -444,7 +454,7 @@ function replaceTomlSection(toml, sectionName, newBody) {
       out.push(sectionHeader);
       out.push(...newBody.split(/\r?\n/));
       i += 1;
-      while (i < lines.length && !/^\s*\[[^\[\]]+\]\s*$/.test(lines[i])) i += 1;
+      while (i < lines.length && !TOML_SECTION_HEADER_RE.test(lines[i])) i += 1;
       continue;
     }
     out.push(lines[i]);
@@ -707,7 +717,24 @@ async function installClaudeCode(distDir, scope, options) {
     log('ok', `settings.json 已深度合并（permissions 并集、hooks 追加去重、mcpServers 合并）`);
   }
 
+  // 9) 写一份 INSTALL-MANIFEST.json 副本到 targetDir/.mcc-meta/，
+  //    让 uninstaller 在 mcc repo 已删除的情况下仍能精确删除装过的命令。
+  copyInstallManifest(distDir, targetDir, options.dryRun);
+
   return report;
+}
+
+function copyInstallManifest(distDir, targetDir, dryRun) {
+  const manifestSrc = path.join(distDir, 'INSTALL-MANIFEST.json');
+  if (!pathExists(manifestSrc)) return;
+  const metaDir = path.join(targetDir, '.mcc-meta');
+  const manifestDst = path.join(metaDir, 'INSTALL-MANIFEST.json');
+  if (dryRun) {
+    log('info', `(dry-run) 写入 ${manifestDst}`);
+    return;
+  }
+  ensureDir(metaDir);
+  fs.copyFileSync(manifestSrc, manifestDst);
 }
 
 // ═══ Codex 安装 ══════════════════════════════════════
@@ -848,6 +875,9 @@ async function installCodex(distDir, scope, options) {
     log('ok', `config.toml: +${added.length} sections, ${updated.length} updated, ${skipped.length} already present`);
   }
 
+  // 7) 写一份 INSTALL-MANIFEST.json 副本（同 Claude Code 侧）
+  copyInstallManifest(distDir, targetDir, options.dryRun);
+
   return report;
 }
 
@@ -906,17 +936,26 @@ function installProjectStub(cwd, dryRun, opts = {}) {
     'Edit(.codex/**)',
   ];
 
-  // v2.5.3: 装时同时拷 PROJECT_VAULT.md 空模板（如不存在）+ docs/SCHEMA.md（如不存在）
-  // + 强制 .gitignore 加 vault 相关条目（不依赖 hook 触发，装好即生效）
+  // v2.5.3 起：装时同时拷 PROJECT_VAULT / SCHEMA / CHANGELOG-DEV 空模板（如不存在）
+  // 2026-04-28 起：三个用户关注文件统一放 docs/，便于查找。PROJECT_VAULT 老路径
+  // (.claude/PROJECT_VAULT.md) 仍被 hook 兼容；新装一律走 docs/。
   const vaultTemplate = path.join(DIST, 'claude-code', '.claude', 'templates', 'PROJECT_VAULT.example.md');
   const vaultTemplateSrc = path.join(ROOT, 'source', 'templates', 'PROJECT_VAULT.example.md');
   const vaultTemplatePath = pathExists(vaultTemplate) ? vaultTemplate : vaultTemplateSrc;
-  const vaultDst = path.join(projectClaude, 'PROJECT_VAULT.md');
+  const vaultDstDocs = path.join(cwd, 'docs', 'PROJECT_VAULT.md');
+  const vaultDstLegacy = path.join(projectClaude, 'PROJECT_VAULT.md');
+  // 如果老位置已存在，尊重老位置（不动用户已有内容）；否则装到 docs/
+  const vaultDst = pathExists(vaultDstLegacy) ? vaultDstLegacy : vaultDstDocs;
 
   const schemaTemplate = path.join(DIST, 'claude-code', '.claude', 'templates', 'SCHEMA.example.md');
   const schemaTemplateSrc = path.join(ROOT, 'source', 'templates', 'SCHEMA.example.md');
   const schemaTemplatePath = pathExists(schemaTemplate) ? schemaTemplate : schemaTemplateSrc;
   const schemaDst = path.join(cwd, 'docs', 'SCHEMA.md');
+
+  const changelogTemplate = path.join(DIST, 'claude-code', '.claude', 'templates', 'CHANGELOG-DEV.example.md');
+  const changelogTemplateSrc = path.join(ROOT, 'source', 'templates', 'CHANGELOG-DEV.example.md');
+  const changelogTemplatePath = pathExists(changelogTemplate) ? changelogTemplate : changelogTemplateSrc;
+  const changelogDst = path.join(cwd, 'docs', 'CHANGELOG-DEV.md');
 
   if (dryRun) {
     log('info', `[project-stub] (dry-run) will create ${subdirs.length} PRPs/ subdirs under ${prpsDir}`);
@@ -926,6 +965,9 @@ function installProjectStub(cwd, dryRun, opts = {}) {
     }
     if (!pathExists(schemaDst) && pathExists(schemaTemplatePath)) {
       log('info', `[project-stub] (dry-run) will create ${schemaDst} from template`);
+    }
+    if (!pathExists(changelogDst) && pathExists(changelogTemplatePath)) {
+      log('info', `[project-stub] (dry-run) will create ${changelogDst} from template`);
     }
     return prpsDir;
   }
@@ -951,8 +993,9 @@ function installProjectStub(cwd, dryRun, opts = {}) {
   writeJson(projectSettingsPath, merged);
   log('ok', `[project-stub] 🔓 project settings.json: 注入 ${projectAllow.length} 条 .claude/.codex 允许规则`);
 
-  // v2.5.3: 拷 PROJECT_VAULT.md 空模板（仅当不存在）
+  // 拷 PROJECT_VAULT.md 空模板（仅当 docs/ 和 .claude/ 都不存在）
   if (!pathExists(vaultDst) && pathExists(vaultTemplatePath)) {
+    ensureDir(path.dirname(vaultDst));
     fs.copyFileSync(vaultTemplatePath, vaultDst);
     log('ok', `[project-stub] 🔐 ${vaultDst} created from template (gitignored)`);
     log('info', `   填 secret 直接编辑或告诉 Claude；hook 自动 sync 到 .env.local + ~/.ssh/config`);
@@ -960,7 +1003,7 @@ function installProjectStub(cwd, dryRun, opts = {}) {
     log('info', `[project-stub] ${vaultDst} 已存在，跳过`);
   }
 
-  // v2.5.3: 拷 docs/SCHEMA.md 空模板（仅当不存在）
+  // 拷 docs/SCHEMA.md 空模板（仅当不存在）
   if (!pathExists(schemaDst) && pathExists(schemaTemplatePath)) {
     ensureDir(path.dirname(schemaDst));
     fs.copyFileSync(schemaTemplatePath, schemaDst);
@@ -970,7 +1013,17 @@ function installProjectStub(cwd, dryRun, opts = {}) {
     log('info', `[project-stub] ${schemaDst} 已存在，跳过`);
   }
 
-  // v2.5.3: 强制 .gitignore 加 vault 相关条目（不依赖 vault-sync hook 首次触发）
+  // 拷 docs/CHANGELOG-DEV.md 空模板（仅当不存在）
+  if (!pathExists(changelogDst) && pathExists(changelogTemplatePath)) {
+    ensureDir(path.dirname(changelogDst));
+    fs.copyFileSync(changelogTemplatePath, changelogDst);
+    log('ok', `[project-stub] 📝 ${changelogDst} created from template (committed)`);
+    log('info', `   开发实时流水：◇ 需求 / ✓ 完成 / ⚠ 卡点 / → 下一步；Claude 自动维护`);
+  } else if (pathExists(changelogDst)) {
+    log('info', `[project-stub] ${changelogDst} 已存在，跳过`);
+  }
+
+  // 强制 .gitignore 加 vault 相关条目（不依赖 vault-sync hook 首次触发）
   ensureProjectGitignore(cwd);
 
   // v2.5.5: 入口提示语按 targets 双线适配
@@ -1255,8 +1308,19 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  log('err', err.message);
-  if (process.env.DEBUG) console.error(err.stack);
-  process.exit(1);
-});
+// 仅在被 node scripts/installer.js 直接调用时跑 main；
+// require('./installer.js') 时不要自动安装（让测试可以拿内部函数）。
+if (require.main === module) {
+  main().catch((err) => {
+    log('err', err.message);
+    if (process.env.DEBUG) console.error(err.stack);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  appendTomlFragment,
+  replaceTomlSection,
+  MCC_MANAGED_TOML_SECTIONS,
+  copyInstallManifest,
+};

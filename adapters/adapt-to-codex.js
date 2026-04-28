@@ -341,14 +341,16 @@ function buildAgentsMd(sourceDir) {
   L.push('# AGENTS.md');
   L.push('');
   L.push('> MCC 自动生成，编辑 `source/` 后跑 `node adapters/build.js` 刷新。');
-  L.push('> Codex 会话加载此文件；完整 agents/prompts 默认在用户级 `~/.codex/agents/`、`~/.codex/prompts/`。');
-  L.push('> 只有使用 `--scope project` 的团队共享安装时，完整文件才在当前项目的 `.codex/agents/`、`.codex/prompts/`。');
+  L.push('> Codex 会话加载此文件。完整 agents/prompts 文件按以下顺序查找：');
+  L.push('>   1. **项目级**（仅 `--scope project` 安装存在）：`.codex/agents/`、`.codex/prompts/`');
+  L.push('>   2. **用户级**（默认 smart 安装的位置）：`~/.codex/agents/`、`~/.codex/prompts/`');
+  L.push('> 项目级覆盖用户级。绝大多数用户只有用户级，项目级不存在是正常情况。');
   L.push('');
   L.push('**快速使用**：');
   L.push('- 需要某个 role 的视角？在下面【角色】查它的触发条件和场景');
   L.push('- 要跑 PRP 工作流？在【工作流 Prompts】找 `mcc-xxx`');
   L.push('- 遇到某个开发场景？在【Skill 场景指引】看该用什么思路');
-  L.push('- 描述里说 "完整 prompt 见" 时，优先读 `~/.codex/agents/` 或 `~/.codex/prompts/`；若当前项目存在 `.codex/`，才用项目级文件覆盖');
+  L.push('- 描述里说 "完整 prompt 见" 时，按上面的查找顺序：先 `.codex/`（如果存在）、再 `~/.codex/`');
   L.push('');
 
   // ── TOC
@@ -373,7 +375,7 @@ function buildAgentsMd(sourceDir) {
   // ── 核心原则
   L.push('## 核心原则');
   L.push('');
-  L.push('完整 8 章见 `~/.codex/rules/common/mcc-principles.md`（项目级安装则见 `.codex/rules/common/mcc-principles.md`）。要点：');
+  L.push('完整 8 章见 `.codex/rules/common/mcc-principles.md`（项目级，若存在）或 `~/.codex/rules/common/mcc-principles.md`（用户级，默认）。要点：');
   L.push('- **证据 > 假设 > 代码 > 文档 > 效率 > 冗长**');
   L.push('- **SOLID + KISS + DRY + YAGNI**');
   L.push('- **5 维度置信度 ≥90% 才开工**（confidence-check）');
@@ -426,7 +428,7 @@ function buildAgentsMd(sourceDir) {
   // ── 角色
   L.push('## 角色（Agents）');
   L.push('');
-  L.push('对应场景自动以该角色视角工作。描述后附触发条件；完整 prompt 在 `~/.codex/agents/{name}.md`（项目级 `.codex/agents/{name}.md` 可覆盖）。');
+  L.push('对应场景自动以该角色视角工作。描述后附触发条件；完整 prompt 在 `.codex/agents/{name}.md`（项目级，若存在）或 `~/.codex/agents/{name}.md`（用户级，默认）。');
   L.push('');
   for (const { name, desc } of agentEntries) {
     L.push(`### ${name}`);
@@ -437,9 +439,16 @@ function buildAgentsMd(sourceDir) {
   // ── 工作流 Prompts
   L.push('## 工作流 Prompts');
   L.push('');
-  L.push('Codex 调用：`mcc-xxx`（文件：`~/.codex/prompts/mcc-xxx.md`；项目级安装时可用 `.codex/prompts/mcc-xxx.md` 覆盖）。');
+  L.push('Codex 调用：`mcc-xxx`。完整 prompt 文件按 `.codex/prompts/mcc-xxx.md`（项目级，若存在）→ `~/.codex/prompts/mcc-xxx.md`（用户级，默认）顺序查找。');
   L.push('');
-  L.push('**强制触发规则**：当用户消息开头或正文明确出现 `mcc-xxx` 时，必须先读取对应完整 prompt 文件，再按该文件流程执行；不要只凭本 AGENTS.md 摘要生成结果。读取前先检查路径是否存在，优先 `.codex/prompts/mcc-xxx.md`，不存在则检查 `~/.codex/prompts/mcc-xxx.md`；项目级文件不存在是正常情况，不要把失败的读取命令或错误堆栈展示给用户。若两个路径都不存在或选中的文件无法读取，先明确报告缺失路径，再用摘要作为降级方案。');
+  L.push('**强制触发规则**：当用户消息明确出现 `mcc-xxx` 时，必须先读取对应完整 prompt 文件再按该文件流程执行，不要只凭本 AGENTS.md 摘要生成结果。');
+  L.push('');
+  L.push('读取流程（**先判断存在再读，不要把 stat/read 失败暴露给用户**）：');
+  L.push('1. 若项目级 `.codex/prompts/mcc-xxx.md` 存在 → 读它；');
+  L.push('2. 否则若用户级 `~/.codex/prompts/mcc-xxx.md` 存在 → 读它；');
+  L.push('3. 两个都不存在 → 一句话说明 "未找到完整 mcc-xxx prompt，使用摘要降级"，然后按本 AGENTS.md 摘要执行。');
+  L.push('');
+  L.push('项目级文件不存在是常态，绝大多数用户走第 2 步。**绝不**把 `Test-Path`/`ls`/`Get-Content` 之类的探测命令或错误堆栈贴给用户。');
   L.push('');
   for (const { name, desc } of cmdEntries) {
     const promptName = name.startsWith('mcc-') ? name : `mcc-${name}`;

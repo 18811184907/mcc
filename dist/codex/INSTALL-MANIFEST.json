@@ -1,285 +1,285 @@
 {
   "target": "codex",
   "mccVersion": "2.5.9",
-  "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
-  "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
+  "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
+  "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\codex",
   "files": [
     {
       "kind": "agent",
       "dist": ".codex/agents/ai-engineer.md",
-      "size": 7155,
-      "sha256": "138214bfaa2fe1719d4389ce0d17800a77f186fb98b642f57d5d9008aa7af514"
+      "size": 7305,
+      "sha256": "c189d970264f2947a61ab3acea469124eaf96db65592b1460aa0cc62ad424f8b"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/backend-architect.md",
-      "size": 9003,
-      "sha256": "c9d4474e1f57e40e2b458e63049dfa80efc9b70482d84f6b384fa17889b3440a"
+      "size": 9245,
+      "sha256": "ee29979fb707f14944f49c0e93bb0b7ce0c0fd5f7484e09043eaafe46441b6cb"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/code-explorer.md",
-      "size": 2914,
-      "sha256": "d641249b0f7136f27675b43b7202a6412595c1d3e7b9245e84de9e6893830711"
+      "size": 3007,
+      "sha256": "580be6b1c15af54a89544738de650a3a45b4c2149fea221af61fba87bfba7652"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/code-reviewer.md",
-      "size": 9546,
-      "sha256": "3982151896d88915db2353357228bf6d82c0eeb164ed7baa4a06b0a101f44667"
+      "size": 9803,
+      "sha256": "5d876dd586a3991dd88ede4541f6a33ddb00fd7e68f368ee8949131e25ac82e2"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/database-optimizer.md",
-      "size": 9461,
-      "sha256": "6d9f7b372ef9689f0dec71975468adde2537b18f00360d56ed8b6594bab752cc"
+      "size": 9700,
+      "sha256": "20db00b3dd9094a0337e41b5b1dcc6a72f5163bbcc2833a57f3e7321dc528225"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/debugger.md",
-      "size": 4819,
-      "sha256": "162100a744d12c41d5809e9f5672ad62699807fc455f601214a958473621bf4b"
+      "size": 4954,
+      "sha256": "f925d11e2a32f776c5208d0452ebc83a575e4d8acff31ea022cce984c141dd58"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/fastapi-pro.md",
-      "size": 4847,
-      "sha256": "1a4cf74d256e67e045e363e8be34bebec710a5a7d432ebfe42b7ff4d61f1d5b5"
+      "size": 4996,
+      "sha256": "834f1d11877875c6059b3b5e32add1e15568f9f9b1f5ede770c2cc6534c936dd"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/frontend-developer.md",
-      "size": 5427,
-      "sha256": "31c94f7d8b069dc0f02e28eb09e62a677b11e118451bca17eb9e0335580ff08e"
+      "size": 5604,
+      "sha256": "317eef5e2e3fd79c6db48513ad691a4902d5eee377c2d7781f24216ee1d0064c"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/javascript-pro.md",
-      "size": 4423,
-      "sha256": "a377ca91cb3fd7a221587f67f9d4de2c716a9f5161818efb2863837d1237f095"
+      "size": 4556,
+      "sha256": "1a7343d1d2df78e7831c6668d70494a56aed012aa424d9ae1365961a23048f38"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/performance-engineer.md",
-      "size": 12274,
-      "sha256": "5b92dd02306415ddeedd0b7b2146d099de8fddb5e4c2ab86da65101c274a3f82"
+      "size": 12631,
+      "sha256": "568f887354da2fe44bf0e28fe7353ea7424d8a2d03d9601a01528f342d67869e"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/planner.md",
-      "size": 7347,
-      "sha256": "c00d7f0142cae7d0b9d900e453f8506be9a6f4d02f7501101a28b9efca11dd1d"
+      "size": 7551,
+      "sha256": "2864ebfda198db7d05a0f998019758d781759c59fe9fbc2c305e7fd7df555871"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/prompt-engineer.md",
-      "size": 5273,
-      "sha256": "2394669a014d60f45286e2096f077ffcbbcb99a3b002d08ab2f8989fb0c77307"
+      "size": 5420,
+      "sha256": "20660da508b517485aa7c2c6535f22e1a217d85760faea329b87dd4387465177"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/python-pro.md",
-      "size": 4931,
-      "sha256": "bc7459b07ed4096c58b09590813f403bc2a8d7ca647982a65845c20debe61a2d"
+      "size": 5076,
+      "sha256": "0bcaf0c388b47fd5b514a9a2e6b5631ea3f2f4caa48b57d736ac3543b30209e0"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/refactor-cleaner.md",
-      "size": 2833,
-      "sha256": "81652be7309d54c9a8f2857d255e0af63bb5de347fc0f7d1bc01499322669f23"
+      "size": 2922,
+      "sha256": "06ba07c2e68b85ed257a1437912dff14f5a6268855f36c17487797e81ee66cde"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/security-reviewer.md",
-      "size": 5103,
-      "sha256": "9ed43e5c818b49f33cab6a4b09e25fd3871ca42b4722f8463e2b6630886bd58a"
+      "size": 5223,
+      "sha256": "5c8d67c95ccac34a5d7e14ab4aa8cfe3c2d1d8ba06b20620edfe203a260f6ab3"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/silent-failure-hunter.md",
-      "size": 3790,
-      "sha256": "8e3b5bfe4683f61d76bf112712cf0ab3b3f4d138d5bb593f24297f46ce827ff0"
+      "size": 3866,
+      "sha256": "50751f5af30619c1611f115d9405237c7aeb467874a2f30b4fb3cae2cce9aff2"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/test-automator.md",
-      "size": 5349,
-      "sha256": "48af9b260e8b9f45220ca8610f4a148cbe22ecd3f2cdedc8c5f687d6e2324ba7"
+      "size": 5489,
+      "sha256": "9b3a6184b7548814afc1726a2bd62ae7cef9ea96d341109349c83cfbeb7fb728"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/typescript-pro.md",
-      "size": 3638,
-      "sha256": "8ec7200659d4083c9aab33dc5d9c21f66203c33ee0e8525aabebea971890c5fe"
+      "size": 3755,
+      "sha256": "456cd7f5d66d5501a64cf0348b02e0510b75200561318d57285b1c3f213d4085"
     },
     {
       "kind": "agent",
       "dist": ".codex/agents/vector-database-engineer.md",
-      "size": 5255,
-      "sha256": "8524723f03bb8f3796d7cf8c3ac23e82e10c97f2d543c5f4d2667d9754702f4d"
+      "size": 5369,
+      "sha256": "f18f98feed7a95e117ab018e0ec9783e2137a7c321b8465e42742cb4e2139201"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-claudemd-sync.md",
-      "size": 6373,
-      "sha256": "ac13eca9ff4b4f32647d173589e85dd3d3a27899200b55367a4958f1b7b7a9be"
+      "size": 6559,
+      "sha256": "88724fcc2d446c74eaffa99976fd2a8bdbd205dad4cb11eb4dfeae2969693c50"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-explain.md",
-      "size": 1249,
-      "sha256": "667df1ef7f97d09660ba0542bbe969a99bed1d18ca4c9fffdf89ab7d3563f468"
+      "size": 1294,
+      "sha256": "c433bd8a06dace23e4fa17155c3f6fb4b6fd2f4775930e8ce89f2ae25b89f20f"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-fix-bug.md",
-      "size": 5978,
-      "sha256": "5e52fb3257b7ab025557a4d077c72ed4148ae4cda14214e07193396626a02290"
+      "size": 6151,
+      "sha256": "1940285f66bf1bf8260247d906b6cdb43551645a90badab5e1ae48eaa1f82e25"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-implement.md",
-      "size": 7930,
-      "sha256": "0aa67cd1597112cd868c3819e4f318ad3180b4d8394be5f099bc3211156b89be"
+      "size": 8240,
+      "sha256": "3a2d8103cee3073ea42559825bb4ac6f1f39270acbe907f200bfa38a2b96c166"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-index-repo.md",
-      "size": 6278,
-      "sha256": "891fa6ab991e4ef9792df9dd430650d218ac590da0fe0c6ce02c48ed0e0a36a2"
+      "size": 6459,
+      "sha256": "ca3f2fffb168ce61cd69aa5332b99a45b19b86121441cc5debd5e4dae5cccece"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-init.md",
-      "size": 7054,
-      "sha256": "3fd63f895b0ae2986a11ab559b16517e205c43ac8888e119b4d23a4c2d5e7205"
+      "size": 7257,
+      "sha256": "58f2b5fa0ae21d54fa22d4ac417db36b51e2bc17bb5a28a9a0bac23f5208e51e"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-help.md",
-      "size": 4621,
-      "sha256": "cbaa095e57a4c28c8889164b513bdf7c3888ea1cd80ec41d981b0d1ecc6ae910"
+      "size": 4729,
+      "sha256": "0ba83cba631d18d1d85d65ec1b8323c6562a9e7c9f11775f2b802cbd37bb7617"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-onboard.md",
-      "size": 5985,
-      "sha256": "0ba121345107ee8372aa92dc5a3e47a620821cd4ab73f6d0e8aae7a734261a80"
+      "size": 6137,
+      "sha256": "ff24db207f5cd6ba32996318b89ade744ee827eb1e8701a928128a1981e61eaa"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-plan.md",
-      "size": 12077,
-      "sha256": "d33a2e082150c6da4cacc635cc0083327bcc9c119be18c8365851fcf72eea077"
+      "size": 12489,
+      "sha256": "f95c431ad57c16f4552d913402feb0a5948df84f22003dee21c8c7c97a47e3ce"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-pr.md",
-      "size": 6364,
-      "sha256": "4140c3fc5654bb710abd99e0b81cba392d53758fd669a06969b8c53138629617"
+      "size": 6608,
+      "sha256": "3ce75e25f196189f2404a23389545227052a19cdb6bd0527ce86dd889f8373fe"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-prd.md",
-      "size": 8894,
-      "sha256": "f26684d128cd0d40a953bd5c086086c08a17cebf5fe82b04576218a304f051c6"
+      "size": 9246,
+      "sha256": "3a7eb29c3650aeaf6e53d98e382488aa84af8d3fc2ea374b2b4e3f6c3f3aa489"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-review.md",
-      "size": 7770,
-      "sha256": "06f9c7bf3980ded7b04dc292fefd09037abb5da1552cca625361975205937581"
+      "size": 8071,
+      "sha256": "1fa4f9e85b11b80192500b6728fb46bcfc125bb256d096c83884c56ad0bf1beb"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-session-resume.md",
-      "size": 5405,
-      "sha256": "6f642226986811bad34e6f4c0f5729cc46bb37b7bbab383010f8fc6965113eb0"
+      "size": 5570,
+      "sha256": "e343a05d6726cc1e44ba16d5a48799ccd962c7ba2d162868ae52e25a466d7cca"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-session-save.md",
-      "size": 6487,
-      "sha256": "02a68bf0ccb8680eaceb558becd30d4a16efa891dc9ce752d98f7e02220cde93"
+      "size": 6699,
+      "sha256": "2f4da5e95670bc02ba7b21bbee075299c05028bf8ec1781a4a7caa5963befe20"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-tdd.md",
-      "size": 3549,
-      "sha256": "5df94d428d3dca76aa731433b5689b5e0a1d6b509c73344685cdd5bba04dc863"
+      "size": 3669,
+      "sha256": "87cc2abcde12b30a76966c80d9f3b130d9890f9411e2958d666e9d0d0e1849b4"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/python/coding-style.md",
-      "size": 6372,
-      "sha256": "e2fbf35e567fe74bd292995a032909b5665b5118c711dba8c4de13264ae15273"
+      "size": 6578,
+      "sha256": "3c00e6a5589419dcc3891fd5e3c830f6d78f6bcbf1c6e6a0a8d8d5e252633eba"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/python/hooks.md",
-      "size": 3718,
-      "sha256": "4110aaaed1cd6c28753b47559582a3e257cf1b201af05316af9d6c4bf782da3c"
+      "size": 3861,
+      "sha256": "33dc15d80604bab134af45ad82123cb47a45c70c1203a16607d4e3f907291550"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/python/patterns.md",
-      "size": 7033,
-      "sha256": "25919e230fcc2af1c13ed1ab40c410b344880a463c1300beb886ddbe1b34cbbc"
+      "size": 7280,
+      "sha256": "ef189a0636b9095ee5c6fcae85ae6f71f95197b591e4bc11f3a18faeb5302c28"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/python/security.md",
-      "size": 6520,
-      "sha256": "55e1f269f484efb08b5621309415ac6b4482a51c57108e3c9d2dc577cc5ff297"
+      "size": 6728,
+      "sha256": "9aba38873bf9b5ca243a1e3e1d71fb0270392c5892f68e79ee8e67addf0c766b"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/python/testing.md",
-      "size": 6078,
-      "sha256": "9b10fda0b79c97ac92653cc3fad90c13a1e2462e7ef6756590df470d28e1bc79"
+      "size": 6312,
+      "sha256": "ff640a1e223d328c4c64a5eb4b07a6593d37bc60cb4022a0c782c3e3a53560e6"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/typescript/coding-style.md",
-      "size": 7296,
-      "sha256": "9b39b468014fb37d7bc14f2ccaafcf19e536643b689fcc925450630e4ce9bbc8"
+      "size": 7526,
+      "sha256": "c40b3bcf8fcd36b7eab31db27d6765f9b8f235ee78620559aefb2a29cdaaf716"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/typescript/hooks.md",
-      "size": 4544,
-      "sha256": "b478913edfbc26210be89aceab57cede21c1738ed3915f5ccd732e29983a9955"
+      "size": 4713,
+      "sha256": "429603a6d4bac1b03a612028bfea73c9154018547bb62f12361d982df5b4a243"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/typescript/patterns.md",
-      "size": 11247,
-      "sha256": "258079e1a0c7683e0e8f2a93a4add935cfc29660b2eac232764b3e286df3d3d7"
+      "size": 11606,
+      "sha256": "fe43180d70572ab877006d294121e60b60aeae431f380ba0f818d14206008f23"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/typescript/security.md",
-      "size": 6096,
-      "sha256": "9d1f55512b4e0ed8232cb7cff6ec1f3532cb9808b6b566a2ca96a33f270372dd"
+      "size": 6250,
+      "sha256": "9c37a2e4d7c70c6efe77e65c95e2798eec2ff648fe258a61abb64a0ee4891043"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/typescript/testing.md",
-      "size": 3624,
-      "sha256": "112bad54a52f4b8c1d1174bba5765612210644d01cdb89d4f4d2aaad1dacd9d5"
+      "size": 3766,
+      "sha256": "7d5cd7640153d3de5ce2b88c8bd43e05a54425d289f3fe39835168cf75827ff8"
     },
     {
       "kind": "rule",
       "dist": ".codex/rules/common/mcc-principles.md",
-      "size": 4635,
-      "sha256": "cd5193400f3838b2a64c426a4a36310f4c6f05fc76fdf2639129b5a5200ac861"
+      "size": 4732,
+      "sha256": "5ac7f93d3f88cb024e20797e218f4f62d134b87b4cfebb2db6432d309a1df291"
     },
     {
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 16348,
-      "sha256": "d5ec6be52add1f4a5cc9af98bd7b92b5e58d569203327272695fbc3fdd11faf8"
+      "size": 16832,
+      "sha256": "60b1201eb11002b5cd60e6bd04c9168c1f0dfc5e6b3338930e944728d494aaae"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -312,6 +312,6 @@
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 296976
+    "totalBytes": 305897
   }
 }

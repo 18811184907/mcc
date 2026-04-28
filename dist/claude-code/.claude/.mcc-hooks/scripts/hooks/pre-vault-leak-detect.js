@@ -3,7 +3,9 @@
 /**
  * PreToolUse Hook: Detect PROJECT_VAULT secret values leaking into tool inputs.
  *
- * Runs before every tool call. Loads vault values from <cwd>/.claude/PROJECT_VAULT.md,
+ * Runs before every tool call. Loads vault values from (in order)
+ *   <cwd>/docs/PROJECT_VAULT.md      — current default
+ *   <cwd>/.claude/PROJECT_VAULT.md   — legacy location (pre-2026-04-28)
  * then scans the tool input (Bash command, Write content, Edit args, etc.) for any
  * vault value appearing as plaintext.
  *
@@ -46,9 +48,19 @@ process.stdin.on('end', () => {
   process.exit(0);
 });
 
+function findVaultPath(cwd) {
+  // Prefer docs/PROJECT_VAULT.md (new default since 2026-04-28),
+  // fall back to .claude/PROJECT_VAULT.md (legacy location).
+  const candidates = [
+    path.join(cwd, 'docs', 'PROJECT_VAULT.md'),
+    path.join(cwd, '.claude', 'PROJECT_VAULT.md'),
+  ];
+  return candidates.find(p => fs.existsSync(p)) || null;
+}
+
 function runScan() {
-  const vaultPath = path.join(process.cwd(), '.claude', 'PROJECT_VAULT.md');
-  if (!fs.existsSync(vaultPath)) return;
+  const vaultPath = findVaultPath(process.cwd());
+  if (!vaultPath) return;
 
   const values = loadVaultValues(vaultPath);
   if (values.length === 0) return;

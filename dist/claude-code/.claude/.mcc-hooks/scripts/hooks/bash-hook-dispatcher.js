@@ -15,6 +15,7 @@ const MAX_STDIN = 1024 * 1024;
 function optionalHook(modulePath, hookId, ...extraArgs) {
   let cached;
   let loadError;
+  let warnedOnce = false;
 
   return rawInput => {
     if (!cached && !loadError) {
@@ -29,11 +30,18 @@ function optionalHook(modulePath, hookId, ...extraArgs) {
       return cached.run(rawInput, ...extraArgs);
     }
 
-    return {
-      stdout: rawInput,
-      stderr: `[Hook] ${hookId} skipped: optional module ${modulePath} is not installed`,
-      exitCode: 0,
-    };
+    // Module missing: silent pass-through so every Bash command does not
+    // produce noisy "[Hook] xxx skipped" lines. Surface the warning only when
+    // MCC_HOOK_DEBUG=1 is set, and at most once per dispatcher process.
+    if (!warnedOnce && process.env.MCC_HOOK_DEBUG === '1') {
+      warnedOnce = true;
+      return {
+        stdout: rawInput,
+        stderr: `[Hook] ${hookId} skipped: optional module ${modulePath} is not installed`,
+        exitCode: 0,
+      };
+    }
+    return { stdout: rawInput, stderr: '', exitCode: 0 };
   };
 }
 

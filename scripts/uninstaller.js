@@ -59,8 +59,13 @@ function readJsonIfExists(p) {
   }
 }
 
-function getInstalledClaudeCommands() {
-  const installManifest = readJsonIfExists(path.join(ROOT, 'dist', 'claude-code', 'INSTALL-MANIFEST.json'));
+function getInstalledClaudeCommands(targetDir) {
+  // 优先读 install 时复制到 targetDir/.mcc-meta/ 的 manifest 副本，
+  // 这样即使用户已经删了 mcc repo，uninstaller 仍能精确删除装过的 commands。
+  const localManifest = readJsonIfExists(path.join(targetDir, '.mcc-meta', 'INSTALL-MANIFEST.json'));
+  const repoManifest = readJsonIfExists(path.join(ROOT, 'dist', 'claude-code', 'INSTALL-MANIFEST.json'));
+  const installManifest = localManifest || repoManifest;
+
   const fromManifest = (installManifest?.files || [])
     .filter(f => f.kind === 'command' && typeof f.install === 'string')
     .map(f => f.install)
@@ -71,6 +76,7 @@ function getInstalledClaudeCommands() {
     return [...new Set(fromManifest)];
   }
 
+  // 最后兜底：列 source/commands/（仅在从 mcc repo 跑且没 manifest 时有效）
   const sourceCommandsDir = path.join(ROOT, 'source', 'commands');
   if (!pathExists(sourceCommandsDir)) return [];
   return fs.readdirSync(sourceCommandsDir).filter(f => f.endsWith('.md'));
@@ -166,11 +172,17 @@ async function uninstallClaudeCode(targetDir, args) {
     summary.removed.push('commands/mcc/');
   }
 
-  for (const commandFile of getInstalledClaudeCommands()) {
+  for (const commandFile of getInstalledClaudeCommands(targetDir)) {
     const commandPath = path.join(targetDir, 'commands', commandFile);
     if (removeFileIfExists(commandPath, args.dryRun)) {
       summary.removed.push(`commands/${commandFile}`);
     }
+  }
+
+  // 删除 .mcc-meta/ 副本（uninstall 完就用不上了）
+  const metaDir = path.join(targetDir, '.mcc-meta');
+  if (removeDirIfExists(metaDir, args.dryRun)) {
+    summary.removed.push('.mcc-meta/');
   }
 
   // 删除 rules/common/mcc-principles.md（MCC 独有）
@@ -290,8 +302,12 @@ async function main() {
   if (args.dryRun) console.log('⚠  dry-run，未实际修改。');
 }
 
-main().catch((err) => {
-  log('err', err.message);
-  if (process.env.DEBUG) console.error(err.stack);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((err) => {
+    log('err', err.message);
+    if (process.env.DEBUG) console.error(err.stack);
+    process.exit(1);
+  });
+}
+
+module.exports = { getInstalledClaudeCommands };
