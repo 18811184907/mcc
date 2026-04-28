@@ -11,8 +11,8 @@
     {
       "name": "mcc",
       "source": "./",
-      "description": "19 agents + 15 commands + 21 skills + 3 behavioral modes + 28 hook scripts + 5 MCP servers + curated rules. v2.5.9 fixes hidden hook, installer, and uninstaller audit issues.",
-      "version": "2.5.9",
+      "description": "19 agents + 15 commands + 22 skills + 3 behavioral modes + 28 hook scripts + 5 MCP servers + curated rules. v2.5.10 follows up on v2.5.6-v2.5.9 codex patches, unifies state files under docs/, and adds the dev-changelog skill.",
+      "version": "2.5.10",
       "author": {
         "name": "MCC"
       },

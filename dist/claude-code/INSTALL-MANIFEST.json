@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.5.9",
+  "mccVersion": "2.5.10",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\claude-code",
   "installBase": ".claude/",
@@ -366,8 +366,8 @@
       "kind": "skills",
       "dist": ".claude/skills/dev-changelog/SKILL.md",
       "install": ".claude/skills/dev-changelog/SKILL.md",
-      "size": 9966,
-      "sha256": "23f3090798d0031aeda6a391a7ac038b9eba9bc13f7a1b7e40db61e064dd8f5f"
+      "size": 10164,
+      "sha256": "f18418460182ca440476e73b7e4f7a6fbb1922cbb64d63d82c9b34225aa56b20"
     },
     {
       "kind": "skills",
@@ -751,8 +751,8 @@
       "kind": "templates",
       "dist": ".claude/templates/CHANGELOG-DEV.example.md",
       "install": ".claude/templates/CHANGELOG-DEV.example.md",
-      "size": 1234,
-      "sha256": "7d1294fa25b2111fce12c8a268d020930fa9f04eb7afdbdce9f9f075894863e1"
+      "size": 1267,
+      "sha256": "db282c5096d689c60ac5107bc00337900ac67c3ba5f4c520edeea8a24dd3335d"
     },
     {
       "kind": "templates",
@@ -933,6 +933,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 943430
+    "totalBytes": 943661
   }
 }
