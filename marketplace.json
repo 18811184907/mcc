@@ -11,8 +11,8 @@
     {
       "name": "mcc",
       "source": "./",
-      "description": "19 agents + 15 commands + 21 skills + 3 behavioral modes + 27 hook scripts + 5 MCP servers + curated rules。v2.5.5 Codex-only 双线对等修复：项目目录自动建 .claude/PRPs、PROJECT_VAULT.md、docs/SCHEMA.md、.gitignore，并新增 mcc-help。中文主场景 + Python + TS + AI 全栈定向优化。",
-      "version": "2.5.5",
+      "description": "19 agents + 15 commands + 21 skills + 3 behavioral modes + 27 hook scripts + 5 MCP servers + curated rules。v2.5.6 Codex 用户级安装指引修正 + Serena 配置迁移补丁：默认优先 ~/.codex/，老用户重装会更新 AGENTS.md 和 Serena dashboard 禁用参数。中文主场景 + Python + TS + AI 全栈定向优化。",
+      "version": "2.5.6",
       "author": {
         "name": "MCC"
       },

@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.5.5",
+  "version": "2.5.6",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -105,6 +105,18 @@
   },
 
   "version_history": [
+    {
+      "version": "2.5.6",
+      "date": "2026-04-28",
+      "changes": [
+        "v2.5.6 · Codex 用户级安装指引修正 + Serena 配置迁移补丁",
+        "FIX 1: Codex AGENTS.md 不再误导模型只读项目级 `.codex/prompts/`，改为默认优先 `~/.codex/agents/` 和 `~/.codex/prompts/`；只有 `--scope project` 团队共享模式才使用项目级 `.codex/` 覆盖",
+        "FIX 2: installer 遇到已有 MCC 生成的 `~/.codex/AGENTS.md` 时自动更新，不再因旧 section 存在而跳过，避免老用户重装后仍使用旧指引",
+        "FIX 3: `mcp_servers.serena` 作为 MCC 管理项允许自动更新，老用户重装时会补上 `--enable-web-dashboard False` 和 `--enable-gui-log-window False`，解决 dashboard 弹窗旧配置迁移问题",
+        "DOCS: README / INSTALL / QUICKSTART / bootstrap / tests 全部同步 `~/.claude/ + ~/.codex/` 双目标安装语义",
+        "version: 2.5.5 → 2.5.6"
+      ]
+    },
     {
       "version": "2.5.5",
       "date": "2026-04-28",
