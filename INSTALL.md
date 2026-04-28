@@ -33,7 +33,7 @@ curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh |
 **用户级 `~/.claude/`**：
 - `agents/` — 19 agents（独占模式覆盖原有，旧的备份到 `.exclusive-backup-{时间戳}/agents/`）
 - `commands/` — 13 commands（VS Code 扩展从这里扫，所以 `/` 自动补全立刻有）
-- `skills/` — 19 skill 目录
+- `skills/` — 20 skill 目录
 - `modes/` — 3 个 behavioral mode
 - `.mcc-hooks/` — 27 hook scripts + hooks.json（含 v2.5 vault-sync 和 vault-leak-detect）
 - `rules/` — common 1 + python 5 + typescript 5
@@ -280,6 +280,6 @@ help
 ## 还有问题？
 
 - [QUICKSTART.md](./QUICKSTART.md) — 1 页装完使用
-- [USAGE.md](./USAGE.md) — 13 命令 + 19 skill 完整参考
+- [USAGE.md](./USAGE.md) — 13 命令 + 20 skill 完整参考
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — 单源双目标 / 4 层架构
 - GitHub Issues — 报 bug / 提需求

@@ -47,12 +47,13 @@
   - [mcc-session-resume](#mcc-session-resume)
   - [mcc-session-save](#mcc-session-save)
   - [mcc-tdd](#mcc-tdd)
-- [Skill 场景指引（19）](#skill-场景指引)
+- [Skill 场景指引（20）](#skill-场景指引)
   - [architecture-decision-records](#architecture-decision-records)
   - [code-review-workflow](#code-review-workflow)
   - [coding-standards](#coding-standards)
   - [confidence-check](#confidence-check)
   - [continuous-learning-v2](#continuous-learning-v2)
+  - [database-schema-doc](#database-schema-doc)
   - [dispatching-parallel-agents](#dispatching-parallel-agents)
   - [e2e-testing](#e2e-testing)
   - [finishing-a-development-branch](#finishing-a-development-branch)
@@ -243,6 +244,9 @@ Python + TypeScript 编码规范带示例教学（命名、文件组织、错误
 ### continuous-learning-v2
 **被动沉淀**用户已有的编码习惯（hooks 观察 + Haiku 分析 + 置信度评分，产出 instinct 到 ~/.claude/skills/learned/）。
 
+### database-schema-doc
+Claude 自动维护项目数据库 schema 文档（docs/SCHEMA.md）。
+
 ### dispatching-parallel-agents
 并行分发 subagent 处理 2+ 个**独立且无依赖**的问题域（每 agent 一个域）。
 
@@ -268,7 +272,7 @@ MCC 主动性手册：Claude 遇任务时查'该派什么 agent / 激活什么 s
 接手已有项目（brownfield）的 4 阶段方法论：Reconnaissance → Architecture Mapping → Convention Detection → Output。
 
 ### project-vault
-项目级敏感配置统一管理 skill。
+Claude 自动接管项目级敏感配置存储。
 
 ### subagent-driven-development
 **串行**执行 implementation plan 的 task 链：每 task 派 fresh subagent 实现 + 两轮 review（spec + code quality）。

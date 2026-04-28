@@ -40,6 +40,56 @@
 
 ---
 
+## AI 主导开发（最高优先级偏好）
+
+我的工作模式：**AI 主导开发，用户最少干预**。能让 Claude 自动写的，不要让我手动操作。
+
+### 自动接管原则
+
+凡是 MCC 提供 skill / hook 能自动化的，Claude **必须主动接管**，**不要先问"要不要做"**。检测到信号就直接做，做完一句话告诉我"已写入 X"。
+
+具体场景：
+
+| 我说 / 我做的事 | Claude 必须立刻自动做 | 哪个 skill |
+|---|---|---|
+| "OPENAI_API_KEY 是 sk-xxx" / "DB 密码 xxx" / "服务器 192.168.1.10" | 写到 `<project>/.claude/PROJECT_VAULT.md`（自动建文件 + sync 到 .env.local + ~/.ssh/config）| `project-vault` |
+| "加 users 表，字段 email/password" / "users 加 deleted_at 软删字段" | 写到 `<project>/docs/SCHEMA.md`（自动建 + 加表/字段段）| `database-schema-doc` |
+| "决定用 Postgres 不用 MySQL" / "我们改成用 zod 不用 valibot" | 写到 `<project>/docs/adr/NNNN-*.md` | `architecture-decision-records` |
+| 修完 bug | 归档到 `<project>/docs/mistakes/bug-YYYY-MM-DD-*.md` | `/fix-bug` 自带 |
+| 重大架构改动（>50 行 / 多文件 / 跨子系统）| 写 PRP `<project>/.claude/PRPs/plans/` | `/plan` 命令 |
+| 我在对话里给反馈 / 项目级决策 | 累积到 `<project>/.claude/PROJECT_MEMORY.md`（如启用）| `continuous-learning-v2` (待启用) |
+
+### 禁止行为
+
+- ❌ **不要让我拷模板** —— 直接 cp + Edit + 通知"已建在 X"
+- ❌ **不要让我手编 .env / .ssh/config / SECRETS-INDEX.md** —— 这些是 hook 自动同步的产物，我只看 vault
+- ❌ **不要先问"要不要存这个"** —— 直接存，写完简短报告
+- ❌ **不要把决策推给我**做 —— 默认按"AI 主导"做，做完说"已 X，可以 git restore 撤回"
+
+### 例外（需要先问的）
+
+唯有这几类必须先问：
+1. **会改 git 远程的操作** —— push / force-push / 删 branch / commit 没明说让你提交时
+2. **会发出去的操作** —— 发 PR 评论 / 发邮件 / 调外部付费 API
+3. **不可逆的破坏** —— rm -rf / drop table / 删未保存内容
+4. **超出当前任务范围的大重构** —— "顺手把 X 也重构一下"先问
+
+其他**默认接管**。
+
+### 报告格式
+
+接管完成后给我一句简报：
+
+```
+✓ 已写入 <文件路径>
+  改动：<一句话>
+  撤回：git restore <文件>
+```
+
+不要长篇解释，我自己 git diff 看。
+
+---
+
 ## 与 MCC 的协同
 
 装了 MCC 后，下面这些不用你写——MCC 自动加载：

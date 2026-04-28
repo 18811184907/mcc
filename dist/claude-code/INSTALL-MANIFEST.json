@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.5.0",
+  "mccVersion": "2.5.1",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -336,6 +336,13 @@
     },
     {
       "kind": "skills",
+      "dist": ".claude/skills/database-schema-doc/SKILL.md",
+      "install": ".claude/skills/database-schema-doc/SKILL.md",
+      "size": 8010,
+      "sha256": "a63efc199501f086c85f62aee383b97a4285eabbe4aa2b48428733dfb9a07df5"
+    },
+    {
+      "kind": "skills",
       "dist": ".claude/skills/dispatching-parallel-agents/SKILL.md",
       "install": ".claude/skills/dispatching-parallel-agents/SKILL.md",
       "size": 14074,
@@ -401,8 +408,8 @@
       "kind": "skills",
       "dist": ".claude/skills/project-vault/SKILL.md",
       "install": ".claude/skills/project-vault/SKILL.md",
-      "size": 6805,
-      "sha256": "0aefbde4cc427a5e03632b33fd1fe2136567ad8b19df79b21a195974ef36cff6"
+      "size": 6438,
+      "sha256": "29172d93dfe34c40e60a6f123cf106816ac880baabe354a7e51bc49f5ca7df31"
     },
     {
       "kind": "skills",
@@ -709,8 +716,8 @@
       "kind": "templates",
       "dist": ".claude/templates/CLAUDE.global.example.md",
       "install": ".claude/templates/CLAUDE.global.example.md",
-      "size": 4046,
-      "sha256": "c57e7a6c3048400b8462c5ff1486fb41f587d86ccb41db4ff714a2a301306769"
+      "size": 6486,
+      "sha256": "ae8205d68e6e005d922fcb12c2d747d0fa25347dbb389774a537e2a58b9da244"
     },
     {
       "kind": "templates",
@@ -718,6 +725,13 @@
       "install": ".claude/templates/PROJECT_VAULT.example.md",
       "size": 2284,
       "sha256": "9bb4e1aff9ea586a58945ac95d6bee4448f99e7c961513900b4b36496f544732"
+    },
+    {
+      "kind": "templates",
+      "dist": ".claude/templates/SCHEMA.example.md",
+      "install": ".claude/templates/SCHEMA.example.md",
+      "size": 2894,
+      "sha256": "c59c12be7738f5ae5a7ed7dfed6bdcc34a7f13c8322b91bed03f82facef16860"
     },
     {
       "kind": "mcp-config",
@@ -862,21 +876,21 @@
   ],
   "notes": [],
   "summary": {
-    "total": 122,
+    "total": 124,
     "byKind": {
       "agents": 19,
       "command": 13,
-      "skills": 35,
+      "skills": 36,
       "modes": 3,
       "hooks": 27,
       "hooks-config": 1,
       "settings-fragment": 1,
       "settings-fragment-strict": 1,
-      "templates": 2,
+      "templates": 3,
       "mcp-config": 1,
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 875619
+    "totalBytes": 888596
   }
 }

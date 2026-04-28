@@ -1,181 +1,129 @@
 ---
 name: project-vault
-description: "项目级敏感配置统一管理 skill。用户说'存这个 token / 存密钥 / 存数据库密码 / SSH key / API key / 部署服务器 IP / .env 该放哪'时激活。MCC 装时自动启用 post-vault-sync hook：用户只需在 .claude/PROJECT_VAULT.md 一处 markdown 文件里写所有敏感值，hook 自动同步到 .env.local（gitignored，代码 process.env 读）+ .env.example（进 git，列字段名占位）+ ~/.ssh/config（追加 SSH 主机块）+ .claude/SECRETS-INDEX.md（进 git，只列字段名）。永远不进 git（hook 强制 .gitignore）。"
+description: "Claude 自动接管项目级敏感配置存储。触发：(a) 用户在对话里提到任何 secret/IP/SSH 信息（'OPENAI_API_KEY 是 sk-xxx' / '部署到 192.168.1.10' / 'DB 密码 xxx' / '我有个 token'）；(b) 用户写代码硬编了 secret；(c) 用户问'.env 怎么放 / token 存哪'。Claude 自动检查 .claude/PROJECT_VAULT.md 是否存在，不存在就自动创建（拷模板），存在就直接追加条目。post-vault-sync hook 自动同步到 .env.local + .env.example + ~/.ssh/config + SECRETS-INDEX.md，强制 .gitignore。**用户从不需要手动拷模板或手动改文件，AI 全包**。"
 ---
 
-# Project Vault · 项目级敏感配置统一管理
+# Project Vault · AI 自动接管的项目级敏感配置
 
-**核心原则**：所有敏感配置只写**一处** —— `<project>/.claude/PROJECT_VAULT.md`。hook 自动同步到所有标准位置。
+**核心原则**：用户**从不**手动管 vault 文件 / 拷模板 / 编辑。Claude 在对话里检测到 secret 类信息时**自动**创建 + 写入 + 触发同步。用户只需说"我有个 token: xxx" 这种话就行。
 
-## 何时激活
+## 自动激活的场景（Claude 必须主动接管）
 
-- 用户问"我有个 API token，放哪？"
-- 用户说"存这个数据库密码 / 服务器 IP / SSH key"
-- 用户说"代码里有硬编 secret，怎么搬出去"
-- 用户问 ".env 在哪 / 怎么设环境变量"
-- 用户说"团队怎么共享 secret"
+每次对话里，Claude **持续监控**用户输入是否包含 secret-like 信息：
 
-## 期望结果
+### A. 用户主动提到 secret 类的值
 
-用完 skill 后用户应该：
-
-1. **知道唯一存储位置** —— `<project>/.claude/PROJECT_VAULT.md`
-2. **知道格式** —— markdown 分章节，env 用 `- KEY = \`value\``，SSH 用嵌套块
-3. **知道自动同步** —— 改完 vault 文件保存，4 个目标位置自动更新
-4. **不需要手动管 .env / .ssh/config** —— hook 全包了
-5. **不需要担心 commit 进 git** —— hook 强制 `.gitignore`
-
-## 工作流
-
-### Step 1. 检查 vault 文件是否存在
-
-```bash
-ls <project>/.claude/PROJECT_VAULT.md
-```
-
-- **不存在** → 从 MCC 模板拷一份：
-  ```bash
-  cp ~/.mcc-install/source/templates/PROJECT_VAULT.example.md \
-     <project>/.claude/PROJECT_VAULT.md
-  ```
-  然后编辑里面的占位值。
-
-- **存在** → 直接编辑追加。
-
-### Step 2. 协助用户加条目
-
-判断用户给的是哪种类型，引导加到正确章节：
-
-| 用户说的 | 加到哪个章节 | 格式 |
-|---|---|---|
-| API key / token | `## API Tokens` | `- KEY_NAME = \`value\`` |
-| 数据库密码 / 连接串 | `## Database` | `- DATABASE_URL = \`postgres://...\`` |
-| JWT secret / HMAC | `## Auth Secrets` | `- JWT_SECRET = \`32-byte-hex\`` |
-| SSH 私钥路径 + IP | `## SSH / 服务器` | 嵌套块（见下面）|
-| 服务器元数据（不敏感）| `## 部署目标` | `- prod = AWS ec2-x` |
-
-**SSH 嵌套格式**：
-
-```markdown
-## SSH / 服务器
-
-- prod-server:
-    host = 192.168.1.10
-    user = deploy
-    key = ~/.ssh/prod_id_rsa
-    port = 22
-```
-
-字段名固定：`host` / `hostname`、`user`、`key` / `identityfile`、`port`。
-
-**注释**：用 `备注：xxx` 或 `note: xxx` 开头不会被 sync 当成字段。
-
-### Step 3. 保存后 → hook 自动跑
-
-PostToolUse hook `post-vault-sync` 监听 Write/Edit on `.claude/PROJECT_VAULT.md`，触发：
-
-1. 解析 markdown
-2. 写 `<project>/.env.local`（k=v 列表，gitignored）
-3. 写 `<project>/.env.example`（key 名 + 占位值，进 git）
-4. 写 `<project>/.claude/SECRETS-INDEX.md`（字段名清单 + 备注，进 git）
-5. 追加 `~/.ssh/config`（带 `# MCC-Managed: <project>` 块标记，幂等）
-6. 强制 `.gitignore` 含 `.claude/PROJECT_VAULT.md`、`.env.local`、`.env.*.local`、`.deploy.local.md`
-
-stderr 输出：`[vault-sync] ✓ Synced N env entries + M SSH hosts`
-
-### Step 4. 代码侧使用
-
-完全标准的 `.env` 用法：
-
-**Node**：
-```js
-import 'dotenv/config';
-const apiKey = process.env.OPENAI_API_KEY;
-```
-
-**Python**：
-```python
-from dotenv import load_dotenv
-import os
-load_dotenv('.env.local')
-api_key = os.getenv('OPENAI_API_KEY')
-```
-
-**SSH**：
-```bash
-ssh prod-server   # ~/.ssh/config 已自动配置好
-```
-
-### Step 5. 启动校验（强烈推荐）
-
-`/init` 流程会建议加启动校验代码（zod / pydantic）：
-
-```typescript
-import { z } from 'zod';
-const env = z.object({
-  DATABASE_URL: z.string().url(),
-  OPENAI_API_KEY: z.string().min(1),
-  JWT_SECRET: z.string().min(32),
-}).parse(process.env);
-```
-
-启动时缺值立刻挂，不到运行时才发现。
-
-## 安全护栏
-
-| 护栏 | 怎么实现 |
+| 用户说 | Claude 立刻做 |
 |---|---|
-| **强制 gitignore** | post-vault-sync hook 启动时自动加 .gitignore（4 行）|
-| **误进 git 检测** | 用户主动跑 `git status` 看到 PROJECT_VAULT.md staged → 立刻 `git rm --cached .claude/PROJECT_VAULT.md` 撤销 |
-| **不自动 inject 到 context** | SessionStart 不读这个文件 |
-| **leak detect** | pre-vault-leak-detect hook 监听所有 tool 调用，发现 vault 值出现在 input 里 → 警告（不阻断）|
-| **Claude 主动读时**| Claude 看到要读这个文件先警告："secret 会进对话历史，确认吗？" |
+| "OPENAI_API_KEY 是 sk-xxx" | 加进 vault 的 `## API Tokens` 段 |
+| "数据库密码 abc123" / "DB_PASSWORD = xxx" | 加进 `## Database` 段 |
+| "JWT secret 是 32-byte-xxxx" | 加进 `## Auth Secrets` 段 |
+| "我的 prod 服务器 192.168.1.10，用户 deploy，key 在 ~/.ssh/prod_id_rsa" | 加进 `## SSH / 服务器` 段（嵌套块）|
+| "Stripe live key sk_live_xxx" | 加进 `## API Tokens` 段 |
+| "部署到 AWS ec2-xxx" | 加进 `## 部署目标` 段 |
 
-## 重要：Claude 自己的行为约束
+### B. Claude 在工作中产出 secret 推荐
 
-当 Claude 自己被要求读取 `PROJECT_VAULT.md` 内容时：
+| 场景 | Claude 做 |
+|---|---|
+| 用户让 Claude 生成 JWT secret / HMAC key | 生成后**直接写 vault**，不要打印到对话 |
+| Claude 帮用户配 OAuth 拿到 client_secret | 同上 |
+| Claude 帮用户配 webhook 给随机 secret | 同上 |
 
-- **不要**直接 cat / head / Read 整个文件输出到对话
-- **不要**在生成的 commit message / PR description / docs 里包含 vault 字段值
-- **不要**把 vault 值粘贴到 search query / web request / 其他 tool input 里
-- **可以**：
-  - 引用字段名（"用 `process.env.OPENAI_API_KEY`"）
-  - 告诉用户某个字段是否存在（`grep -q "^- OPENAI_API_KEY" PROJECT_VAULT.md && echo "已设置"`）
-  - 提示用户去文件里加 / 改某个字段
+### C. 防御场景（v2.5.0 hook 已部分覆盖，skill 跟进）
+
+| 场景 | Claude 做 |
+|---|---|
+| 用户写代码硬编 `apiKey = "sk-xxx"` | pre-secret-detect hook 警告 → Claude 主动 refactor 到 vault + `process.env.X` |
+| 用户问 ".env 该放哪" | 解释 vault → .env.local 关系，说明用户只需告诉 Claude secret 值，Claude 自动写 vault |
+| 用户复制粘贴某个 .env 内容到对话 | Claude 立刻把所有条目搬到 vault |
+
+## Claude 的标准接管动作（每次都走这个）
+
+**Step 1. 检查 vault 是否存在**
+
+```
+file_exists("<cwd>/.claude/PROJECT_VAULT.md")?
+```
+
+**Step 2a. 不存在 → Claude 自己建（不让用户做）**
+
+```
+1. 检查 dist 模板：~/.mcc-install/dist/claude-code/.claude/templates/PROJECT_VAULT.example.md
+   （或 ~/.mcc-install/source/templates/ 备选）
+2. Bash:  cp <template> <project>/.claude/PROJECT_VAULT.md
+3. 删除模板里的示例值（OPENAI_API_KEY = `<your-openai-api-key>` 那些占位）
+   保留章节标题（## Database / ## API Tokens / ## Auth Secrets / ## SSH / 服务器 / ## 部署目标）
+4. 通知用户："vault 已建在 <path>，我会把你说的 X 加进去"
+```
+
+**Step 2b. 存在 → 直接 Edit 加条目**
+
+用 Edit tool 在合适章节追加。如果章节不存在就在文件末尾加一个。
+
+**Step 3. 不需要手动触发 sync**
+
+Edit 完成后 PostToolUse hook (`post-vault-sync`) **自动**触发同步到 .env.local / .env.example / ~/.ssh/config / SECRETS-INDEX.md / .gitignore。
+
+**Step 4. 简短确认给用户**
+
+```
+✓ 已加到 vault：OPENAI_API_KEY
+  hook 同步：.env.local + .env.example + SECRETS-INDEX.md
+  代码用：process.env.OPENAI_API_KEY
+```
+
+不要解释 4 个目标文件的细节（用户不关心，hook 自动管）。
+
+## 关键约束（Claude 的安全边界）
+
+| 约束 | 怎么做 |
+|---|---|
+| 永远不在对话里复述完整 secret 值 | 用户说"OPENAI_API_KEY 是 sk-proj-abc123"后，Claude 输出确认时只说"已加 OPENAI_API_KEY"，不要 echo 那个 sk-proj-abc123 |
+| 永远不在 commit message / PR description / docs 里包含 vault 值 | 提到字段时只用字段名 |
+| 永远不把 vault 值粘到 search query / web fetch / 其他 tool input | pre-vault-leak-detect hook 会警告 |
+| 不要 cat / head 整个 vault 文件输出 | 要看用 grep 看特定字段名是否存在，不显示值 |
+| 用户问"我的 OPENAI_API_KEY 是啥" | 回："去看 .claude/PROJECT_VAULT.md（它是 gitignored 安全的）"。**不直接读出来给用户看** |
+
+## 用户视角的简化
+
+老办法（v2.5.0 文档错的）：用户拷模板 → 编辑 → 保存 → hook 跑
+
+**新办法（v2.5.1 起）**：用户在对话里说"OPENAI_API_KEY 是 sk-xxx" → 完事。
+
+Claude 接管所有：建文件、加条目、触发 sync、解释。用户什么都不用做。
+
+## 老条目搬家（如果用户已有 .env）
+
+用户说"我已经有 .env 了" → Claude:
+
+1. Read 用户的 .env
+2. 把每行 KEY=VALUE 转成 vault 格式 `- KEY = \`VALUE\``
+3. 按命名猜分到合适章节（KEY/SECRET/TOKEN → API Tokens；DB/DATABASE → Database；JWT/HMAC → Auth Secrets）
+4. 写到 vault → hook 自动 sync 出 .env.local
+5. 让用户 rename `.env` → `.env.backup`（或删）
+
+## 团队协作（多人 clone）
+
+新同事 clone 项目后：
+
+1. 看 `.claude/SECRETS-INDEX.md`（进 git 的字段名清单）+ `.env.example`（key 占位）→ 知道有哪些 secret
+2. 找你拿真实值
+3. **不要让同事自己拷模板**。让他**告诉 Claude**："OPENAI_API_KEY 是 xxx"，Claude 自动建他本机的 vault + 同步。
 
 ## 常见问题
 
-### "已经有 .env 了，怎么迁过来？"
+### "我已经在 .env 里写了一堆，怎么搬？"
+告诉 Claude："我有 .env，搬到 vault"。Claude 自动 read .env → 转格式 → 写 vault → 你只需 rename 旧 .env。
 
-```bash
-# 把 .env 内容粘到 PROJECT_VAULT.md 的合适章节，加 - 前缀和反引号：
-# DATABASE_URL=postgres://...   →   - DATABASE_URL = `postgres://...`
-```
+### "团队同事第一次跑要做啥？"
+让他在对话里跟 Claude 说真实值，Claude 自动建他本机 vault。**不要他手动拷模板**。
 
-保存 → hook 同步 `.env.local`。然后**删掉** `.env`（或 rename 备份），改用 `.env.local`。
-
-### "团队同事 clone 后怎么搞？"
-
-1. 同事看 `.env.example`（进 git 的）+ `.claude/SECRETS-INDEX.md`（进 git 的）→ 知道有哪些 key
-2. 找你拿真实值
-3. 同事自己建 `<project>/.claude/PROJECT_VAULT.md` 填进去
-4. 同事保存 → hook 自动同步到他本地的 `.env.local` / `~/.ssh/config`
-
-### "我想换一台机器开发"
-
-新机器上克隆项目后，`.claude/PROJECT_VAULT.md` 不会跟过来（gitignored）。重新建一个并填值。
-
-### "secret 还在 git 历史里没洗掉怎么办"
-
-立刻：
-1. 改这个 secret（轮换 / 重新生成 token）—— 这是第一步，最重要
-2. 用 `git filter-branch` / BFG Repo-Cleaner 清历史（高级操作）
-3. force-push（仅当你确定全部协作者已知）
-
-**不要**寄希望于 secret 在 git 历史里隐藏 —— 假设已被复制 = 必须轮换。
+### "secret 不小心 commit 进 git 了？"
+立刻：(1) 轮换该 secret（重新生成）→ (2) 用 BFG / git filter-branch 清历史 → (3) 同事 force-pull。**假设已被复制 = 必须轮换**。
 
 ## 引用
 
-- `~/.mcc-install/source/templates/PROJECT_VAULT.example.md` —— 标准模板
+- `~/.mcc-install/source/templates/PROJECT_VAULT.example.md` —— 标准模板（Claude 用）
 - `~/.mcc-install/source/hooks/scripts/hooks/post-vault-sync.js` —— sync 实现
 - `~/.mcc-install/source/hooks/scripts/hooks/pre-vault-leak-detect.js` —— 泄漏检测

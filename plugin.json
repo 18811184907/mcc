@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "2.5.0",
-  "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 13 commands + 19 skills + 3 behavioral modes + 27 hook scripts + 5 MCP servers + curated rules（Python ↔ TypeScript 完整对等）。v2.5 PROJECT_VAULT：所有项目级敏感配置（API key / DB / SSH / IP）只写一处 .claude/PROJECT_VAULT.md，hook 自动同步到 .env.local + ~/.ssh/config + .env.example + SECRETS-INDEX.md，强制 gitignore。v2.4 smart-split：用户级能力 ~/.claude + 项目工作产物 cwd/.claude/PRPs/。",
+  "version": "2.5.1",
+  "description": "MCC · Multi-target Claude/Codex Configuration — 19 agents + 13 commands + 20 skills + 3 behavioral modes + 27 hook scripts + 5 MCP servers + curated rules。v2.5.1 AI 主导开发：用户说一句 Claude 自动写。secret 一处统一 .claude/PROJECT_VAULT.md（自动同步 .env.local / ~/.ssh/config）；DB schema 一处统一 docs/SCHEMA.md（自动维护表结构 + 业务含义）。CLAUDE.md 带 'AI 主导接管' 偏好段，禁止让用户手动拷模板 / 编 .env / .ssh/config。",
   "author": {
     "name": "MCC",
     "url": "https://github.com/18811184907/mcc"
