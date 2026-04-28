@@ -1,11 +1,10 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.5.6",
+  "version": "2.5.7",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
-
   "targets": {
     "claude-code": {
       "label": "Claude Code",
@@ -17,8 +16,14 @@
       "hooks_config": "dist/claude-code/.claude/.mcc-hooks/hooks.json",
       "hooks_scripts_dir": "dist/claude-code/.claude/.mcc-hooks/scripts",
       "detect": [
-        {"kind": "file_exists", "path": "~/.claude/settings.json"},
-        {"kind": "env", "name": "CLAUDE_CODE_HOME"}
+        {
+          "kind": "file_exists",
+          "path": "~/.claude/settings.json"
+        },
+        {
+          "kind": "env",
+          "name": "CLAUDE_CODE_HOME"
+        }
       ]
     },
     "codex": {
@@ -30,13 +35,21 @@
       "config_fragment": "dist/codex/config.fragment.toml",
       "hooks_soft_guidance": "dist/codex/HOOKS-SOFT-GUIDANCE.md",
       "detect": [
-        {"kind": "file_exists", "path": "~/.codex/config.toml"},
-        {"kind": "file_exists", "path": "~/.codex/"},
-        {"kind": "env", "name": "CODEX_HOME"}
+        {
+          "kind": "file_exists",
+          "path": "~/.codex/config.toml"
+        },
+        {
+          "kind": "file_exists",
+          "path": "~/.codex/"
+        },
+        {
+          "kind": "env",
+          "name": "CODEX_HOME"
+        }
       ]
     }
   },
-
   "components": {
     "agents": 19,
     "commands": 15,
@@ -50,13 +63,15 @@
     "rules_common": 1,
     "principles_sections": 3
   },
-
   "compatibility": {
     "claude_code_min_version": "2.1.0",
     "node_min_version": "18.0.0",
-    "platforms": ["windows", "macos", "linux"]
+    "platforms": [
+      "windows",
+      "macos",
+      "linux"
+    ]
   },
-
   "merge_strategy": {
     "agents": "skip_existing",
     "commands": "skip_existing",
@@ -68,7 +83,6 @@
     "config_toml": "append_sections_dedup",
     "PRPs_directory": "create_only_missing"
   },
-
   "install_variables": {
     "MCC_HOOKS": {
       "description": "hooks 脚本的真实安装位置",
@@ -83,7 +97,6 @@
       "resolved_at_install": true
     }
   },
-
   "uninstall": {
     "strategy": "restore_from_backup",
     "backup_dir_pattern": "{home}/.claude.backup-{timestamp}",
@@ -96,15 +109,24 @@
     ],
     "note": "卸载只恢复 MCC 装之前的配置文件；用户工作产物（PRD/plan/report/session/learned skill）一律保留"
   },
-
   "build": {
     "source_dir": "source/",
     "adapters_dir": "adapters/",
     "dist_dir": "dist/",
     "build_command": "node adapters/build.js"
   },
-
   "version_history": [
+    {
+      "version": "2.5.7",
+      "date": "2026-04-28",
+      "changes": [
+        "v2.5.7 - Codex mcc workflow prompt loading fix",
+        "FIX: Codex AGENTS.md now requires reading the full mcc-xxx prompt before executing explicit mcc-prd / mcc-plan / mcc-implement / mcc-review / mcc-tdd requests.",
+        "FIX: Prompt lookup order is project .codex/prompts/mcc-xxx.md first, then user ~/.codex/prompts/mcc-xxx.md; missing prompts must be reported before fallback.",
+        "TEST: node adapters/build.js passed; node tests/smoke.js passed with 188/188 checks.",
+        "version: 2.5.6 -> 2.5.7"
+      ]
+    },
     {
       "version": "2.5.6",
       "date": "2026-04-28",
@@ -586,7 +608,6 @@
       ]
     }
   ],
-
   "roadmap": [
     {
       "version": "1.5.0",

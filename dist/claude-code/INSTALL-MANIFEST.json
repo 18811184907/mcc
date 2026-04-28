@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.5.6",
+  "mccVersion": "2.5.7",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
