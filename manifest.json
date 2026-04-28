@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -39,11 +39,11 @@
 
   "components": {
     "agents": 19,
-    "commands": 13,
-    "skills": 20,
+    "commands": 14,
+    "skills": 21,
     "modes": 3,
     "hooks": 8,
-    "hook_scripts": 27,
+    "hook_scripts": 28,
     "mcp_servers": 5,
     "rules_python": 5,
     "rules_typescript": 5,

@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "mccVersion": "2.5.1",
+  "mccVersion": "2.5.2",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\codex",
   "files": [
@@ -117,6 +117,12 @@
       "dist": ".codex/agents/vector-database-engineer.md",
       "size": 5255,
       "sha256": "8524723f03bb8f3796d7cf8c3ac23e82e10c97f2d543c5f4d2667d9754702f4d"
+    },
+    {
+      "kind": "prompt",
+      "dist": ".codex/prompts/mcc-claudemd-sync.md",
+      "size": 6373,
+      "sha256": "ac13eca9ff4b4f32647d173589e85dd3d3a27899200b55367a4958f1b7b7a9be"
     },
     {
       "kind": "prompt",
@@ -266,8 +272,8 @@
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 14651,
-      "sha256": "b92e4c54aebb7b1d5a1379d80894fb74db54b2a5d8278e914176bc735add4223"
+      "size": 15105,
+      "sha256": "a2ba73a6b62777817d67fe8e4616b1184ab928d78f21f83ea48f2e837503148a"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -291,15 +297,15 @@
     "Codex 不支持 skill，转为 AGENTS.md 中的场景指引段"
   ],
   "summary": {
-    "total": 46,
+    "total": 47,
     "byKind": {
       "agent": 19,
-      "prompt": 13,
+      "prompt": 14,
       "rule": 11,
       "agents-md": 1,
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 284214
+    "totalBytes": 291041
   }
 }

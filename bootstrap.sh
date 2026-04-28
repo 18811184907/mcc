@@ -164,6 +164,46 @@ echo -e "${C_CYAN}[..] Running install.sh (args: ${installer_args[*]})...${C_RES
 # scripts/installer.js lookup, so it doesn't need to be invoked from $MCC_DIR.
 bash "$MCC_DIR/install.sh" "${installer_args[@]}"
 
+# v2.5.2: Optional dotfiles bootstrap. If MCC_DOTFILES_REPO env var is set, clone it
+# and seed ~/.claude/CLAUDE.md from there. New-device onboard becomes one-liner.
+if [ -n "${MCC_DOTFILES_REPO:-}" ]; then
+  echo ""
+  echo -e "${C_CYAN}[..] Bootstrapping dotfiles from $MCC_DOTFILES_REPO ...${C_RESET}"
+  dotfiles_parent="$HOME/.dotfiles"
+  dotfiles_dir="$dotfiles_parent/claude-dotfiles"
+  mkdir -p "$dotfiles_parent"
+  if [ -d "$dotfiles_dir" ]; then
+    echo -e "${C_YELLOW}[!] $dotfiles_dir already exists, skipping clone${C_RESET}"
+  else
+    if git clone "$MCC_DOTFILES_REPO" "$dotfiles_dir"; then
+      dotfiles_claudemd="$dotfiles_dir/CLAUDE.md"
+      user_claudemd="$HOME/.claude/CLAUDE.md"
+      if [ -f "$dotfiles_claudemd" ]; then
+        if [ -f "$user_claudemd" ]; then
+          backup="$user_claudemd.backup-$(date +%Y%m%d-%H%M%S)"
+          cp "$user_claudemd" "$backup"
+          echo -e "${C_GREEN}[OK] backed up existing ~/.claude/CLAUDE.md → $backup${C_RESET}"
+        fi
+        cp -f "$dotfiles_claudemd" "$user_claudemd"
+        echo -e "${C_GREEN}[OK] seeded ~/.claude/CLAUDE.md from dotfiles repo${C_RESET}"
+      fi
+      mkdir -p "$HOME/.claude"
+      cat > "$HOME/.claude/.claudemd-sync.config" <<EOF
+{
+  "repoUrl": "$MCC_DOTFILES_REPO",
+  "dotfilesDir": "~/.dotfiles/claude-dotfiles",
+  "syncFile": "CLAUDE.md",
+  "version": 1
+}
+EOF
+      echo -e "${C_GREEN}[OK] wrote claudemd-sync config${C_RESET}"
+      echo -e "${C_GREEN}[OK] dotfiles ready. Future ~/.claude/CLAUDE.md edits auto-sync to GitHub.${C_RESET}"
+    else
+      echo -e "${C_RED}[X] dotfiles clone failed. Skipping seed.${C_RESET}"
+    fi
+  fi
+fi
+
 # 5. Done
 echo ""
 echo -e "${C_GREEN}====================================${C_RESET}"

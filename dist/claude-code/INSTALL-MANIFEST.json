@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.5.1",
+  "mccVersion": "2.5.2",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-build\\final\\dist\\claude-code",
   "installBase": ".claude/",
@@ -140,6 +140,13 @@
     },
     {
       "kind": "command",
+      "dist": ".claude/commands/claudemd-sync.md",
+      "install": ".claude/commands/claudemd-sync.md",
+      "size": 6373,
+      "sha256": "ac13eca9ff4b4f32647d173589e85dd3d3a27899200b55367a4958f1b7b7a9be"
+    },
+    {
+      "kind": "command",
       "dist": ".claude/commands/explain.md",
       "install": ".claude/commands/explain.md",
       "size": 1249,
@@ -235,6 +242,13 @@
       "install": ".claude/skills/architecture-decision-records/SKILL.md",
       "size": 6062,
       "sha256": "fcfff97c52a08450a0528f659367995787be8005758fe82a1c8f50f74a4f9ae7"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/claudemd-sync/SKILL.md",
+      "install": ".claude/skills/claudemd-sync/SKILL.md",
+      "size": 6392,
+      "sha256": "05b42f6538440c625e260369bcc99f86a5e2a73fbe66f86afc0eb92c3de72a11"
     },
     {
       "kind": "skills",
@@ -560,6 +574,13 @@
     },
     {
       "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/post-claudemd-sync.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/post-claudemd-sync.js",
+      "size": 6227,
+      "sha256": "7690e461529428b04ad031b1fb24ef2422ce56fe3ff925bb3d38ecc88e284306"
+    },
+    {
+      "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/post-vault-sync.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/post-vault-sync.js",
       "size": 11726,
@@ -702,8 +723,8 @@
       "kind": "settings-fragment",
       "dist": ".claude/settings.fragment.json",
       "install": ".claude/settings.fragment.json",
-      "size": 7448,
-      "sha256": "fb1c61d7d25e10c04d0ec62e68961119469a90846f32e4e11329ac921e0b7207"
+      "size": 7630,
+      "sha256": "1d54868a144816bc2fd681f21d04e6aaa9b8e3981f194c69155e75f98030e186"
     },
     {
       "kind": "settings-fragment-strict",
@@ -876,13 +897,13 @@
   ],
   "notes": [],
   "summary": {
-    "total": 124,
+    "total": 127,
     "byKind": {
       "agents": 19,
-      "command": 13,
-      "skills": 36,
+      "command": 14,
+      "skills": 37,
       "modes": 3,
-      "hooks": 27,
+      "hooks": 28,
       "hooks-config": 1,
       "settings-fragment": 1,
       "settings-fragment-strict": 1,
@@ -891,6 +912,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 888596
+    "totalBytes": 907770
   }
 }

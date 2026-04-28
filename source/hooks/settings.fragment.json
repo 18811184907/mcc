@@ -93,6 +93,12 @@
             "command": "node ${MCC_HOOKS}/hooks/post-vault-sync.js",
             "async": false,
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "node ${MCC_HOOKS}/hooks/post-claudemd-sync.js",
+            "async": false,
+            "timeout": 20
           }
         ]
       }

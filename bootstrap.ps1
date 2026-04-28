@@ -181,6 +181,48 @@ if ($LASTEXITCODE -ne 0) {
   exit $LASTEXITCODE
 }
 
+# v2.5.2: Optional dotfiles bootstrap. If MCC_DOTFILES_REPO env var is set, clone it
+# and seed ~/.claude/CLAUDE.md from there. New-device onboard becomes one-liner.
+if ($env:MCC_DOTFILES_REPO) {
+  Write-Host ""
+  Write-Host "[..] Bootstrapping dotfiles from $env:MCC_DOTFILES_REPO ..." -ForegroundColor Cyan
+  $dotfilesParent = Join-Path $HOME ".dotfiles"
+  $dotfilesDir = Join-Path $dotfilesParent "claude-dotfiles"
+  if (-not (Test-Path $dotfilesParent)) { New-Item -ItemType Directory -Path $dotfilesParent | Out-Null }
+  if (Test-Path $dotfilesDir) {
+    Write-Host "[!] $dotfilesDir already exists, skipping clone (run /claudemd-sync init manually if needed)" -ForegroundColor Yellow
+  } else {
+    git clone $env:MCC_DOTFILES_REPO $dotfilesDir 2>&1 | Out-Host
+    if ($LASTEXITCODE -ne 0) {
+      Write-Host "[X] dotfiles clone failed. Skipping seed." -ForegroundColor Red
+    } else {
+      $dotfilesClaudemd = Join-Path $dotfilesDir "CLAUDE.md"
+      $userClaudemd = Join-Path $HOME ".claude" "CLAUDE.md"
+      if (Test-Path $dotfilesClaudemd) {
+        if (Test-Path $userClaudemd) {
+          # Backup existing user CLAUDE.md before overwriting from dotfiles
+          $backup = "$userClaudemd.backup-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+          Copy-Item $userClaudemd $backup
+          Write-Host "[OK] backed up existing ~/.claude/CLAUDE.md → $backup" -ForegroundColor Green
+        }
+        Copy-Item $dotfilesClaudemd $userClaudemd -Force
+        Write-Host "[OK] seeded ~/.claude/CLAUDE.md from dotfiles repo" -ForegroundColor Green
+      }
+      # Write sync config
+      $config = @{
+        repoUrl = $env:MCC_DOTFILES_REPO
+        dotfilesDir = "~/.dotfiles/claude-dotfiles"
+        syncFile = "CLAUDE.md"
+        version = 1
+      } | ConvertTo-Json
+      $configPath = Join-Path $HOME ".claude" ".claudemd-sync.config"
+      Set-Content -Path $configPath -Value $config -Encoding UTF8
+      Write-Host "[OK] wrote claudemd-sync config: $configPath" -ForegroundColor Green
+      Write-Host "[OK] dotfiles ready. Future ~/.claude/CLAUDE.md edits auto-sync to GitHub." -ForegroundColor Green
+    }
+  }
+}
+
 # 3. Done
 Write-Host ""
 Write-Host "====================================" -ForegroundColor Green
