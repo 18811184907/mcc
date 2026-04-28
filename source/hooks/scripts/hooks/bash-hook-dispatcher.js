@@ -9,11 +9,33 @@ const { run: runTmuxReminder } = require('./pre-bash-tmux-reminder');
 const { run: runGitPushReminder } = require('./pre-bash-git-push-reminder');
 const { run: runCommitQuality } = require('./pre-bash-commit-quality');
 const { run: runGateGuard } = require('./gateguard-fact-force');
-const { run: runCommandLog } = require('./post-bash-command-log');
-const { run: runPrCreated } = require('./post-bash-pr-created');
-const { run: runBuildComplete } = require('./post-bash-build-complete');
 
 const MAX_STDIN = 1024 * 1024;
+
+function optionalHook(modulePath, hookId, ...extraArgs) {
+  let cached;
+  let loadError;
+
+  return rawInput => {
+    if (!cached && !loadError) {
+      try {
+        cached = require(modulePath);
+      } catch (error) {
+        loadError = error;
+      }
+    }
+
+    if (cached && typeof cached.run === 'function') {
+      return cached.run(rawInput, ...extraArgs);
+    }
+
+    return {
+      stdout: rawInput,
+      stderr: `[Hook] ${hookId} skipped: optional module ${modulePath} is not installed`,
+      exitCode: 0,
+    };
+  };
+}
 
 const PRE_BASH_HOOKS = [
   {
@@ -50,21 +72,21 @@ const PRE_BASH_HOOKS = [
 const POST_BASH_HOOKS = [
   {
     id: 'post:bash:command-log-audit',
-    run: rawInput => runCommandLog(rawInput, 'audit'),
+    run: optionalHook('./post-bash-command-log', 'post:bash:command-log-audit', 'audit'),
   },
   {
     id: 'post:bash:command-log-cost',
-    run: rawInput => runCommandLog(rawInput, 'cost'),
+    run: optionalHook('./post-bash-command-log', 'post:bash:command-log-cost', 'cost'),
   },
   {
     id: 'post:bash:pr-created',
     profiles: 'standard,strict',
-    run: rawInput => runPrCreated(rawInput),
+    run: optionalHook('./post-bash-pr-created', 'post:bash:pr-created'),
   },
   {
     id: 'post:bash:build-complete',
     profiles: 'standard,strict',
-    run: rawInput => runBuildComplete(rawInput),
+    run: optionalHook('./post-bash-build-complete', 'post:bash:build-complete'),
   },
 ];
 

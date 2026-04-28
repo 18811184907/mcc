@@ -19,7 +19,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execSync, spawnSync } = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 const failures = [];
@@ -135,6 +135,22 @@ if (isFile(hooksConfigPath)) {
 }
 
 // --- 6. build 跑得过，dist 有产出 ---
+
+for (const [rel, mode] of [
+  ['source/hooks/scripts/hooks/pre-bash-dispatcher.js', null],
+  ['source/hooks/scripts/hooks/bash-hook-dispatcher.js', 'post'],
+]) {
+  const args = [path.join(ROOT, rel)];
+  if (mode) args.push(mode);
+  const res = spawnSync(process.execPath, args, {
+    cwd: ROOT,
+    input: JSON.stringify({ tool_input: { command: 'git status' } }),
+    encoding: 'utf8',
+    timeout: 10_000,
+  });
+  assert(res.status === 0, `${rel} should load and run, exit=${res.status}, stderr=${(res.stderr || '').slice(0, 300)}`);
+  assert(!/MODULE_NOT_FOUND/.test(res.stderr || ''), `${rel} should not throw MODULE_NOT_FOUND`);
+}
 
 try {
   execSync('node adapters/build.js', { cwd: ROOT, stdio: 'pipe' });

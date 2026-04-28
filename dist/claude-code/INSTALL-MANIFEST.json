@@ -534,8 +534,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/bash-hook-dispatcher.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/bash-hook-dispatcher.js",
-      "size": 4723,
-      "sha256": "552ab02a08787b57eae5ab274c2b7b406e0e922e4ccf006abcbe0cf6cf152cad"
+      "size": 5152,
+      "sha256": "a8fd68ddbf7a9c2c0d6671390597f0314c19da0211dd39d49289c123fe2a34c1"
     },
     {
       "kind": "hooks",
@@ -919,6 +919,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 912950
+    "totalBytes": 913379
   }
 }

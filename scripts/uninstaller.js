@@ -9,6 +9,8 @@ const path = require('path');
 const os = require('os');
 const readline = require('readline');
 
+const ROOT = path.resolve(__dirname, '..');
+
 // ═══ 参数 ════════════════════════════════════════════
 
 function parseArgs(argv) {
@@ -46,6 +48,32 @@ function log(level, msg) {
 
 function pathExists(p) {
   try { fs.accessSync(p); return true; } catch { return false; }
+}
+
+function readJsonIfExists(p) {
+  if (!pathExists(p)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(p, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+function getInstalledClaudeCommands() {
+  const installManifest = readJsonIfExists(path.join(ROOT, 'dist', 'claude-code', 'INSTALL-MANIFEST.json'));
+  const fromManifest = (installManifest?.files || [])
+    .filter(f => f.kind === 'command' && typeof f.install === 'string')
+    .map(f => f.install)
+    .filter(p => p.startsWith('.claude/commands/') && p.endsWith('.md'))
+    .map(p => p.replace('.claude/commands/', ''));
+
+  if (fromManifest.length > 0) {
+    return [...new Set(fromManifest)];
+  }
+
+  const sourceCommandsDir = path.join(ROOT, 'source', 'commands');
+  if (!pathExists(sourceCommandsDir)) return [];
+  return fs.readdirSync(sourceCommandsDir).filter(f => f.endsWith('.md'));
 }
 
 function findLatestBackup(dir, basename) {
@@ -136,6 +164,13 @@ async function uninstallClaudeCode(targetDir, args) {
   if (removeDirIfExists(mccCommandsDir, args.dryRun)) {
     log('ok', `删除 ${mccCommandsDir}`);
     summary.removed.push('commands/mcc/');
+  }
+
+  for (const commandFile of getInstalledClaudeCommands()) {
+    const commandPath = path.join(targetDir, 'commands', commandFile);
+    if (removeFileIfExists(commandPath, args.dryRun)) {
+      summary.removed.push(`commands/${commandFile}`);
+    }
   }
 
   // 删除 rules/common/mcc-principles.md（MCC 独有）

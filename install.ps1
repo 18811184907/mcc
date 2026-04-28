@@ -1,7 +1,7 @@
 # install.ps1 - MCC installer (Windows)
 #
 # Usage:
-#   .\install.ps1                        # auto-detect + global install (coexist mode, skip same-name)
+#   .\install.ps1                        # smart install (user-level tools + cwd PRPs stub)
 #   .\install.ps1 -Exclusive             # exclusive: clear agents/commands/skills/modes then install MCC
 #   .\install.ps1 -Scope project         # install to current project's .claude / .codex
 #   .\install.ps1 -Target claude-code    # only Claude Code side
@@ -9,12 +9,13 @@
 #   .\install.ps1 -DryRun                # print plan only, no file changes
 #   .\install.ps1 -Strict                # strict permissions (vs default trust mode)
 #   .\install.ps1 -SkipClaudemd          # do not auto-write ~/.claude/CLAUDE.md
+#   .\install.ps1 -NoProjectStub         # smart mode without cwd PRPs stub
 #
 # This is a thin wrapper. Real logic in scripts/installer.js (Node, cross-platform shared).
 
 param(
-    [ValidateSet('global', 'project', 'hybrid')]
-    [string]$Scope = 'global',
+    [ValidateSet('smart', 'global', 'project', 'hybrid')]
+    [string]$Scope = 'smart',
 
     [ValidateSet('auto', 'claude-code', 'codex', 'both')]
     [string]$Target = 'auto',
@@ -24,7 +25,8 @@ param(
     [switch]$DryRun,
     [switch]$Verbose,
     [switch]$Strict,
-    [switch]$SkipClaudemd
+    [switch]$SkipClaudemd,
+    [switch]$NoProjectStub
 )
 
 $ErrorActionPreference = 'Stop'
@@ -90,6 +92,7 @@ if ($DryRun)        { $installerArgs += '--dry-run' }
 if ($Verbose)       { $installerArgs += '--verbose' }
 if ($Strict)        { $installerArgs += '--strict' }
 if ($SkipClaudemd)  { $installerArgs += '--skip-claudemd' }
+if ($NoProjectStub) { $installerArgs += '--no-project-stub' }
 
 Write-Host ""
 Write-Host "====================================" -ForegroundColor Cyan

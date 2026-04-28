@@ -151,6 +151,28 @@ assert(r8.exitCode === 0, `Case 8: --scope project --exclusive 组合应正常`)
 
 console.log('');
 console.log('════════════════════════════════════');
+const ps = process.platform === 'win32' ? 'powershell' : 'pwsh';
+const r9 = spawnSync(ps, [
+  '-NoProfile',
+  '-ExecutionPolicy', 'Bypass',
+  '-File', path.join(ROOT, 'install.ps1'),
+  '-Scope', 'smart',
+  '-Target', 'claude-code',
+  '-DryRun',
+  '-NoProjectStub',
+], {
+  cwd: ROOT,
+  encoding: 'utf8',
+  timeout: 30_000,
+});
+if (r9.error && r9.error.code === 'ENOENT') {
+  assert(true, 'Case 9: PowerShell unavailable, skipping wrapper check');
+} else {
+  assert(r9.status === 0, `Case 9: install.ps1 smart/no-project-stub should exit 0, actual ${r9.status}, stderr=${(r9.stderr || '').slice(0, 300)}`);
+  assert(!/ParameterBinding/.test((r9.stderr || '') + (r9.stdout || '')),
+    'Case 9: install.ps1 should not fail PowerShell parameter binding');
+}
+
 console.log('  MCC Installer Dry-Run Test');
 console.log('════════════════════════════════════');
 console.log(`checks: ${checks}`);
