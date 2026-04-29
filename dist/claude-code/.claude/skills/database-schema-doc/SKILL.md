@@ -1,6 +1,6 @@
 ---
 name: database-schema-doc
-description: "Claude 自动维护项目数据库 schema 文档（docs/SCHEMA.md）。触发：(a) 用户提到表结构（'我加了 users 表，有 email/password 字段'）；(b) 用户写/改 ORM 模型（Prisma / SQLAlchemy / TypeORM）；(c) 用户写/改 migration SQL；(d) 用户问'数据库怎么设计的 / 表结构在哪'。Claude 自动检查 docs/SCHEMA.md 是否存在，不存在就建（基于检测到的 ORM stub 表骨架），存在就直接 Edit 加表/字段。业务含义优先用对话上下文；缺少时填 '_TODO: 业务含义_' 占位让用户后补。**用户从不需要手动维护 schema 文档**。"
+description: "Claude 自动维护 docs/SCHEMA.md。触发：用户提到表结构（'加 users 表，字段 email/password'）、写改 ORM 模型（Prisma/SQLAlchemy/TypeORM）、写改 migration SQL、或问'数据库表结构在哪'。不存在自动建（从 ORM 抽骨架），存在直接 Edit 加表/字段；业务含义缺失填 '_TODO_' 占位。与 architecture-decision-records 分工：本 skill 记结构现状，ADR 记选型决策（如选 Postgres）。"
 ---
 
 # Database Schema Doc · AI 自动接管的项目数据库结构文档

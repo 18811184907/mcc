@@ -1,9 +1,19 @@
 ---
+# v2.6.1: 只在改 hook / 工具配置时注入（之前每次改 .ts 都注入 ~4.7k 字符浪费）。
+# 内容是 prettier/eslint/tsc/playwright hook 模板 + Claude Code settings.json
+# hook 配置——日常改 .ts 业务代码时用不到。
 paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.js"
-  - "**/*.jsx"
+  - "**/.claude/settings*.json"
+  - "**/.claude/hooks/**"
+  - "**/.claude/.mcc-hooks/**"
+  - "**/.husky/**"
+  - "**/lefthook.{yml,yaml}"
+  - "**/package.json"
+  - "**/.eslintrc*"
+  - "**/eslint.config.*"
+  - "**/.prettierrc*"
+  - "**/prettier.config.*"
+  - "**/tsconfig*.json"
 ---
 # TypeScript / JavaScript Hooks
 

@@ -1,6 +1,6 @@
 ---
 name: project-vault
-description: "Claude 自动接管项目级敏感配置存储。触发：(a) 用户在对话里提到任何 secret/IP/SSH 信息（'OPENAI_API_KEY 是 sk-xxx' / '部署到 192.168.1.10' / 'DB 密码 xxx' / '我有个 token'）；(b) 用户写代码硬编了 secret；(c) 用户问'.env 怎么放 / token 存哪'。Claude 自动检查 .claude/PROJECT_VAULT.md 是否存在，不存在就自动创建（拷模板），存在就直接追加条目。post-vault-sync hook 自动同步到 .env.local + .env.example + ~/.ssh/config + SECRETS-INDEX.md，强制 .gitignore。**用户从不需要手动拷模板或手动改文件，AI 全包**。"
+description: "Claude 自动接管项目级敏感配置（API key / DB 密码 / 部署 IP / SSH / token）。触发：用户在对话里说出任何 secret 或 IP、或代码里硬编 secret、或问 '.env 怎么放 / token 存哪'。写 .claude/PROJECT_VAULT.md，hook 自动 sync 到 .env.local + .env.example + ~/.ssh/config + SECRETS-INDEX.md，强制 .gitignore。与 user-vault 分工：本 skill 单项目，跨项目用 user-vault。"
 ---
 
 # Project Vault · AI 自动接管的项目级敏感配置

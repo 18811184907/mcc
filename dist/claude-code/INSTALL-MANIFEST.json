@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.6.0",
+  "mccVersion": "2.6.1",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\claude-code",
   "installBase": ".claude/",
@@ -114,8 +114,8 @@
       "kind": "agents",
       "dist": ".claude/agents/silent-failure-hunter.md",
       "install": ".claude/agents/silent-failure-hunter.md",
-      "size": 3860,
-      "sha256": "a8368ce433b953644eed5dc3d1595bac189e26db9cc25f84a33e8ce71aa7ada9"
+      "size": 3713,
+      "sha256": "b5a97a77f5e0d8d57ce11e32f1f099dec7dad7059fade5206c32bdb670d25f19"
     },
     {
       "kind": "agents",
@@ -254,8 +254,8 @@
       "kind": "skills",
       "dist": ".claude/skills/claudemd-sync/SKILL.md",
       "install": ".claude/skills/claudemd-sync/SKILL.md",
-      "size": 6544,
-      "sha256": "01439f69044cc3850e46554d6089085777737f08e9ec58434cd5193625835e36"
+      "size": 6403,
+      "sha256": "a32e943c89c3d86639f2ff0159ccd6747ce03a1ba77b3aecbc6c026ad27d28b4"
     },
     {
       "kind": "skills",
@@ -359,15 +359,15 @@
       "kind": "skills",
       "dist": ".claude/skills/database-schema-doc/SKILL.md",
       "install": ".claude/skills/database-schema-doc/SKILL.md",
-      "size": 8227,
-      "sha256": "9a72ef7709a564f2164eb52e160e272be73829ce73c56604333f280ca29fffbc"
+      "size": 8062,
+      "sha256": "d6c239d82149e489127ab00fafcce1ef13888b1b79bf82bd58f2b7db000bfe0d"
     },
     {
       "kind": "skills",
       "dist": ".claude/skills/dev-changelog/SKILL.md",
       "install": ".claude/skills/dev-changelog/SKILL.md",
-      "size": 10164,
-      "sha256": "f18418460182ca440476e73b7e4f7a6fbb1922cbb64d63d82c9b34225aa56b20"
+      "size": 9932,
+      "sha256": "4fe7597612880fc998141ba6839107f476918ce131a3be2720dc28861a422d4d"
     },
     {
       "kind": "skills",
@@ -436,8 +436,8 @@
       "kind": "skills",
       "dist": ".claude/skills/project-vault/SKILL.md",
       "install": ".claude/skills/project-vault/SKILL.md",
-      "size": 7500,
-      "sha256": "c5c18aa9680bb427ae4a3172f49407ec318ac31ad6934c907eb7a4a15d4df56b"
+      "size": 7305,
+      "sha256": "c6a3884488657c4a524b620c01c1fd7ba29699fa8b0ed842688c52a83b3cb44c"
     },
     {
       "kind": "skills",
@@ -485,8 +485,8 @@
       "kind": "skills",
       "dist": ".claude/skills/user-vault/SKILL.md",
       "install": ".claude/skills/user-vault/SKILL.md",
-      "size": 9292,
-      "sha256": "ba393acc08c1d1e2176074e16f2b65e9ddad021dab4bee88bd824667e594cd44"
+      "size": 9004,
+      "sha256": "95974fb8cad19a227accf49fc35c3e425d742cbad121bf9ba8431df9c753c426"
     },
     {
       "kind": "skills",
@@ -856,8 +856,8 @@
       "kind": "rules",
       "dist": ".claude/rules/typescript/hooks.md",
       "install": ".claude/rules/typescript/hooks.md",
-      "size": 4713,
-      "sha256": "429603a6d4bac1b03a612028bfea73c9154018547bb62f12361d982df5b4a243"
+      "size": 5192,
+      "sha256": "c4ba44e654ce178b8b80edd0068da939a28fab325748a695281630938d524b34"
     },
     {
       "kind": "rules",
@@ -877,8 +877,8 @@
       "kind": "rules",
       "dist": ".claude/rules/typescript/testing.md",
       "install": ".claude/rules/typescript/testing.md",
-      "size": 3766,
-      "sha256": "7d5cd7640153d3de5ce2b88c8bd43e05a54425d289f3fe39835168cf75827ff8"
+      "size": 4162,
+      "sha256": "fd77e5cfc51363abf23d43449902ac90a3af3d829ceffc89659176ff80c92d22"
     },
     {
       "kind": "placeholder",
@@ -954,6 +954,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 981487
+    "totalBytes": 981194
   }
 }

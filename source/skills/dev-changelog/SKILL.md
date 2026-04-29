@@ -1,6 +1,6 @@
 ---
 name: dev-changelog
-description: "Claude 自动维护开发实时流水日志（docs/CHANGELOG-DEV.md）。触发：(a) 用户讲新需求 / 想法 / 改主意 → 记 ◇；(b) Claude 完成 ≥30 行 / 跨文件实质改动或一个 commit → 记 ✓ + commit/branch；(c) 遇到 blocker / 卡点 / 不确定 → 记 ⚠；(d) 决定下一步行动 → 记 →。区别于 git log（只记已落盘代码）、ADR（只记终态决策）、SCHEMA（只记结构）、mistakes/（只记 bug 根因）—— CHANGELOG-DEV 记**正在发生**的需求、进度、坑、下一步，开发者每天打开第一个看的文件。每条 ≤5 行，倒序，按日期分组。**用户从不需要手动维护**。"
+description: "Claude 自动维护开发实时流水日志 docs/CHANGELOG-DEV.md，记**正在发生**的需求/进度/坑/下一步。触发：用户讲新需求或改主意（◇）、Claude 完成 ≥30 行或跨文件改动（✓）、遇 blocker（⚠）、决定下一步（→）。与 git log（已落盘代码）/ ADR（终态决策）/ SCHEMA（结构）/ mistakes（bug 根因）分工——本 skill 记进行中状态。每条 ≤5 行倒序。"
 ---
 
 # Dev Changelog · AI 自动维护的开发实时流水

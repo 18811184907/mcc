@@ -1,11 +1,21 @@
 ---
+# v2.6.1: 只在改测试文件时注入（之前每次改 .ts 都注入 ~3.8k 字符浪费）
 paths:
-  - "**/*.ts"
-  - "**/*.tsx"
-  - "**/*.js"
-  - "**/*.jsx"
-  - "**/*.test.*"
-  - "**/*.spec.*"
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "**/*.test.js"
+  - "**/*.test.jsx"
+  - "**/*.spec.ts"
+  - "**/*.spec.tsx"
+  - "**/*.spec.js"
+  - "**/*.spec.jsx"
+  - "**/test/**/*.{ts,tsx,js,jsx}"
+  - "**/tests/**/*.{ts,tsx,js,jsx}"
+  - "**/__tests__/**/*.{ts,tsx,js,jsx}"
+  - "**/playwright/**/*.{ts,tsx,js,jsx}"
+  - "**/vitest.config.*"
+  - "**/jest.config.*"
+  - "**/playwright.config.*"
 ---
 # TypeScript / JavaScript Testing
 

@@ -1,6 +1,6 @@
 ---
 name: user-vault
-description: "Claude 自动接管**用户级跨项目**敏感配置。触发：(a) 用户提到跨项目通用的 secret/SSH/git 身份（'我的 OPENAI_API_KEY 是 sk-xxx' / '我的个人 GitHub PAT' / 'git 用户名 anouk'）；(b) project-vault skill 检测到某个条目像是用户级（personal API key / 跨项目复用的 SSH host）时主动建议提升到 USER_VAULT；(c) 用户问'跨项目共用的 secret 放哪'。Claude 自动写到 ~/.claude/USER_VAULT.md，post-user-vault-sync hook 自动同步到 .user-env.sh + .user-env.ps1 + git --global + ~/.ssh/config（带 MCC-User-Managed marker）+ 自动追加 source 行到 ~/.bashrc / PowerShell $PROFILE（idempotent）。**用户从不需要手编 ~/.claude/USER_VAULT.md，AI 全包**。"
+description: "Claude 自动接管用户级跨项目敏感配置（personal API key / 个人 PAT / git 全局身份 / 跨项目 SSH host）。触发：用户提到跨项目通用 secret、或 project-vault 检测到条目应提升到用户级、或用户问'跨项目共用 secret 放哪'。写 ~/.claude/USER_VAULT.md，hook 自动 sync 到 .user-env.{sh,ps1} + git --global + ~/.ssh/config。与 project-vault 分工：本 skill 跨项目，project-vault 单项目。"
 ---
 
 # User Vault · 跨项目通用的 AI 接管敏感配置

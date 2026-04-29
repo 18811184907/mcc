@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "2.6.0",
-  "description": "MCC Multi-target Claude/Codex Configuration - 19 agents + 15 commands + 23 skills + 3 behavioral modes + 29 hook scripts + 5 MCP servers + curated rules. v2.6.0 加用户级 vault：~/.claude/USER_VAULT.md 跨项目共用（personal API key / git 身份 / 个人 SSH），AI 接管管理，新 hook 自动同步到 .user-env.sh + .user-env.ps1 + git --global + ~/.ssh/config，自动追加 source 行到 bashrc / PowerShell profile。",
+  "version": "2.6.1",
+  "description": "MCC Multi-target Claude/Codex Configuration - 19 agents + 15 commands + 23 skills + 3 behavioral modes + 29 hook scripts + 5 MCP servers + curated rules. v2.6.1 上下文优化：6 个过长 description 压缩 + rules/typescript/{testing,hooks}.md 改按需触发（只在改测试/配置时注入），日常 .ts 编辑省 ~5k tokens。",
   "author": {
     "name": "MCC",
     "url": "https://github.com/18811184907/mcc"

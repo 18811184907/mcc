@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -116,6 +116,18 @@
     "build_command": "node adapters/build.js"
   },
   "version_history": [
+    {
+      "version": "2.6.1",
+      "date": "2026-04-29",
+      "changes": [
+        "v2.6.1 - 上下文优化：每 session baseline 减 ~720 字符 + TS 编辑减 ~8.5k 字符",
+        "OPT: 6 个过长 frontmatter description 压缩（user-vault 506→248 / project-vault 377→240 / claudemd-sync 340→218 / dev-changelog 338→235 / database-schema-doc 333→232 / silent-failure-hunter 320→248）。保留触发场景 + 与相邻 skill 的分工标识，删除冗余强调和实现细节。",
+        "OPT: rules/typescript/testing.md frontmatter paths 收窄——只在改 *.test.* / *.spec.* / test/ tests/ __tests__/ playwright/ 目录或 vitest/jest/playwright config 时注入（之前每次改 .ts 都注入 3.8k 字符）。",
+        "OPT: rules/typescript/hooks.md frontmatter paths 收窄——只在改 .claude/ settings / hooks 配置 / .husky / package.json / eslint+prettier+tsconfig 时注入（之前每次改 .ts 都注入 4.7k 字符）。",
+        "估算：每次 session 启动省 ~400 token；写非测试 .ts 业务代码省 ~5k token。",
+        "保持精度：所有压缩后 description 仍以触发场景开头 + 显式标注与相邻 skill 的分工，避免误激活。"
+      ]
+    },
     {
       "version": "2.6.0",
       "date": "2026-04-29",

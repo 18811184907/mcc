@@ -1,6 +1,6 @@
 ---
 name: claudemd-sync
-description: "Claude 主动沉淀用户偏好/习惯到 ~/.claude/CLAUDE.md，自动推到 dotfiles repo 跨设备同步。触发：(a) 用户说'记下这个偏好 / 沉淀到 CLAUDE.md / 把这个习惯加进去'；(b) 用户连续多次给 Claude 同样反馈（'又忘了，每次都要提醒'）；(c) 用户做了某个跨项目通用的决策（'我决定以后所有项目都用 zod'）。Claude 自动 Edit 用 ~/.claude/CLAUDE.md（**追加**，不覆盖已有），post-claudemd-sync hook 检测到纯追加后自动 commit + push 到用户配置的 dotfiles repo。**用户从不需要手编 ~/.claude/CLAUDE.md**。"
+description: "Claude 主动沉淀用户跨项目偏好到 ~/.claude/CLAUDE.md，post-hook 自动 commit+push 到 dotfiles repo 跨设备同步。触发：用户说'记下这个偏好 / 沉淀到 CLAUDE.md / 把这个习惯加进去'、用户连续多次重复同样反馈（'又忘了'）、或做了跨项目通用决策（'以后所有项目都用 zod'）。仅追加不覆盖。与 continuous-learning-v2 分工：本 skill 主动显式沉淀偏好，learning-v2 被动观察行为。"
 ---
 
 # claudemd-sync · AI 主动接管全局 CLAUDE.md 更新 + 跨设备同步

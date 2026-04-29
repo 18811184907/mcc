@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "mccVersion": "2.6.0",
+  "mccVersion": "2.6.1",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\codex",
   "files": [
@@ -97,8 +97,8 @@
     {
       "kind": "agent",
       "dist": ".codex/agents/silent-failure-hunter.md",
-      "size": 3866,
-      "sha256": "50751f5af30619c1611f115d9405237c7aeb467874a2f30b4fb3cae2cce9aff2"
+      "size": 3719,
+      "sha256": "b81af09461f202e5aeb1939da5cf942ba8acee6ddc9ebafaa623853b80e297e4"
     },
     {
       "kind": "agent",
@@ -247,8 +247,8 @@
     {
       "kind": "rule",
       "dist": ".codex/rules/typescript/hooks.md",
-      "size": 4713,
-      "sha256": "429603a6d4bac1b03a612028bfea73c9154018547bb62f12361d982df5b4a243"
+      "size": 5192,
+      "sha256": "c4ba44e654ce178b8b80edd0068da939a28fab325748a695281630938d524b34"
     },
     {
       "kind": "rule",
@@ -265,8 +265,8 @@
     {
       "kind": "rule",
       "dist": ".codex/rules/typescript/testing.md",
-      "size": 3766,
-      "sha256": "7d5cd7640153d3de5ce2b88c8bd43e05a54425d289f3fe39835168cf75827ff8"
+      "size": 4162,
+      "sha256": "fd77e5cfc51363abf23d43449902ac90a3af3d829ceffc89659176ff80c92d22"
     },
     {
       "kind": "rule",
@@ -278,8 +278,8 @@
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 16935,
-      "sha256": "878ff39a495a749fc2d50a54cf4f955efe2a763688da335753383a900dbad7f4"
+      "size": 17077,
+      "sha256": "71e13313c3f77ea01796d6c0031f6351997200031cc6be67963074393d61fac3"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -312,6 +312,6 @@
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 306311
+    "totalBytes": 307181
   }
 }

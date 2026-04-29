@@ -1,6 +1,6 @@
 ---
 name: silent-failure-hunter
-description: "静默失败专项猎手：吞掉的异常、空 catch、误导性 fallback、错误传播丢失。**重点是 code-reviewer 通常不深挖的 4 类**：(1) LLM/异步 streaming 失败被 try/except 吞掉退回 fallback、(2) Promise.all 漏 .catch 静默丢错、(3) Python `except:` 后只 log 不 raise、(4) JS `try{}catch(e){}` 完全空 catch。code-reviewer 在第一遍审查时仅标出存在风险，本 agent 在生产部署前 / 用户报告'间歇性 bug 但日志干净'（典型静默失败指征）时被派进做纵深挖掘 + 给具体修复。"
+description: "静默失败专项猎手：吞异常、空 catch、误导 fallback、错误传播丢失。重点 4 类：LLM/streaming 失败被 try/except 吞退回 fallback、Promise.all 漏 .catch、Python `except:` 只 log 不 raise、JS 完全空 catch。触发：生产部署前、或用户报'间歇性 bug 但日志干净'。与 code-reviewer 分工：reviewer 第一遍仅标风险，本 agent 做纵深挖掘 + 给修复。"
 tools: [Read, Grep, Glob, Bash]
 model: sonnet
 ---
