@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "2.5.11",
-  "description": "MCC Multi-target Claude/Codex Configuration - 19 agents + 15 commands + 22 skills + 3 behavioral modes + 28 hook scripts + 5 MCP servers + curated rules. v2.5.11 是安全审计修复版：修了 10 个 P0 Critical（claudemd-sync 路径穿越 + 自动 push 远程校验、vault-sync SSH 注入、auto-tmux Windows cmd 注入、Codex 备份 catch 吞错、uninstaller targetRoot 删错文件、TOML 注释误识别、4 个 hook 静默失败）。",
+  "version": "2.5.12",
+  "description": "MCC Multi-target Claude/Codex Configuration - 19 agents + 15 commands + 22 skills + 3 behavioral modes + 28 hook scripts + 5 MCP servers + curated rules. v2.5.12 是 v2.5.11 审计的 P1 收尾：14 条工程质量改善（4 hook 加 watchdog、spawnSync stdio/maxBuffer/windowsHide 全栈统一、Node 16 启动校验、TOML/.gitignore 幂等、bootstrap.sh JSON 注入修复、若干 dead code 清理）。",
   "author": {
     "name": "MCC",
     "url": "https://github.com/18811184907/mcc"

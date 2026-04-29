@@ -119,9 +119,12 @@ function parseFrontmatter(md) {
   const block = m[1];
   const body = m[2];
   // 按行解析
+  // NOTE: multi-line YAML block scalars (`|` / `>`) are NOT supported — the
+  // value is recorded as empty string and any continuation lines are dropped.
+  // MCC frontmatter currently only uses single-line scalars and inline arrays;
+  // if a description grows to multi-line, switch to a real YAML parser.
   const fm = {};
   const lines = block.split(/\r?\n/);
-  let currentKey = null;
   for (const line of lines) {
     if (!line.trim()) continue;
     // 顶级 key: value
@@ -141,7 +144,6 @@ function parseFrontmatter(md) {
         fm[key] = items;
       } else if (val === '' || val === '|' || val === '>') {
         fm[key] = '';
-        currentKey = key;
       } else {
         fm[key] = stripQuotes(val.trim());
       }

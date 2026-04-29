@@ -482,6 +482,15 @@ function extractTomlSections(toml) {
       else currentBody.push(line);
       continue;
     }
+    // Reject TOML array-of-tables (`[[name]]`) — appendTomlFragment writes plain
+    // `[name]` headers and would round-trip array-of-tables incorrectly. Better
+    // to fail loudly than silently corrupt the file.
+    if (/^\[\[[^\[\]]+\]\]\s*$/.test(line)) {
+      throw new Error(
+        `extractTomlSections: TOML array-of-tables not supported (line: ${line.trim()}). `
+        + `Use plain [section] headers in MCC fragments, or extend the parser.`
+      );
+    }
     const secMatch = /^\[([^\[\]]+)\]\s*$/.exec(line);
     if (secMatch) {
       if (currentName) {
@@ -548,7 +557,11 @@ async function installClaudeCode(distDir, scope, options) {
           backupDirAtomicCrossDevice(fromDir, toDir);
         }
       }
-      log('ok', `  ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
+      if (options.dryRun) {
+        log('info', `  (dry-run) ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
+      } else {
+        log('ok', `  ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
+      }
     }
   }
 
@@ -784,7 +797,11 @@ async function installCodex(distDir, scope, options) {
           backupDirAtomicCrossDevice(fromDir, toDir);
         }
       }
-      log('ok', `  ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
+      if (options.dryRun) {
+        log('info', `  (dry-run) ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
+      } else {
+        log('ok', `  ${d}/ → ${path.basename(excBackupRoot)}/${d}/`);
+      }
     }
   }
 
@@ -1066,11 +1083,18 @@ function ensureProjectGitignore(cwd) {
     '.env.*.local',
     '.deploy.local.md',
   ];
+  // Idempotency marker — prevents repeated reinstalls from re-appending the
+  // block when user's .gitignore uses a wildcard like `**/*.md` or `.claude/`
+  // that ignores the required entries via pattern (the line-equality check
+  // alone would not detect that case).
+  const MCC_MARKER = '# MCC PROJECT_VAULT (auto-managed — secrets must never enter git)';
 
   let existing = '';
   if (pathExists(gitignorePath)) {
     existing = fs.readFileSync(gitignorePath, 'utf8');
   }
+
+  if (existing.includes(MCC_MARKER)) return false;
 
   const existingLines = new Set(
     existing.split(/\r?\n/).map(l => l.trim()).filter(Boolean)
@@ -1081,7 +1105,7 @@ function ensureProjectGitignore(cwd) {
 
   const additions = [
     '',
-    '# MCC PROJECT_VAULT (auto-managed — secrets must never enter git)',
+    MCC_MARKER,
     ...missing,
     '',
   ];
@@ -1326,9 +1350,23 @@ async function main() {
   }
 }
 
+// MCC needs ?. and ?? plus modern fs APIs — these landed in Node 16. We don't
+// claim to support 14 (EOL since 2023) so fail fast with a useful message
+// rather than letting the user hit a confusing SyntaxError or fs API miss.
+function assertSupportedNode() {
+  const m = /^v(\d+)\.(\d+)/.exec(process.version);
+  const major = m ? parseInt(m[1], 10) : 0;
+  if (major < 16) {
+    log('err', `MCC requires Node ≥ 16 LTS. Current: ${process.version}`);
+    log('info', 'Upgrade Node (https://nodejs.org/) and re-run.');
+    process.exit(1);
+  }
+}
+
 // 仅在被 node scripts/installer.js 直接调用时跑 main；
 // require('./installer.js') 时不要自动安装（让测试可以拿内部函数）。
 if (require.main === module) {
+  assertSupportedNode();
   main().catch((err) => {
     log('err', err.message);
     if (process.env.DEBUG) console.error(err.stack);

@@ -45,9 +45,11 @@ const TOOLS_MAP = {
   NotebookEdit: 'apply_patch',
 };
 
-const unmappedWarnings = new Map(); // tool -> [agent file list]
-
 async function adaptToCodex(sourceDir, distDir) {
+  // Per-call state (was previously module-level — repeated calls in the same
+  // process accumulated stale warnings from earlier builds).
+  const unmappedWarnings = new Map(); // tool -> [agent file list]
+
   const log = makeLogger('codex');
   assertExists(sourceDir, 'source/ 不存在');
 

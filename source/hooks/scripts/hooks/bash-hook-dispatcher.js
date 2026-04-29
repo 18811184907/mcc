@@ -162,7 +162,14 @@ function runHooks(rawInput, hooks) {
         return { output: currentRaw, stderr, exitCode: result.exitCode };
       }
     } catch (error) {
-      stderr += `[Hook] ${hook.id} failed: ${error.message}\n`;
+      // Design choice: a thrown hook is treated as ALLOW, not block. The
+      // alternative (treating throw as block) would let any bug in a single
+      // hook take down all bash invocations. We surface the throw clearly so
+      // the user can see if a security-critical hook is failing.
+      stderr += `[Hook] ${hook.id} threw (treating as allow): ${error.message}\n`;
+      if (process.env.MCC_HOOK_DEBUG === '1' && error && error.stack) {
+        stderr += `${error.stack}\n`;
+      }
     }
   }
 

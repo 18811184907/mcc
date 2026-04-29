@@ -31,6 +31,14 @@ function run(rawInput) {
 }
 
 if (require.main === module) {
+  // Watchdog so a hung stdin doesn't block the bash dispatcher chain.
+  const WATCHDOG_MS = 3000;
+  const watchdog = setTimeout(() => {
+    try { process.stdout.write(raw); } catch (_) { /* noop */ }
+    process.exit(0);
+  }, WATCHDOG_MS);
+  watchdog.unref?.();
+
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', chunk => {
     if (raw.length < MAX_STDIN) {
@@ -40,6 +48,7 @@ if (require.main === module) {
   });
 
   process.stdin.on('end', () => {
+    clearTimeout(watchdog);
     const result = run(raw);
     if (result && typeof result === 'object') {
       if (result.stderr) {

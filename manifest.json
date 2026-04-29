@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.5.11",
+  "version": "2.5.12",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -116,6 +116,28 @@
     "build_command": "node adapters/build.js"
   },
   "version_history": [
+    {
+      "version": "2.5.12",
+      "date": "2026-04-29",
+      "changes": [
+        "v2.5.12 - 审计 P1 收尾（14 条工程质量改善 / 续 v2.5.11）",
+        "FIX: 4 个 hook（block-no-verify / pre-bash-commit-quality / pre-bash-tmux-reminder / auto-tmux-dev）补 watchdog，stdin 不 close 时不再永久挂起。",
+        "FIX: stop-format-typecheck.js — spawnSync stdio[0]='ignore' 防止 tsc 等子进程挂等 stdin；maxBuffer 16MB（默认 1MB）；windowsHide。formatter 失败也改为 stderr 报错而非吞错。",
+        "FIX: pre-bash-commit-quality.js — 全部 spawnSync 走统一 SPAWN_OPTS（ignore stdin / windowsHide / maxBuffer 16MB）；git show 路径 prefix `--` 防 option 注入。",
+        "FIX: lib/utils.js runCommand + commandExists — 统一加 windowsHide + maxBuffer 16MB，Windows 下不再每次 hook 闪 cmd 窗口。",
+        "FIX: installer.js 启动校验 Node ≥ 16，低版本立刻明确报错而非莫名 SyntaxError。",
+        "FIX: installer.js exclusive 备份的成功 log 在 dry-run 下改为 (dry-run) 前缀，不再误报。",
+        "FIX: installer.extractTomlSections 显式 reject TOML array-of-tables（[[xx]]），防止后续 appendTomlFragment 静默写坏 config.toml。",
+        "FIX: installer.ensureProjectGitignore 加 marker 检查实现幂等，多次重装不再重复追加 vault/.env 条目。",
+        "FIX: bash-hook-dispatcher.js — hook 抛异常时 stderr 明示 'treating as allow'，MCC_HOOK_DEBUG=1 显式 stack；语义对调用者可见。",
+        "FIX: adapters/_lib.js parseFrontmatter 删 dead currentKey 变量 + 加注释明示 multi-line YAML 不支持。",
+        "FIX: adapters/build.js — agentCount/cmdCount 改用递归 walkMd，未来 agents/ 分子目录不再静默低估失败。",
+        "FIX: adapters/adapt-to-codex.js — unmappedWarnings 从模块级移入函数体，避免重复调用累积旧 warning。",
+        "FIX: adapters/adapt-to-claude-code.js copySimpleDir — 显式取 manifest.distDir 给 recordFile，避免未来传 distDir 参数时路径计算错乱。",
+        "FIX: bootstrap.sh — MCC_DOTFILES_REPO 协议白名单（https/git@/ssh）+ JSON 走 python3 序列化（heredoc 注入风险消除），无 python3 时含特殊字符直接 fail。",
+        "TEST: 既有三套测试全过（installer-dry-run / codex-patches-followup / vault-hook-test）。"
+      ]
+    },
     {
       "version": "2.5.11",
       "date": "2026-04-29",

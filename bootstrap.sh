@@ -168,6 +168,16 @@ bash "$MCC_DIR/install.sh" "${installer_args[@]}"
 # v2.5.2: Optional dotfiles bootstrap. If MCC_DOTFILES_REPO env var is set, clone it
 # and seed ~/.claude/CLAUDE.md from there. New-device onboard becomes one-liner.
 if [ -n "${MCC_DOTFILES_REPO:-}" ]; then
+  # Reject anything that isn't a plain https://, git@, or ssh:// remote URL.
+  # Without this, MCC_DOTFILES_REPO=/tmp/local-repo or git:// would bypass the
+  # HTTPS-trust assumption baked into the rest of the dotfiles flow.
+  case "$MCC_DOTFILES_REPO" in
+    https://*|http://*|git@*|ssh://*) ;;
+    *)
+      echo -e "${C_RED}[X] MCC_DOTFILES_REPO must be https://, git@, or ssh:// — got: $MCC_DOTFILES_REPO${C_RESET}"
+      exit 1
+      ;;
+  esac
   echo ""
   echo -e "${C_CYAN}[..] Bootstrapping dotfiles from $MCC_DOTFILES_REPO ...${C_RESET}"
   dotfiles_parent="$HOME/.dotfiles"
@@ -189,7 +199,29 @@ if [ -n "${MCC_DOTFILES_REPO:-}" ]; then
         echo -e "${C_GREEN}[OK] seeded ~/.claude/CLAUDE.md from dotfiles repo${C_RESET}"
       fi
       mkdir -p "$HOME/.claude"
-      cat > "$HOME/.claude/.claudemd-sync.config" <<EOF
+      # Build JSON via python3 so quotes/newlines/backslashes in MCC_DOTFILES_REPO
+      # can't break out of the string (heredoc interpolation alone is unsafe).
+      # Falls back to grep-style sanitization if python3 isn't available.
+      if command -v python3 >/dev/null 2>&1; then
+        python3 -c '
+import json, sys
+out = {
+  "repoUrl": sys.argv[1],
+  "dotfilesDir": "~/.dotfiles/claude-dotfiles",
+  "syncFile": "CLAUDE.md",
+  "version": 1,
+}
+print(json.dumps(out, indent=2, ensure_ascii=False))
+' "$MCC_DOTFILES_REPO" > "$HOME/.claude/.claudemd-sync.config"
+      else
+        # No python3 — fail closed if URL has any character that could escape the heredoc.
+        case "$MCC_DOTFILES_REPO" in
+          *\"* | *\\* | *$'\n'*)
+            echo -e "${C_RED}[X] python3 not found and MCC_DOTFILES_REPO contains special chars; install python3 and re-run${C_RESET}"
+            exit 1
+            ;;
+        esac
+        cat > "$HOME/.claude/.claudemd-sync.config" <<EOF
 {
   "repoUrl": "$MCC_DOTFILES_REPO",
   "dotfilesDir": "~/.dotfiles/claude-dotfiles",
@@ -197,6 +229,7 @@ if [ -n "${MCC_DOTFILES_REPO:-}" ]; then
   "version": 1
 }
 EOF
+      fi
       echo -e "${C_GREEN}[OK] wrote claudemd-sync config${C_RESET}"
       echo -e "${C_GREEN}[OK] dotfiles ready. Future ~/.claude/CLAUDE.md edits auto-sync to GitHub.${C_RESET}"
     else

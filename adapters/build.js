@@ -15,6 +15,23 @@ const MIN_AGENTS = 18;     // 实际 19，缓冲 1
 const MIN_COMMANDS = 12;   // 实际 13，缓冲 1
 const MIN_SKILLS = 17;     // 实际 18，缓冲 1（v2.0.1: 一致缓冲策略）
 
+// Recursive .md walker — handles agents/ being reorganised into subgroups
+// (the previous flat readdirSync would silently undercount).
+function walkMd(root) {
+  if (!fs.existsSync(root)) return [];
+  const out = [];
+  const stack = [root];
+  while (stack.length) {
+    const dir = stack.pop();
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) stack.push(full);
+      else if (entry.isFile() && entry.name.endsWith('.md')) out.push(full);
+    }
+  }
+  return out;
+}
+
 function assertSourceIsHealthy(sourceDir) {
   if (!fs.existsSync(sourceDir)) {
     throw new Error(`source/ 目录不存在: ${sourceDir}。请先 clone 完整仓库。`);
@@ -32,8 +49,8 @@ function assertSourceIsHealthy(sourceDir) {
   if (missingRulesSubdirs.length) {
     throw new Error(`source/rules/ 缺少必需子目录: ${missingRulesSubdirs.join(', ')}`);
   }
-  const agentCount = fs.readdirSync(path.join(sourceDir, 'agents')).filter(f => f.endsWith('.md')).length;
-  const cmdCount = fs.readdirSync(path.join(sourceDir, 'commands')).filter(f => f.endsWith('.md')).length;
+  const agentCount = walkMd(path.join(sourceDir, 'agents')).length;
+  const cmdCount = walkMd(path.join(sourceDir, 'commands')).length;
   const skillCount = fs.readdirSync(path.join(sourceDir, 'skills')).filter(f => {
     return fs.statSync(path.join(sourceDir, 'skills', f)).isDirectory();
   }).length;

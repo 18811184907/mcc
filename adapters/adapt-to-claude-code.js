@@ -212,13 +212,17 @@ function copySimpleDir(src, dst, label, manifest, log, opts = {}) {
   }
   ensureDir(dst);
   const files = walkFiles(src);
+  // Use manifest.distDir explicitly here; if a future caller passes a different
+  // distDir to copySimpleDir, recordFile would mis-compute installPath because
+  // it relies on distDir matching the dst tree.
+  const distDir = manifest.distDir;
   for (const rel of files) {
     if (opts.filter && !opts.filter(rel)) continue;
     const srcAbs = path.join(src, rel);
     const dstAbs = path.join(dst, rel);
     copyFile(srcAbs, dstAbs);
     log.step(`${label}: ${rel}`);
-    recordFile(manifest, srcAbs, dstAbs, manifest.distDir, label.split('/')[0]);
+    recordFile(manifest, srcAbs, dstAbs, distDir, label.split('/')[0]);
   }
 }
 

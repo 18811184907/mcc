@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.5.11",
+  "mccVersion": "2.5.12",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\claude-code",
   "installBase": ".claude/",
@@ -534,22 +534,22 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/auto-tmux-dev.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/auto-tmux-dev.js",
-      "size": 5145,
-      "sha256": "48e6d19e28b37a4e4b83f664f96fe0000ac5c6d3b802d741c1451b9b271a9508"
+      "size": 5447,
+      "sha256": "4524cb12fd4c641ebcef98852dc3bb3d6b2874a70e0211151bfd4f87834cc3a7"
     },
     {
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/bash-hook-dispatcher.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/bash-hook-dispatcher.js",
-      "size": 5622,
-      "sha256": "ec49dfe67bbfad0de3aec9dc36aa4aeec0195c61f0083b44e5b0f6afab845424"
+      "size": 6061,
+      "sha256": "e33b55270b5325e00bfb4e7baed637525d4b98cf5f067b249c3e81bb33c2e245"
     },
     {
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/block-no-verify.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/block-no-verify.js",
-      "size": 8058,
-      "sha256": "f79c78da423ea265055e1672f0376a47b7ffa08e28b33e72414af8cd93c056fa"
+      "size": 8499,
+      "sha256": "d3fd3b8f8fe74ef00a4cd329e11856c4eb1ce1bd12860c3e80627b3c3d111848"
     },
     {
       "kind": "hooks",
@@ -604,8 +604,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/pre-bash-commit-quality.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/pre-bash-commit-quality.js",
-      "size": 12535,
-      "sha256": "005dd643158b0ad83af3684512c36a6ad25e50d46de971d38b8eef1f233445e5"
+      "size": 13086,
+      "sha256": "a62effbb41eeca7db2eecd8eb81cea0d647df6f1de055467f7c15840442b451e"
     },
     {
       "kind": "hooks",
@@ -625,8 +625,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/pre-bash-tmux-reminder.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/pre-bash-tmux-reminder.js",
-      "size": 1669,
-      "sha256": "7dd3bfaac2462b54a8d971700b15d65831e8090b3f80e43435301339776ef09a"
+      "size": 1970,
+      "sha256": "e3bdcf7bbf13e5f829e649462a18b89c35d79be3c3639bc809f9bbefba151ca0"
     },
     {
       "kind": "hooks",
@@ -674,8 +674,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/stop-format-typecheck.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/stop-format-typecheck.js",
-      "size": 7390,
-      "sha256": "30821365e99ce63bba6e788325442ac05fdff081be9ab04f1fb9e95fc0a3970b"
+      "size": 8291,
+      "sha256": "0e10df9a6327f080c7780754c65b603ce28f6c91614b93e4116b2c40bf2ee159"
     },
     {
       "kind": "hooks",
@@ -723,8 +723,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/lib/utils.js",
       "install": ".claude/.mcc-hooks/scripts/lib/utils.js",
-      "size": 18475,
-      "sha256": "c9592f9193304719364d5246ec904027b14218ce5cfdc197483b662aa86841ba"
+      "size": 18696,
+      "sha256": "901f9f4446cca8652ea859de5fde2530695d31531ddc41ab6e67e34a90733dfc"
     },
     {
       "kind": "hooks-config",
@@ -933,6 +933,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 949457
+    "totalBytes": 952613
   }
 }

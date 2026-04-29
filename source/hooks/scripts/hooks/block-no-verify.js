@@ -247,6 +247,16 @@ module.exports = { run };
 
 // Stdin fallback for spawnSync execution — only when invoked directly, not via require()
 if (require.main === module) {
+  // Watchdog: hook should never hang forever waiting on stdin. If the parent
+  // process forgets to close stdin, fall through and pass the (possibly empty)
+  // input to keep the bash dispatcher responsive.
+  const WATCHDOG_MS = 3000;
+  const watchdog = setTimeout(() => {
+    try { process.stdout.write(raw); } catch (_) { /* noop */ }
+    process.exit(0);
+  }, WATCHDOG_MS);
+  watchdog.unref?.();
+
   process.stdin.setEncoding('utf8');
   process.stdin.on('data', chunk => {
     if (raw.length < MAX_STDIN) {
@@ -256,6 +266,7 @@ if (require.main === module) {
   });
 
   process.stdin.on('end', () => {
+    clearTimeout(watchdog);
     const command = extractCommand(raw);
     const result = checkCommand(command);
 

@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "mccVersion": "2.5.11",
+  "mccVersion": "2.5.12",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\codex",
   "files": [

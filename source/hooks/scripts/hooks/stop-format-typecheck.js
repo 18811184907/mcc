@@ -66,13 +66,32 @@ function formatBatch(projectRoot, files, timeoutMs) {
         process.stderr.write('[Hook] stop-format-typecheck: skipping batch — unsafe path chars\n');
         return;
       }
-      const result = spawnSync(resolved.bin, fileArgs, { cwd: projectRoot, shell: true, stdio: 'pipe', timeout: timeoutMs });
+      // stdio: ['ignore', ...] closes child's stdin so prettier/biome don't hang
+      // waiting for input. windowsHide stops the cmd window flicker on every save.
+      // maxBuffer 16 MB lets large output through (default 1 MB silently truncates).
+      const result = spawnSync(resolved.bin, fileArgs, {
+        cwd: projectRoot,
+        shell: true,
+        stdio: ['ignore', 'pipe', 'pipe'],
+        windowsHide: true,
+        maxBuffer: 16 * 1024 * 1024,
+        timeout: timeoutMs,
+      });
       if (result.error) throw result.error;
     } else {
-      execFileSync(resolved.bin, fileArgs, { cwd: projectRoot, stdio: ['pipe', 'pipe', 'pipe'], timeout: timeoutMs });
+      execFileSync(resolved.bin, fileArgs, {
+        cwd: projectRoot,
+        stdio: ['ignore', 'pipe', 'pipe'],
+        maxBuffer: 16 * 1024 * 1024,
+        timeout: timeoutMs,
+      });
     }
-  } catch {
-    // Formatter not installed or failed — non-blocking
+  } catch (err) {
+    // Formatter failed — surface to stderr so the user knows their save was
+    // not actually formatted (previous swallow made this invisible).
+    process.stderr.write(
+      `[Hook] formatter (${resolved.bin}) failed on ${existingFiles.length} file(s): ${err && err.message ? err.message : err}\n`
+    );
   }
 }
 
@@ -92,7 +111,15 @@ function typecheckBatch(tsConfigDir, editedFiles, timeoutMs) {
   const isWin = process.platform === 'win32';
   const npxBin = isWin ? 'npx.cmd' : 'npx';
   const args = ['tsc', '--noEmit', '--pretty', 'false'];
-  const opts = { cwd: tsConfigDir, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'], timeout: timeoutMs };
+  // stdio[0]='ignore' so tsc doesn't hang reading stdin; maxBuffer 16 MB for big projects.
+  const opts = {
+    cwd: tsConfigDir,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+    windowsHide: true,
+    maxBuffer: 16 * 1024 * 1024,
+    timeout: timeoutMs,
+  };
 
   let stdout = '';
   let stderr = '';

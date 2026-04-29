@@ -25,11 +25,18 @@ const MAX_STDIN = 1024 * 1024; // 1MB limit
  * Detect staged files for commit
  * @returns {string[]} Array of staged file paths
  */
+// stdio: 'ignore' for stdin closes the fd so the child never blocks reading.
+// windowsHide prevents a flashing cmd window on Windows for every git call.
+// maxBuffer 16 MB lets large diffs / lint output through (default 1 MB silently truncates).
+const SPAWN_OPTS = {
+  encoding: 'utf8',
+  stdio: ['ignore', 'pipe', 'pipe'],
+  windowsHide: true,
+  maxBuffer: 16 * 1024 * 1024,
+};
+
 function getStagedFiles() {
-  const result = spawnSync('git', ['diff', '--cached', '--name-only', '--diff-filter=ACMR'], {
-    encoding: 'utf8',
-    stdio: ['pipe', 'pipe', 'pipe']
-  });
+  const result = spawnSync('git', ['diff', '--cached', '--name-only', '--diff-filter=ACMR'], SPAWN_OPTS);
   if (result.status !== 0) {
     return [];
   }
@@ -37,10 +44,8 @@ function getStagedFiles() {
 }
 
 function getStagedFileContent(filePath) {
-  const result = spawnSync('git', ['show', `:${filePath}`], {
-    encoding: 'utf8',
-    stdio: ['pipe', 'pipe', 'pipe']
-  });
+  // Pass `--` to defend against filenames that begin with `-` being parsed as options.
+  const result = spawnSync('git', ['show', `--`, `:${filePath}`], SPAWN_OPTS);
   if (result.status !== 0) {
     return null;
   }
@@ -210,8 +215,7 @@ function runLinter(files) {
     const eslintPath = path.join(process.cwd(), 'node_modules', '.bin', eslintBin);
     if (fs.existsSync(eslintPath)) {
       const result = spawnSync(eslintPath, ['--format', 'compact', ...jsFiles], {
-        encoding: 'utf8',
-        stdio: ['pipe', 'pipe', 'pipe'],
+        ...SPAWN_OPTS,
         timeout: 30000
       });
       results.eslint = {
@@ -225,8 +229,7 @@ function runLinter(files) {
   if (pyFiles.length > 0) {
     try {
       const result = spawnSync('pylint', ['--output-format=text', ...pyFiles], {
-        encoding: 'utf8',
-        stdio: ['pipe', 'pipe', 'pipe'],
+        ...SPAWN_OPTS,
         timeout: 30000
       });
       if (result.error && result.error.code === 'ENOENT') {
@@ -246,8 +249,7 @@ function runLinter(files) {
   if (goFiles.length > 0) {
     try {
       const result = spawnSync('golint', goFiles, {
-        encoding: 'utf8',
-        stdio: ['pipe', 'pipe', 'pipe'],
+        ...SPAWN_OPTS,
         timeout: 30000
       });
       if (result.error && result.error.code === 'ENOENT') {
@@ -390,16 +392,25 @@ function run(rawInput) {
 // ── stdin entry point ────────────────────────────────────────────
 if (require.main === module) {
   let data = '';
+  // Watchdog: pre-commit hook can be slow (lint), but stdin read should not block.
+  const WATCHDOG_MS = 5000;
+  const watchdog = setTimeout(() => {
+    try { process.stdout.write(data); } catch (_) { /* noop */ }
+    process.exit(0);
+  }, WATCHDOG_MS);
+  watchdog.unref?.();
+
   process.stdin.setEncoding('utf8');
-  
+
   process.stdin.on('data', chunk => {
     if (data.length < MAX_STDIN) {
       const remaining = MAX_STDIN - data.length;
       data += chunk.substring(0, remaining);
     }
   });
-  
+
   process.stdin.on('end', () => {
+    clearTimeout(watchdog);
     const result = evaluate(data);
     process.stdout.write(result.output);
     process.exit(result.exitCode);
