@@ -44,3 +44,9 @@ desktop.ini
 # adapters/ 要 commit
 # scripts/ 要 commit
 # _decisions/ 要 commit（决策记录给贡献者看）
+
+# MCC PROJECT_VAULT (auto-managed — secrets must never enter git)
+.claude/PROJECT_VAULT.md
+.env.local
+.env.*.local
+.deploy.local.md
