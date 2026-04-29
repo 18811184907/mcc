@@ -72,8 +72,14 @@ function run(rawInput) {
           },
         });
       } else {
-        // Unix (macOS/Linux): Check tmux is available before transforming
-        const tmuxCheck = spawnSync('which', ['tmux'], { encoding: 'utf8' });
+        // Unix (macOS/Linux): Check tmux is available before transforming.
+        // v2.6.2: windowsHide + stdio + timeout aligned with v2.5.12 SPAWN_OPTS.
+        const tmuxCheck = spawnSync('which', ['tmux'], {
+          encoding: 'utf8',
+          stdio: ['ignore', 'pipe', 'pipe'],
+          windowsHide: true,
+          timeout: 2000,
+        });
         if (tmuxCheck.status === 0) {
           // Escape single quotes for shell safety: 'text' -> 'text'\''text'
           const escapedCmd = cmd.replace(/'/g, "'\\''");

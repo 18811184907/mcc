@@ -11,8 +11,8 @@
     {
       "name": "mcc",
       "source": "./",
-      "description": "19 agents + 15 commands + 23 skills + 3 behavioral modes + 29 hook scripts + 5 MCP servers + curated rules. v2.6.1 上下文优化：6 个过长 description 压缩 + rules/typescript/{testing,hooks}.md 按需触发（只在改测试/配置时注入），日常 .ts 编辑省 ~5k tokens。",
-      "version": "2.6.1",
+      "description": "19 agents + 15 commands + 23 skills + 3 behavioral modes + 29 hook scripts + 5 MCP servers + curated rules. v2.6.2 第二轮 opus 审计修复：抽 lib/vault-parser 消 DRY + secureWrite 防 symlink + appendOnce 原子化 + Windows 双 PS profile + partial failure 不再打 ✓ + previewValue 不再泄漏字节。60/60 测试全过。",
+      "version": "2.6.2",
       "author": {
         "name": "MCC"
       },

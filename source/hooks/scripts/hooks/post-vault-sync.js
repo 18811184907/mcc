@@ -36,6 +36,13 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const {
+  parseVault,
+  sanitizeSshField,
+  expandHome,
+  escapeRegex,
+  secureWrite,
+} = require('../lib/vault-parser');
 
 const MAX_STDIN = 1024 * 1024;
 const WATCHDOG_MS = 5000;
@@ -97,76 +104,12 @@ function runSync() {
   );
 }
 
-// ─── Parser ─────────────────────────────────────────────────────────────────
-
-function parseVault(content) {
-  const env = [];
-  const sshHosts = [];
-  let currentSection = null;
-  let currentSshHost = null;
-
-  const lines = content.split(/\r?\n/);
-
-  for (const line of lines) {
-    // Section header (## Section Name)
-    const sectionMatch = line.match(/^##\s+(.+?)\s*$/);
-    if (sectionMatch) {
-      currentSection = sectionMatch[1].trim();
-      currentSshHost = null;
-      continue;
-    }
-
-    // Skip comment/note lines
-    if (/^[\s\-*]*备注[:：]/.test(line) || /^[\s\-*]*note:/i.test(line)) continue;
-
-    // Blank line ends current SSH host block
-    if (!line.trim()) {
-      currentSshHost = null;
-      continue;
-    }
-
-    const isSshSection = currentSection
-      && /(SSH|服务器|server|deploy|部署)/i.test(currentSection);
-
-    if (isSshSection) {
-      // SSH host start: "- prod-server:" or "- prod-server (note):"
-      const hostStart = line.match(/^-\s+([\w\-\.]+)(?:\s*\([^)]*\))?\s*:\s*$/);
-      if (hostStart) {
-        currentSshHost = { name: hostStart[1] };
-        sshHosts.push(currentSshHost);
-        continue;
-      }
-
-      // SSH field: "    host = value" / "    user = value" etc.
-      const fieldMatch = line.match(/^\s+(host|hostname|user|key|identityfile|port)\s*=\s*(.+?)\s*$/i);
-      if (fieldMatch && currentSshHost) {
-        const fieldName = fieldMatch[1].toLowerCase();
-        const fieldValue = fieldMatch[2].trim().replace(/^`(.*)`$/, '$1');
-        const normalized = fieldName === 'hostname' ? 'host'
-          : fieldName === 'identityfile' ? 'key'
-          : fieldName;
-        currentSshHost[normalized] = fieldValue;
-        continue;
-      }
-    } else {
-      // Env entry: "- KEY = `value`" or "- KEY = value" or "- KEY=`value`"
-      const envMatch = line.match(
-        /^[\-*]\s+([A-Z][A-Z0-9_]*)\s*=\s*`?([^`\r\n]*?)`?\s*$/
-      );
-      if (envMatch) {
-        const key = envMatch[1];
-        const value = envMatch[2].trim();
-        if (value) {
-          env.push({ key, value, section: currentSection || 'misc' });
-        }
-      }
-    }
-  }
-
-  return { env, sshHosts };
-}
-
 // ─── Sync Targets ───────────────────────────────────────────────────────────
+// Parser + sanitizer + helpers all moved to lib/vault-parser.js (shared with
+// post-user-vault-sync.js + pre-vault-leak-detect.js so behavior never drifts).
+// v2.6.2 NOTE: previously this file had its own parseVault that lacked
+// placeholder filtering — `<your-key>` template lines would land in .env.local.
+// Using the shared parser fixes that real bug.
 
 function syncEnvLocal(env, projectRoot) {
   const envLocalPath = path.join(projectRoot, '.env.local');
@@ -179,7 +122,8 @@ function syncEnvLocal(env, projectRoot) {
   for (const { key, value } of env) {
     lines.push(`${key}=${value}`);
   }
-  fs.writeFileSync(envLocalPath, lines.join('\n') + '\n', { mode: 0o600 });
+  // secureWrite: symlink-safe, atomic, Windows ACL lockdown
+  secureWrite(envLocalPath, lines.join('\n') + '\n', { mode: 0o600 });
 }
 
 function syncEnvExample(env, projectRoot) {
@@ -217,7 +161,9 @@ function syncEnvExample(env, projectRoot) {
     }
   }
 
-  fs.writeFileSync(examplePath, lines.join('\n') + '\n');
+  // .env.example is committed (not secret) so no Windows ACL lockdown — but
+  // still go through secureWrite for symlink defense + atomic replace.
+  secureWrite(examplePath, lines.join('\n') + '\n', { mode: 0o644, lockdownWindows: false });
 }
 
 function syncSshConfig(sshHosts, projectName) {
@@ -263,8 +209,15 @@ function syncSshConfig(sshHosts, projectName) {
     if (safeUser) blockLines.push(`    User ${safeUser}`);
     if (safeKey) {
       const expanded = expandHome(safeKey);
-      if (expanded.includes('..')) {
+      // Defense in depth: IdentityFile must stay within HOME.
+      // Bare /etc/shadow / /var/run/* etc. are refused so a compromised vault
+      // can't make SSH read system files when probing keys.
+      const resolved = path.resolve(expanded);
+      const home = path.resolve(os.homedir());
+      if (resolved.includes('..')) {
         process.stderr.write(`[vault-sync] skipping IdentityFile with traversal: ${JSON.stringify(safeKey)}\n`);
+      } else if (!resolved.startsWith(home + path.sep) && resolved !== home) {
+        process.stderr.write(`[vault-sync] skipping IdentityFile outside HOME: ${JSON.stringify(safeKey)}\n`);
       } else {
         blockLines.push(`    IdentityFile ${expanded}`);
       }
@@ -366,27 +319,4 @@ function extractTargetFile(payload) {
   return input.file_path || input.filePath || input.path || null;
 }
 
-function expandHome(p) {
-  if (!p) return p;
-  if (p.startsWith('~/') || p === '~') {
-    return path.join(os.homedir(), p.slice(2));
-  }
-  return p;
-}
-
-function escapeRegex(s) {
-  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-// Reject newlines and NUL — these are the chars that allow ssh_config directive injection.
-// Values come from PROJECT_VAULT.md which is user-trusted but might be edited by Claude under
-// prompt injection; defense in depth.
-function sanitizeSshField(name, value) {
-  if (value === undefined || value === null || value === '') return '';
-  const s = String(value);
-  if (/[\r\n\0]/.test(s)) {
-    process.stderr.write(`[vault-sync] ssh field "${name}" contains forbidden control chars, dropping\n`);
-    return '';
-  }
-  return s.trim();
-}
+// expandHome / escapeRegex / sanitizeSshField moved to lib/vault-parser.js

@@ -130,6 +130,8 @@ if (fs.existsSync(script)) {
       // v1.10: 和 settings.fragment.json 的 SessionStart timeout=5 对齐（5s）。
       // 之前是 30000ms，会让 Claude Code 杀掉子进程后 Node 还要等 25s 才察觉，导致挂起。
       timeout: 5000,
+      // v2.6.2: 加 windowsHide 防 Windows 下每次 SessionStart 闪 cmd 窗口。
+      windowsHide: true,
     }
   );
 

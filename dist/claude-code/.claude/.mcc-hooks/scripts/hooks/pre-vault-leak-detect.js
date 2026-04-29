@@ -21,6 +21,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { parseVault, isPlaceholder } = require('../lib/vault-parser');
 
 const MAX_STDIN = 1024 * 1024;
 const WATCHDOG_MS = 2000;
@@ -75,15 +76,24 @@ function runScan() {
   const projectVaultPath = findVaultPath(process.cwd());
   const userVaultPath = findUserVaultPath();
 
-  // Combine values from both vaults (USER + PROJECT). De-dup by exact value.
+  // Combine values from both vaults — TAG by source so leak reports point to
+  // the right file. De-dup by exact value, but keep first-seen source.
   const values = [];
   const seenValues = new Set();
-  for (const p of [projectVaultPath, userVaultPath]) {
-    if (!p) continue;
-    for (const v of loadVaultValues(p)) {
-      if (seenValues.has(v.value)) continue;
-      seenValues.add(v.value);
-      values.push(v);
+  for (const [vaultPath, source] of [[projectVaultPath, 'PROJECT'], [userVaultPath, 'USER']]) {
+    if (!vaultPath) continue;
+    let content;
+    try { content = fs.readFileSync(vaultPath, 'utf8'); }
+    catch (err) {
+      process.stderr.write(`[vault-leak-detect] cannot read ${source} vault: ${err.message}\n`);
+      continue;
+    }
+    const { env } = parseVault(content);
+    for (const { key, value } of env) {
+      if (value.length < MIN_SECRET_LEN || isPlaceholder(value)) continue;
+      if (seenValues.has(value)) continue;
+      seenValues.add(value);
+      values.push({ key, value, source });
     }
   }
   if (values.length === 0) return;
@@ -93,9 +103,10 @@ function runScan() {
   if (!haystack) return;
 
   const leaks = [];
-  for (const { key, value } of values) {
+  for (const { key, value, source } of values) {
+    if (value.length > haystack.length) continue; // can't match
     if (haystack.includes(value)) {
-      leaks.push({ key, valuePreview: previewValue(value) });
+      leaks.push({ key, source, valuePreview: previewValue(value) });
     }
   }
 
@@ -103,8 +114,11 @@ function runScan() {
     process.stderr.write(
       '\n[vault-leak-detect] ⚠ WARNING: vault secret value(s) detected in tool input:\n'
     );
-    for (const { key, valuePreview } of leaks) {
-      process.stderr.write(`  - ${key} (preview: ${valuePreview})\n`);
+    for (const { key, source, valuePreview } of leaks) {
+      // No char preview — only length tier. Previously we leaked first 3 + last
+      // 2 bytes of every secret to stderr → Claude Code transcript →
+      // potentially uploaded for inference. v2.6.2 fix.
+      process.stderr.write(`  - [${source}] ${key} ${valuePreview}\n`);
     }
     process.stderr.write(
       '[vault-leak-detect] If this is intentional (e.g. you explicitly want to use the value), proceed.\n'
@@ -115,32 +129,13 @@ function runScan() {
   }
 }
 
-function loadVaultValues(vaultPath) {
-  const content = fs.readFileSync(vaultPath, 'utf8');
-  const values = [];
-
-  for (const line of content.split(/\r?\n/)) {
-    // env-style: "- KEY = `value`" or "- KEY = value"
-    const m = line.match(/^[\-*]\s+([A-Z][A-Z0-9_]*)\s*=\s*`?([^`\r\n]*?)`?\s*$/);
-    if (m) {
-      const key = m[1];
-      const value = m[2].trim();
-      if (value.length >= MIN_SECRET_LEN && !isPlaceholder(value)) {
-        values.push({ key, value });
-      }
-    }
-  }
-
-  return values;
-}
-
-function isPlaceholder(value) {
-  return /^(xxx+|placeholder|todo|tbd|your[-_]|<.*>)/i.test(value);
-}
-
 function previewValue(value) {
-  if (value.length <= 8) return '***';
-  return value.slice(0, 3) + '***' + value.slice(-2);
+  // Length tiers only — never leak any character of the secret to stderr.
+  const n = value.length;
+  if (n <= 8) return `<short:${n}>`;
+  if (n <= 32) return `<med:${n}>`;
+  if (n <= 128) return `<long:${n}>`;
+  return `<xlong:${n}>`;
 }
 
 function parseStdinPayload(raw) {
@@ -156,6 +151,16 @@ function stringifyToolInput(payload) {
   let combined = '';
   for (const f of fields) {
     if (typeof input[f] === 'string') combined += '\n' + input[f];
+  }
+  // MultiEdit: edits[].old_string + edits[].new_string. v2.6.2 — was missed
+  // in v2.6.1, fell through to JSON.stringify fallback only when no top-level
+  // string fields were set, so MultiEdit + a stray `command` field would
+  // skip the edits entirely.
+  if (Array.isArray(input.edits)) {
+    for (const e of input.edits) {
+      if (e && typeof e.new_string === 'string') combined += '\n' + e.new_string;
+      if (e && typeof e.old_string === 'string') combined += '\n' + e.old_string;
+    }
   }
   // Catch-all: stringify the whole input as fallback
   if (!combined) {

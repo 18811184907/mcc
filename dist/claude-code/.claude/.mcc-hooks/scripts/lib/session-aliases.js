@@ -352,8 +352,19 @@ function renameAlias(oldAlias, newAlias) {
   // Restore old alias and remove new alias on failure
   data.aliases[oldAlias] = aliasData;
   delete data.aliases[newAlias];
-  // Attempt to persist the rollback
-  saveAliases(data);
+  // Attempt to persist the rollback. v2.6.2 fix: previously the second
+  // saveAliases return value was discarded and we always reported "rolled
+  // back to original" — but if the disk error persists (full / readonly /
+  // perm denied) the rollback ALSO fails and the on-disk alias file is in
+  // a broken/half-written state. Be honest about it.
+  const rollbackOk = saveAliases(data);
+  if (!rollbackOk) {
+    return {
+      success: false,
+      error: 'Failed to save renamed alias AND rollback also failed — '
+        + 'aliases file may be inconsistent on disk; check the .bak next to it.',
+    };
+  }
   return { success: false, error: 'Failed to save renamed alias — rolled back to original' };
 }
 

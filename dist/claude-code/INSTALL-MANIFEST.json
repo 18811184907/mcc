@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.6.1",
+  "mccVersion": "2.6.2",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\claude-code",
   "installBase": ".claude/",
@@ -541,8 +541,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/auto-tmux-dev.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/auto-tmux-dev.js",
-      "size": 5447,
-      "sha256": "4524cb12fd4c641ebcef98852dc3bb3d6b2874a70e0211151bfd4f87834cc3a7"
+      "size": 5654,
+      "sha256": "85e292f96921a44ddbd19c4e14380e769938ee6bc5d4597f0242b2c6029ffa5c"
     },
     {
       "kind": "hooks",
@@ -597,22 +597,22 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/post-claudemd-sync.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/post-claudemd-sync.js",
-      "size": 8500,
-      "sha256": "52b1f5746462600b5bcb279232b2b873565c31b7f78768471140069a2a1869ad"
+      "size": 8769,
+      "sha256": "fd377155337c8b621744dbd8e719f71e272375d2703699e413b3838afc69d22a"
     },
     {
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/post-user-vault-sync.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/post-user-vault-sync.js",
-      "size": 14380,
-      "sha256": "b4aee58a273f30f045904d61fab0f6030d1ac5581af1a5a2cad04cbe5ae5cbb7"
+      "size": 14873,
+      "sha256": "1dd51c213e08a5d6de4510aea5b6a7d844861be278e74957dabc2175a5ca0e61"
     },
     {
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/post-vault-sync.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/post-vault-sync.js",
-      "size": 14215,
-      "sha256": "53b9b3cf899101f0abcdeaf3a71f5fd21cdf2c791d3d64794c689c88e7007539"
+      "size": 12362,
+      "sha256": "c25f6cd2a80d2c893cdc067cfeda5d3f6158518e219a9ae88b56109aff2d4264"
     },
     {
       "kind": "hooks",
@@ -646,8 +646,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/pre-vault-leak-detect.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/pre-vault-leak-detect.js",
-      "size": 5262,
-      "sha256": "14cc0196311e96f7955080442967e143bb88aeecdd38ea5a69121e61c1be094a"
+      "size": 6143,
+      "sha256": "20624141b18c7af1fcd1106c25efbd177d31b60a9eaf143e9eb8352f1ddcd622"
     },
     {
       "kind": "hooks",
@@ -660,8 +660,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/run-with-flags.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/run-with-flags.js",
-      "size": 5543,
-      "sha256": "43270d4b7bfd736c5995368411677ea51b92f30c289b6c52430da132f575ea7f"
+      "size": 5651,
+      "sha256": "e99b47a336b249d2620f5b156582b88cf7aa913ac6b15375e34959569fb020f2"
     },
     {
       "kind": "hooks",
@@ -674,8 +674,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/session-start-bootstrap.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/session-start-bootstrap.js",
-      "size": 5609,
-      "sha256": "67fa70a92f72e00a131efbeda57d14e25229a59614a84a3c69ecbdfc928937de"
+      "size": 5722,
+      "sha256": "7cbbe08b654cbbe36a866d213e4ab3c42dae0a1b54360df9ef8113b0f35a6906"
     },
     {
       "kind": "hooks",
@@ -730,8 +730,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/lib/session-aliases.js",
       "install": ".claude/.mcc-hooks/scripts/lib/session-aliases.js",
-      "size": 12814,
-      "sha256": "924a688da59343748cc472c0d69c02ce25498f5d14613e2b5233a97bb3332fdd"
+      "size": 13383,
+      "sha256": "23aa74e35baabc91afc9c6dd32b3de37a268b799727651df2aa02bc5e5a510cc"
     },
     {
       "kind": "hooks",
@@ -739,6 +739,13 @@
       "install": ".claude/.mcc-hooks/scripts/lib/utils.js",
       "size": 18696,
       "sha256": "901f9f4446cca8652ea859de5fde2530695d31531ddc41ab6e67e34a90733dfc"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/lib/vault-parser.js",
+      "install": ".claude/.mcc-hooks/scripts/lib/vault-parser.js",
+      "size": 9701,
+      "sha256": "8b8e6b697b2ae4821fef919c27637ea82a8250c0f70673b917309407baf89284"
     },
     {
       "kind": "hooks-config",
@@ -939,13 +946,13 @@
   ],
   "notes": [],
   "summary": {
-    "total": 133,
+    "total": 134,
     "byKind": {
       "agents": 19,
       "command": 15,
       "skills": 39,
       "modes": 3,
-      "hooks": 29,
+      "hooks": 30,
       "hooks-config": 1,
       "settings-fragment": 1,
       "settings-fragment-strict": 1,
@@ -954,6 +961,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 981194
+    "totalBytes": 991682
   }
 }

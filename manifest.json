@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -116,6 +116,36 @@
     "build_command": "node adapters/build.js"
   },
   "version_history": [
+    {
+      "version": "2.6.2",
+      "date": "2026-04-29",
+      "changes": [
+        "v2.6.2 - 第二轮 opus 审计修复（C 档完整）：13 条问题修复 + 抽 lib/vault-parser.js 消 DRY",
+        "ARCH: 新 lib/vault-parser.js —— 共享 parseVault / sanitizeSshField / expandHome / secureWrite / appendOnce。post-vault-sync / post-user-vault-sync / pre-vault-leak-detect 三处都用同一份逻辑，行为不再分歧。",
+        "FIX (real bug): post-vault-sync.js 之前缺 placeholder 过滤，模板里的 `<your-key>` 占位会被写到 .env.local。共享 lib 修了。",
+        "SEC: secureWrite —— 所有 vault 写点（.user-env.sh / .ps1 / ~/.ssh/config / .env.local / .env.example）走 symlink-safe + atomic tmp+rename + Windows ACL lockdown（icacls）。挡了 symlink 攻击 + 半写残留 + Windows 0o600 silently 失效。",
+        "SEC: appendOnce —— 用 O_EXCL 锁文件 + tmp+rename 实现真正原子化。多 Claude session 并发改 USER_VAULT 不再造成 .bashrc 重复 marker / 半截标志位污染。",
+        "SEC: appendOnce 加 skipMissing 选项 —— 对 .bashrc / .zshrc 不主动创建（fish/macOS-zsh 用户家目录不再凭空多空文件）。",
+        "FEAT: Windows 同时写 PS 5.1 + PS 7+ profile —— 之前只写 PS 7+ 路径，Win10/11 系统自带 PS 5.1 用户的 PowerShell 环境永远拿不到 user-env。现在两个都写。",
+        "FIX: post-user-vault-sync 部分失败时不再打 ✓ Synced summary —— 之前 5 步 sync 全失败也会显示成功符号，用户被误导。现在 partial failure 时打 ✗ N step(s) FAILED + 详情 + 退出。",
+        "FIX: syncGitIdentity 加 transactional rollback —— git config 中途失败时回滚已写入的 user.name/email，不再脏状态半写。",
+        "FIX: syncGitIdentity throw error 时附上 result.error.code 和原始 stderr/stdout（之前丢了 spawnSync 元信息）。",
+        "FIX: GIT_USER_* 含换行不再静默 skip，改成 errors.push 让顶层 partial-failure 报告含它。",
+        "SEC: pre-vault-leak-detect.js previewValue 改为只显示长度档位（<short:N> / <med:N> / <long:N> / <xlong:N>），不再泄漏 secret 前 3 + 后 2 字节到 stderr → Claude Code transcript。",
+        "FEAT: pre-vault-leak-detect.js 报告 leak 时标 [USER] / [PROJECT] 来源，让用户知道泄漏值出自哪个 vault 文件。",
+        "FIX: pre-vault-leak-detect.js stringifyToolInput 加 MultiEdit edits[] 支持，之前只能扫顶层 string 字段。",
+        "FIX: post-vault-sync + post-user-vault-sync IdentityFile path 限制必须落在 HOME 内（之前只挡 `..`，攻击者能写 `/etc/shadow`）。",
+        "FIX: NUL byte 在 shellQuote / psQuote 入口直接 reject（防 bash 静默丢字段）。",
+        "FIX: lib/session-aliases.js renameAlias rollback 双失败时报告诚实化 —— 之前 saveAliases 第二次失败时仍然报'已回滚'，现在明示'aliases file may be inconsistent'。第一轮审计就提的债，v2.5.x 一直没修。",
+        "FIX: post-claudemd-sync.js git wrapper 加齐 SPAWN_OPTS（stdio[0]:'ignore' + maxBuffer 16MB），v2.5.12 风格回归补全。",
+        "FIX: auto-tmux-dev `which tmux` / session-start-bootstrap / run-with-flags spawnSync 加 windowsHide，Windows 不再每次闪 cmd 窗口。",
+        "FEAT: watchdog timeout 时打 stderr 警告而非静默退出（用户能看到 sync 没完成）。",
+        "FEAT: 空 vault 不再打 ✓ Synced 0 噪音。",
+        "FEAT: MCC_NO_AUTOLOAD=1 环境变量 opt-out 自动 wire shell profile。",
+        "TEST: tests/user-vault-hook-test.js 重写到 28 checks（覆盖 skipMissing / symlink defense / placeholder 过滤 / NUL 拒绝 / HOME 限制 / 部分失败 summary / 空 vault 静默 / opt-out / idempotent autoload）。",
+        "测试合计：60/60 全过（installer-dry-run 19 + codex-patches-followup 8 + vault-hook-test 5 + user-vault-hook-test 28）。"
+      ]
+    },
     {
       "version": "2.6.1",
       "date": "2026-04-29",

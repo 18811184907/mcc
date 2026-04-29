@@ -211,10 +211,15 @@ function expandHome(p) {
 }
 
 function git(cwd, args, opts = {}) {
+  // SPAWN_OPTS aligned with v2.5.12: stdio[0]='ignore' so git never blocks
+  // reading stdin; maxBuffer 16 MB so large diff/clone outputs aren't silently
+  // truncated at the default 1 MB.
   return spawnSync('git', args, {
     cwd,
     encoding: 'utf8',
-    timeout: opts.timeoutMs || GIT_TIMEOUT_MS,
+    stdio: ['ignore', 'pipe', 'pipe'],
     windowsHide: true,
+    maxBuffer: 16 * 1024 * 1024,
+    timeout: opts.timeoutMs || GIT_TIMEOUT_MS,
   });
 }
