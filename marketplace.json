@@ -11,8 +11,8 @@
     {
       "name": "mcc",
       "source": "./",
-      "description": "19 agents + 15 commands + 22 skills + 3 behavioral modes + 28 hook scripts + 5 MCP servers + curated rules. v2.5.12 续 v2.5.11 审计：14 条 P1 工程质量改善（hook watchdog / spawnSync 统一 / Node 16 校验 / TOML+.gitignore 幂等 / bootstrap.sh 加固）。",
-      "version": "2.5.12",
+      "description": "19 agents + 15 commands + 23 skills + 3 behavioral modes + 29 hook scripts + 5 MCP servers + curated rules. v2.6.0 加用户级 vault：~/.claude/USER_VAULT.md 跨项目共用（personal API key / git 身份 / 个人 SSH），AI 接管管理，hook 自动同步 .user-env.sh + .user-env.ps1 + git --global + ~/.ssh/config。",
+      "version": "2.6.0",
       "author": {
         "name": "MCC"
       },

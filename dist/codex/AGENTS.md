@@ -52,7 +52,7 @@
   - [mcc-session-resume](#mcc-session-resume)
   - [mcc-session-save](#mcc-session-save)
   - [mcc-tdd](#mcc-tdd)
-- [Skill 场景指引（22）](#skill-场景指引)
+- [Skill 场景指引（23）](#skill-场景指引)
   - [architecture-decision-records](#architecture-decision-records)
   - [claudemd-sync](#claudemd-sync)
   - [code-review-workflow](#code-review-workflow)
@@ -72,6 +72,7 @@
   - [project-vault](#project-vault)
   - [subagent-driven-development](#subagent-driven-development)
   - [tdd-workflow](#tdd-workflow)
+  - [user-vault](#user-vault)
   - [using-git-worktrees](#using-git-worktrees)
   - [verification-loop](#verification-loop)
   - [writing-skills](#writing-skills)
@@ -307,6 +308,9 @@ Claude 自动接管项目级敏感配置存储。
 
 ### tdd-workflow
 严格的 RED-GREEN-REFACTOR 工作流：先写失败测试、watch it fail、再写最小实现。
+
+### user-vault
+Claude 自动接管**用户级跨项目**敏感配置。
 
 ### using-git-worktrees
 建隔离 worktree + 自动选目录 + 安全校验。开始 feature 开发或执行 plan 之前触发，避免污染当前工作区。

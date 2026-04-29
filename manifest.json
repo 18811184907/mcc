@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.5.12",
+  "version": "2.6.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -116,6 +116,23 @@
     "build_command": "node adapters/build.js"
   },
   "version_history": [
+    {
+      "version": "2.6.0",
+      "date": "2026-04-29",
+      "changes": [
+        "v2.6.0 - 用户级 vault：跨项目通用 secret/SSH/git 身份的 AI 接管管理",
+        "FEAT: 新 skill `user-vault` —— Claude 自动判断 USER vs PROJECT，跨项目 secret 写 ~/.claude/USER_VAULT.md，单项目 secret 仍走 docs/PROJECT_VAULT.md。",
+        "FEAT: 新 hook `post-user-vault-sync.js` —— 同步 USER_VAULT.md 到 ~/.claude/.user-env.sh + ~/.claude/.user-env.ps1 + git config --global + ~/.ssh/config (MCC-User-Managed 块)。",
+        "FEAT: 自动追加 source 行到 ~/.bashrc / ~/.zshrc / PowerShell $PROFILE（带 marker，幂等）。新开 shell 自动加载 USER 级 env。",
+        "FEAT: GIT_USER_NAME / GIT_USER_EMAIL 特殊 key 直接 git config --global，不再每个新机器手编。",
+        "FEAT: 新 template `source/templates/USER_VAULT.example.md`。",
+        "FEAT: project-vault skill 加 promotion 逻辑——检测到明显跨项目条目（OPENAI/ANTHROPIC key 等）会主动建议提升到 USER_VAULT。",
+        "FEAT: pre-vault-leak-detect.js 扩展扫描 USER_VAULT 值，user 级 secret 同样有泄漏告警。",
+        "FEAT: installer 自动创建 ~/.claude/USER_VAULT.md 模板（若不存在）。",
+        "TEST: 新增 tests/user-vault-hook-test.js (19 checks)：覆盖 .user-env.sh / .user-env.ps1 / bashrc 自动 wire / git config / ~/.ssh/config / 幂等性 / 注入防护。",
+        "DOC: SKILL.md 详细规定 USER vs PROJECT 判断规则、提升机制、安全约束、shell 集成细节。"
+      ]
+    },
     {
       "version": "2.5.12",
       "date": "2026-04-29",

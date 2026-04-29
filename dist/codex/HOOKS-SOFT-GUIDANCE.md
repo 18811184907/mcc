@@ -38,6 +38,13 @@
 - **Codex 自律**：
   - 交付前 grep `console.log` / `print(` / `dbg!` 等调试语句清掉。
 
+## post:user-vault-sync
+
+- **原 hook 事件**：`PostToolUse`  (matcher: `Write|Edit|MultiEdit`)
+- **语义**：~/.claude/USER_VAULT.md 改完自动同步到 .user-env.sh / .user-env.ps1 / git --global / ~/.ssh/config（跨项目通用）
+- **Codex 自律**：
+  - （该 hook 无对应 Codex 自律指引）
+
 ## pre:bash:safety
 
 - **原 hook 事件**：`PreToolUse`  (matcher: `Bash`)

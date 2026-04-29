@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.5.12",
+  "mccVersion": "2.6.0",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\claude-code",
   "installBase": ".claude/",
@@ -436,8 +436,8 @@
       "kind": "skills",
       "dist": ".claude/skills/project-vault/SKILL.md",
       "install": ".claude/skills/project-vault/SKILL.md",
-      "size": 6567,
-      "sha256": "590001206cf23354e715a6a80af08bb60522646bf6f17d58587e1c3342c5d135"
+      "size": 7500,
+      "sha256": "c5c18aa9680bb427ae4a3172f49407ec318ac31ad6934c907eb7a4a15d4df56b"
     },
     {
       "kind": "skills",
@@ -480,6 +480,13 @@
       "install": ".claude/skills/tdd-workflow/testing-anti-patterns.md",
       "size": 8408,
       "sha256": "70410f48a9d89814cf41cf59e4201fa594195f4870d7763038cac4caff5016a3"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/user-vault/SKILL.md",
+      "install": ".claude/skills/user-vault/SKILL.md",
+      "size": 9292,
+      "sha256": "ba393acc08c1d1e2176074e16f2b65e9ddad021dab4bee88bd824667e594cd44"
     },
     {
       "kind": "skills",
@@ -595,6 +602,13 @@
     },
     {
       "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/hooks/post-user-vault-sync.js",
+      "install": ".claude/.mcc-hooks/scripts/hooks/post-user-vault-sync.js",
+      "size": 14380,
+      "sha256": "b4aee58a273f30f045904d61fab0f6030d1ac5581af1a5a2cad04cbe5ae5cbb7"
+    },
+    {
+      "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/post-vault-sync.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/post-vault-sync.js",
       "size": 14215,
@@ -632,8 +646,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/pre-vault-leak-detect.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/pre-vault-leak-detect.js",
-      "size": 4667,
-      "sha256": "fe933fa2236fce489c55323ac18b7b85db71e3f83964059064ff3a2c818dde26"
+      "size": 5262,
+      "sha256": "14cc0196311e96f7955080442967e143bb88aeecdd38ea5a69121e61c1be094a"
     },
     {
       "kind": "hooks",
@@ -730,15 +744,15 @@
       "kind": "hooks-config",
       "dist": ".claude/.mcc-hooks/hooks.json",
       "install": ".claude/.mcc-hooks/hooks.json",
-      "size": 4218,
-      "sha256": "7067e57cfba10c540cd32e2f3e64f82be7db8c291492c088318a67a2d2e24234"
+      "size": 4613,
+      "sha256": "a9f3e5555934dc048e16a96d9c1924fc3af8c84dcb0c7a88c62f41d922523e9b"
     },
     {
       "kind": "settings-fragment",
       "dist": ".claude/settings.fragment.json",
       "install": ".claude/settings.fragment.json",
-      "size": 7841,
-      "sha256": "0e1c9b0456986ca144609469db98434cc6f41738b357575f5d2726f1e1979a90"
+      "size": 8030,
+      "sha256": "053f68a9b76168a312fd6cf97c84f9b921f9f24562ee91bf67e1a4f6b6ca2c8c"
     },
     {
       "kind": "settings-fragment-strict",
@@ -774,6 +788,13 @@
       "install": ".claude/templates/SCHEMA.example.md",
       "size": 2993,
       "sha256": "e1a29d151fccfe94449942d89e6392d73165ae10991e88fa8d72c76f76def2ff"
+    },
+    {
+      "kind": "templates",
+      "dist": ".claude/templates/USER_VAULT.example.md",
+      "install": ".claude/templates/USER_VAULT.example.md",
+      "size": 3090,
+      "sha256": "4ac42acea5fec2ee6cd1d92f138b31a9589de6851ec1f09566796ef6fbb8b67b"
     },
     {
       "kind": "mcp-config",
@@ -918,21 +939,21 @@
   ],
   "notes": [],
   "summary": {
-    "total": 130,
+    "total": 133,
     "byKind": {
       "agents": 19,
       "command": 15,
-      "skills": 38,
+      "skills": 39,
       "modes": 3,
-      "hooks": 28,
+      "hooks": 29,
       "hooks-config": 1,
       "settings-fragment": 1,
       "settings-fragment-strict": 1,
-      "templates": 4,
+      "templates": 5,
       "mcp-config": 1,
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 952613
+    "totalBytes": 981487
   }
 }

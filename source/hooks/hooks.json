@@ -59,6 +59,15 @@
       "command": "node -e \"require('${MCC_HOOKS}/hooks/check-console-log.js').run(process.stdin)\""
     },
     {
+      "id": "post:user-vault-sync",
+      "event": "PostToolUse",
+      "matcher": "Write|Edit|MultiEdit",
+      "timeout_ms": 5000,
+      "async": false,
+      "description": "~/.claude/USER_VAULT.md 改完自动同步到 .user-env.sh / .user-env.ps1 / git --global / ~/.ssh/config（跨项目通用）",
+      "command": "node ${MCC_HOOKS}/hooks/post-user-vault-sync.js"
+    },
+    {
       "id": "pre:bash:safety",
       "event": "PreToolUse",
       "matcher": "Bash",

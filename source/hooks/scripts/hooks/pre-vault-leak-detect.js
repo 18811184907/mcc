@@ -64,11 +64,28 @@ function findVaultPath(cwd) {
   return candidates.find(p => fs.existsSync(p)) || null;
 }
 
-function runScan() {
-  const vaultPath = findVaultPath(process.cwd());
-  if (!vaultPath) return;
+function findUserVaultPath() {
+  const home = process.env.HOME || process.env.USERPROFILE;
+  if (!home) return null;
+  const userVault = path.join(home, '.claude', 'USER_VAULT.md');
+  return fs.existsSync(userVault) ? userVault : null;
+}
 
-  const values = loadVaultValues(vaultPath);
+function runScan() {
+  const projectVaultPath = findVaultPath(process.cwd());
+  const userVaultPath = findUserVaultPath();
+
+  // Combine values from both vaults (USER + PROJECT). De-dup by exact value.
+  const values = [];
+  const seenValues = new Set();
+  for (const p of [projectVaultPath, userVaultPath]) {
+    if (!p) continue;
+    for (const v of loadVaultValues(p)) {
+      if (seenValues.has(v.value)) continue;
+      seenValues.add(v.value);
+      values.push(v);
+    }
+  }
   if (values.length === 0) return;
 
   const payload = parseStdinPayload(data);

@@ -1149,6 +1149,37 @@ function ensureGlobalClaudemd(args) {
   }
 }
 
+// v2.6: 用户级 vault 模板。跨项目通用 secret / git identity / 个人 SSH 落这里。
+// 与 CLAUDE.md 平级（都在 ~/.claude/，由 installer 一次性创建）。
+function ensureUserVault(args) {
+  const home = os.homedir();
+  const userVault = path.join(home, '.claude', 'USER_VAULT.md');
+  const templatePathDist = path.join(DIST, 'claude-code', '.claude', 'templates', 'USER_VAULT.example.md');
+  const templatePathSrc = path.join(ROOT, 'source', 'templates', 'USER_VAULT.example.md');
+  const templatePath = pathExists(templatePathDist) ? templatePathDist : templatePathSrc;
+
+  if (!pathExists(templatePath)) {
+    return; // 找不到模板就静默跳过（v2.5 装在没 templates/ 的环境时不要硬错）
+  }
+
+  if (pathExists(userVault)) {
+    return; // 用户已有 USER_VAULT，绝不覆盖
+  }
+
+  if (args.dryRun) {
+    log('info', `(dry-run) 将创建 ~/.claude/USER_VAULT.md（USER 级 vault，跨项目通用）`);
+    return;
+  }
+
+  try {
+    ensureDir(path.dirname(userVault));
+    fs.copyFileSync(templatePath, userVault);
+    log('ok', `🔐 写入 ~/.claude/USER_VAULT.md（USER 级跨项目 vault；告诉 Claude 你的 personal API key 即可，hook 自动同步）`);
+  } catch (err) {
+    log('warn', `写入 ~/.claude/USER_VAULT.md 失败：${err.message}（不影响 MCC 主体安装）`);
+  }
+}
+
 // ═══ 主流程 ═══════════════════════════════════════════
 
 async function main() {
@@ -1295,6 +1326,11 @@ async function main() {
   // v2.3: 装即可用 — 自动写 ~/.claude/CLAUDE.md（如不存在），让推荐模板（优先复用 / 中文 / TodoWrite）立即生效
   if (!args.skipClaudemd && targets.includes('claude-code')) {
     ensureGlobalClaudemd(args);
+  }
+
+  // v2.6: USER 级跨项目 vault — 装一次，所有项目共用
+  if (targets.includes('claude-code')) {
+    ensureUserVault(args);
   }
 
   // v2.4 smart-split: 主装完成后建项目级 PRPs/ 残骸（让本项目有工作产物落盘点）
