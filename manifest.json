@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.6.2",
+  "version": "2.6.3",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -116,6 +116,20 @@
     "build_command": "node adapters/build.js"
   },
   "version_history": [
+    {
+      "version": "2.6.3",
+      "date": "2026-04-29",
+      "changes": [
+        "v2.6.3 - 第二轮审计设计议题（D1/D2/D3）+ mcc-principles 压缩",
+        "OPT: mcc-principles.md 4732 → 2311 字符（-51%），每 session baseline 省 ~1.5k tokens。保留三条元规则 + 最常用 3 并行组合，删冗余表格、判断边界子表、跨目标重复段。",
+        "FIX (D2): user-vault skill 默认改为 PROJECT，之前默认 USER。理由：写错 USER = 全机污染难恢复；写错 PROJECT = 多写一次易恢复。只在用户明说'我的/个人/跨项目'时才走 USER。",
+        "DOC (D1): SKILL.md '同名 key 覆盖语义'诚实化——'PROJECT 覆盖 USER' 仅在 Node + dotenv (默认 override:true) 项目里成立。Python/Go/Shell/Vite 等工具栈是 USER 赢（shell env 兜底）。加了完整工具栈对照表。",
+        "DOC (D3): SKILL.md 跨机同步 FAQ 扩写 3 方案：1Password CLI / Bitwarden / pass（推荐）+ dotfiles repo + SOPS/age 加密 + scp。明确反模式：USER_VAULT.md 直接 push 到 git（即使 private repo），git history 留痕。",
+        "DOC: PowerShell 双 profile (PS 5.1 + PS 7+) 在 SKILL.md 文档化（v2.6.2 已实现）。",
+        "DOC: MCC_NO_AUTOLOAD=1 opt-out 文档化（适合用密码管理器自管 shell env 的高级用户）。",
+        "测试: 60/60 全过（无代码逻辑变化，仅文档 + 默认值 + 一份 markdown 压缩）。"
+      ]
+    },
     {
       "version": "2.6.2",
       "date": "2026-04-29",

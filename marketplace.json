@@ -11,8 +11,8 @@
     {
       "name": "mcc",
       "source": "./",
-      "description": "19 agents + 15 commands + 23 skills + 3 behavioral modes + 29 hook scripts + 5 MCP servers + curated rules. v2.6.2 第二轮 opus 审计修复：抽 lib/vault-parser 消 DRY + secureWrite 防 symlink + appendOnce 原子化 + Windows 双 PS profile + partial failure 不再打 ✓ + previewValue 不再泄漏字节。60/60 测试全过。",
-      "version": "2.6.2",
+      "description": "19 agents + 15 commands + 23 skills + 3 behavioral modes + 29 hook scripts + 5 MCP servers + curated rules. v2.6.3 设计议题收尾：mcc-principles 压缩 -51% + user-vault 默认 PROJECT + 'PROJECT 覆盖 USER' 文案诚实化 + 跨机同步 3 方案 FAQ。",
+      "version": "2.6.3",
       "author": {
         "name": "MCC"
       },

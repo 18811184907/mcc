@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "2.6.2",
-  "description": "MCC Multi-target Claude/Codex Configuration - 19 agents + 15 commands + 23 skills + 3 behavioral modes + 29 hook scripts + 5 MCP servers + curated rules. v2.6.2 第二轮 opus 审计修复：抽 lib/vault-parser 消 DRY、secureWrite 防 symlink 攻击、appendOnce 真原子化、Windows 双 PS profile、partial failure 不再打 ✓、IdentityFile HOME 限制、previewValue 不再泄漏 secret 字节。60/60 测试全过。",
+  "version": "2.6.3",
+  "description": "MCC Multi-target Claude/Codex Configuration - 19 agents + 15 commands + 23 skills + 3 behavioral modes + 29 hook scripts + 5 MCP servers + curated rules. v2.6.3 第二轮审计设计议题收尾：mcc-principles 压缩 -51%（baseline 省 ~1.5k tokens）、user-vault 默认改 PROJECT、'PROJECT 覆盖 USER' 文案诚实化（仅 Node+dotenv 成立）、跨机同步 3 方案 FAQ（1Password / SOPS / scp）。",
   "author": {
     "name": "MCC",
     "url": "https://github.com/18811184907/mcc"

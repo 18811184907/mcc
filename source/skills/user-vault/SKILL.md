@@ -41,10 +41,35 @@ description: "Claude 自动接管用户级跨项目敏感配置（personal API k
 
 ```
 "这个 OPENAI_API_KEY 是你跨项目都用的（写 USER_VAULT），
- 还是只这个项目用（写 PROJECT_VAULT）？默认我倾向 USER。"
+ 还是只这个项目用（写 PROJECT_VAULT）？默认我倾向 PROJECT。"
 ```
 
-不要默默猜。**默认 USER**（更安全：写错地方比没写更难发现，USER 范围广）。
+不要默默猜。**v2.6.3 起默认 PROJECT**（之前默认 USER）。理由：
+
+| 场景 | 后果 |
+|---|---|
+| 实际是 PROJECT 但写到 USER | 全机污染 + 跨项目可能用错 secret + 难恢复 |
+| 实际是 USER 但写到 PROJECT | 多写一次（下个项目重填）—— 可恢复，影响范围小 |
+
+**写错 USER 比写错 PROJECT 严重**——所以默认走更安全（更小影响范围）的 PROJECT，只在用户明确说"我的 / 个人 / 跨项目"时才走 USER。
+
+**注意：USER vs PROJECT 同名 key 的覆盖语义**（**关键，仅在 dotenv-based Node 项目里成立**）：
+
+| 工具栈 | USER + PROJECT 同名 key 谁赢 |
+|---|---|
+| Node + dotenv（默认 `override:true`） | **PROJECT 赢**（dotenv 加载 `.env.local` 覆盖 process.env） |
+| Node + dotenv `override:false` | USER 赢（dotenv 不覆盖已存在 env） |
+| Python `os.environ` 直接读 | **USER 赢**（没人读 `.env.local`） |
+| Python + python-dotenv | 看 `load_dotenv(override=True/False)`，默认 False → USER 赢 |
+| Go / Rust / Shell 脚本 | **USER 赢**（直接读 shell env，不加载 `.env`） |
+| Vite / Next.js（server side） | dotenv 系，PROJECT 赢 |
+
+**结论**：你期望的"PROJECT 覆盖 USER"**仅在 Node + dotenv 项目里默认成立**。用 Python / Go / Shell 脚本时，shell env 来自 USER 始终是兜底来源——同名 key 时 USER 赢。
+
+实务建议：
+- 跨项目共用的（OpenAI / Anthropic key）→ 写 USER_VAULT，所有项目都拿到
+- 项目特有的（DB / Stripe live key）→ 写 PROJECT_VAULT
+- **避免 USER 和 PROJECT 同名 key**（容易混淆）。如果 PROJECT 真要覆盖 USER 的 key，确认你的项目用 dotenv 且 `override:true`。
 
 ## Claude 标准接管动作
 
@@ -154,7 +179,10 @@ git config --global user.email "<value>"
 # <<< MCC user-env autoload <<<
 ```
 
-**PowerShell `$PROFILE`**（PS 7+ 路径，Windows 在 `~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1`）：
+**PowerShell `$PROFILE`**（**v2.6.2 起 Windows 同时写 PS 5.1 + PS 7+**）：
+- PS 7+: `~/Documents/PowerShell/Microsoft.PowerShell_profile.ps1`
+- PS 5.1（Win10/11 自带）: `~/Documents/WindowsPowerShell/Microsoft.PowerShell_profile.ps1`
+
 ```powershell
 # >>> MCC user-env autoload >>>
 if (Test-Path "$HOME\.claude\.user-env.ps1") { . "$HOME\.claude\.user-env.ps1" }
@@ -162,6 +190,8 @@ if (Test-Path "$HOME\.claude\.user-env.ps1") { . "$HOME\.claude\.user-env.ps1" }
 ```
 
 新开 shell 自动加载。当前 shell 立刻生效手动跑一次 source 命令。
+
+**opt-out**: 设环境变量 `MCC_NO_AUTOLOAD=1` 让 hook 不动你的 shell profile（适合用 1Password CLI 等密码管理器自管的高级用户）。
 
 ## 常见问题
 
@@ -172,10 +202,40 @@ A: 不会。USER_VAULT 用 `# >>> MCC user-env autoload >>>` marker 圈住自己
 A: 是的。hook 同时写 `.user-env.sh`（Git Bash 用）+ `.user-env.ps1`（PowerShell 用）+ 两边 profile 都自动加 source 行。
 
 ### Q: USER 和 PROJECT 同名 key，哪个赢？
-A: **PROJECT 赢**。逻辑：USER 通过 shell env 注入到 process.env，PROJECT 通过 .env.local 用 dotenv 加载，dotenv 默认覆盖 process.env。如果你的项目 dotenv 设置了 `override: false`，那 USER 赢——但默认是 PROJECT。
+A: **取决于工具栈**——上面"USER vs PROJECT 同名 key 的覆盖语义"section 详列。简短版：
+
+- Node + dotenv 默认 (`override:true`) → PROJECT 赢
+- Python `os.environ` / Go / Shell / Python-dotenv 默认 → USER 赢
+
+**实务建议**：避免 USER 和 PROJECT 同名 key，容易混淆。
 
 ### Q: 我换电脑了，USER_VAULT 怎么办？
-A: USER_VAULT 不进 git（在 ~/.claude/，住家目录）。换机要么手动 scp 过去，要么用密码管理器（1Password / Bitwarden）记 secret 值，新机让 Claude 重写一份。**不要 push USER_VAULT 到 git**。
+
+A: USER_VAULT 不进 git（在 ~/.claude/ 住家目录）。**不要 push USER_VAULT 到 git**。换机三种方案：
+
+1. **密码管理器（推荐）**：用 [1Password CLI](https://developer.1password.com/docs/cli/) / [Bitwarden CLI](https://bitwarden.com/help/cli/) / [pass](https://www.passwordstore.org/) 等管 secret 值。`USER_VAULT.md` 里只放占位，shell 启动时由 `op read 'op://...'` 类命令注入真值。MCC 兼容这种 setup（设 `MCC_NO_AUTOLOAD=1` 让 MCC 不动 profile，自己手编 `~/.bashrc` 走密码管理器）。
+
+   ```bash
+   # 例：~/.bashrc 里
+   export MCC_NO_AUTOLOAD=1
+   export OPENAI_API_KEY=$(op read 'op://Personal/OpenAI/api-key')
+   export ANTHROPIC_API_KEY=$(op read 'op://Personal/Anthropic/api-key')
+   ```
+
+2. **dotfiles repo + SOPS / age 加密**：把 `~/.claude/USER_VAULT.md` 放进**私有** dotfiles repo，用 [SOPS](https://github.com/getsops/sops) 或 [age](https://github.com/FiloSottile/age) 加密。decrypt 后让 Claude 重新触发 user-vault-sync。
+
+   ```bash
+   # 例：dotfiles repo 里
+   sops -e USER_VAULT.md > USER_VAULT.md.enc
+   git add USER_VAULT.md.enc && git commit
+   # 新机 clone 后:
+   sops -d USER_VAULT.md.enc > ~/.claude/USER_VAULT.md
+   # 然后让 Claude 在对话里说"重新同步 USER_VAULT" 触发 hook
+   ```
+
+3. **手动 scp（最简）**：`scp ~/.claude/USER_VAULT.md newmachine:~/.claude/`。然后新机让 Claude `Edit ~/.claude/USER_VAULT.md`（哪怕只加一空行）触发 hook 重建 .user-env.{sh,ps1}。
+
+**反模式**：把 `USER_VAULT.md` 直接 push 到 git（即使 private repo）—— git history 永远留 secret 痕迹，泄漏代价大。如果非要走 git，**必须用 #2 加密方案**。
 
 ### Q: 跨项目 secret 我能用 1Password CLI / pass / gopass 这种吗？
 A: 可以——那是更安全的路。USER_VAULT 是"无密码管理器"场景的最简方案。如果你已经在用密码管理器，更好的做法是 `~/.bashrc` 里 `export OPENAI_API_KEY=$(op read 'op://...')`，USER_VAULT 留 placeholder + 备注 source 来自 1Password。

@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "mccVersion": "2.6.2",
+  "mccVersion": "2.6.3",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\codex",
   "files": [
@@ -271,8 +271,8 @@
     {
       "kind": "rule",
       "dist": ".codex/rules/common/mcc-principles.md",
-      "size": 4732,
-      "sha256": "5ac7f93d3f88cb024e20797e218f4f62d134b87b4cfebb2db6432d309a1df291"
+      "size": 2311,
+      "sha256": "32a01326f1fbe7846334f1e93f73709d82379a6a09f8f3187d1a64b3e5f67801"
     },
     {
       "kind": "agents-md",
@@ -312,6 +312,6 @@
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 307181
+    "totalBytes": 304760
   }
 }
