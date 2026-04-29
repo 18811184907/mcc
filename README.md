@@ -1,485 +1,379 @@
-# MCC · Multi-target Claude/Codex Configuration
+<div align="center">
 
-> 为 Claude Code 和 Codex 双目标定制的产品级 AI 协作配置。
-> 中文主场景，Python + TypeScript + AI 应用全栈定向优化。
+# MCC
+
+### Multi-target Claude / Codex Configuration
+
+**装一次，AI 接管。** · *Install once. AI takes over.*
+
+为 Claude Code 和 Codex 双目标定制的产品级 AI 协作配置  
+*Production-grade AI coding config for both Claude Code and Codex*
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Version](https://img.shields.io/badge/version-2.5.9-blue)
-![Target](https://img.shields.io/badge/target-Claude_Code_%2B_Codex-purple)
+[![Version](https://img.shields.io/github/v/tag/18811184907/mcc?label=version&color=blue)](https://github.com/18811184907/mcc/releases)
+[![Stars](https://img.shields.io/github/stars/18811184907/mcc?style=social)](https://github.com/18811184907/mcc/stargazers)
+![Target](https://img.shields.io/badge/target-Claude_Code_%7C_Codex-purple)
+![Lang](https://img.shields.io/badge/lang-中文_%7C_English-green)
+
+**[⚡ Quick Start](#-quick-start) · [✨ Features](#-你会拥有--what-you-get) · [🌐 English](./README.en.md) · [📖 Docs](./USAGE.md) · [📜 Changelog](./CHANGELOG.md)**
+
+</div>
 
 ---
 
-## 什么是 MCC
+## 🎯 30 秒看懂
 
-**单一源 × 双目标分发**。一套精心打磨的 AI 编码配置，自动适配 Claude Code 和 Codex 两种工具。
+> **你说一句话，Claude 帮你做完。** 你说 "OPENAI_API_KEY 是 sk-xxx"，Claude 自动写 vault、同步 .env、更新 .gitignore；你说 "我刚 clone 一个老项目"，Claude 自动 4 阶段并行扫架构出报告；你说 "这次部署到 192.168.1.10"，Claude 自动写 SSH config + secrets-index。
 
-从 5 个开源项目（`everything-claude-code` / `SuperClaude` / `wshobson/agents` / `BMAD-METHOD` / `obra/superpowers`）里挑精华、去冗余、融合改写，不是简单拼接。
+> **零拷模板、零手编 .env、零重复劳动。**
 
-### 装完你会拥有
-
-| 维度 | 内容 |
-|---|---|
-| **19 个角色 agent** | planner / code-reviewer / debugger / security-reviewer / ai-engineer / python-pro / typescript-pro / fastapi-pro / frontend-developer / backend-architect / database-optimizer / performance-engineer / …… |
-| **15 个 slash 命令** | `/prd` `/plan` `/implement` `/pr`（PRP 四件套流水线）、`/review`（并行派 code-reviewer + security-reviewer）、`/tdd`、`/fix-bug`（4 域分诊）、`/session-save` `/session-resume`、`/init`（空项目轻量初始化）、`/explain`（中文讲解）、**`/onboard`**（v2.0 · 接手已有项目 4 阶段并行扫）、**`/index-repo`**（v2.0 · 大项目 token 节省索引）、**`/mcc-help`**（v2.5.5 · MCC 导航）、**`/claudemd-sync`**（CLAUDE.md 同步） |
-| **21 个 skill** | **核心编排（4）**：`orchestration-playbook` / `help` / `dispatching-parallel-agents` / `party-mode`<br>**工作流（6）**：`confidence-check` / `tdd-workflow` / `verification-loop` / `code-review-workflow` / `subagent-driven-development` / `continuous-learning-v2`<br>**专项（11）**：`architecture-decision-records` / `coding-standards` / `product-lens` / `writing-skills` / `e2e-testing` / `using-git-worktrees` / `finishing-a-development-branch` / `project-onboarding` / `project-vault` / `database-schema-doc` / `claudemd-sync` |
-| **3 个 behavioral mode** | `brainstorming` · `task-management` · `token-efficiency`（按关键词/上下文自动激活） |
-| **8 条 hook** | `pre:config-protection` 独家（阻止 Claude 修改 config 绕过 lint/security）、`stop:format-typecheck`（批量 lint+tsc，不每次 edit 跑）、`pre:bash:safety`（破坏性命令拦截）等 |
-| **5 个 MCP 服务器** | Serena（语义记忆）、Context7（实时查文档）、GitHub、Sequential（深推理）、Playwright |
-| **精选 rules** | Python 5 个（`coding-style` / `testing` / `patterns` / `security` / `hooks`）+ `mcc-principles`（6 主题：Core Directive / Evidence-Based / SOLID / Systems Thinking / Decision Framework / Risk Management） |
+```mermaid
+graph LR
+    A[你说一句话] --> B{Claude 判断场景}
+    B -->|secret 类| C[user-vault / project-vault skill]
+    B -->|大代码库| D[/onboard 4 阶段扫]
+    B -->|新功能| E[/prd → /plan → /implement → /pr]
+    B -->|卡住了| F[/fix-bug 4 域分诊]
+    C --> G[hook 自动 sync 到 .env / SSH / git]
+    D --> H[5min 出 onboarding 报告 + CLAUDE.md]
+    E --> I[每步 6 阶段验证闸门]
+    F --> J[根因分析 + 归档 docs/mistakes/]
+    style A fill:#fef3c7,stroke:#f59e0b
+    style G fill:#d1fae5,stroke:#10b981
+    style H fill:#d1fae5,stroke:#10b981
+    style I fill:#d1fae5,stroke:#10b981
+    style J fill:#d1fae5,stroke:#10b981
+```
 
 ---
 
-## 安装（一条命令 · 不问问题）
+## ⚡ Quick Start
 
-**Windows**：
+### 一条命令装好（Windows / macOS / Linux）
+
+<table>
+<tr>
+<th>Windows (PowerShell)</th>
+<th>macOS / Linux / Git Bash</th>
+</tr>
+<tr>
+<td>
+
 ```powershell
 iwr -useb https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.ps1 | iex
 ```
 
-**macOS / Linux / Git Bash**：
+</td>
+<td>
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/18811184907/mcc/main/bootstrap.sh | bash
 ```
 
-v2.4 起默认走 **smart-split** 模式 —— 自动分两处装：
+</td>
+</tr>
+</table>
 
-```
-~/.claude/                              ← 用户级能力（永久，所有项目共享）
-  ├── agents/  19 个
-  ├── commands/  15 个 → / 自动补全
-  ├── skills/  21 个
-  ├── modes/  3 个
-  ├── settings.json    (信任模式：permissions.allow=["*"] + bypassPermissions)
-  ├── .mcc-hooks/  25 scripts
-  ├── rules/  11 个（含 mcc-principles）
-  └── CLAUDE.md  (推荐模板，如不存在才写)
-
-~/.codex/                               ← Codex 用户级能力（永久，所有项目共享）
-  ├── agents/  19 个
-  ├── prompts/  15 个 mcc-* prompt
-  ├── rules/  11 个
-  ├── AGENTS.md
-  └── config.toml  (MCP sections)
-
-<当前目录>/.claude/PRPs/                  ← 项目工作产物（PRDs/plans/reports 落盘点）
-  ├── prds/        plans/        reports/
-  └── reviews/     onboarding/   features/
-```
-
-**重启 Claude Code 立即生效**。重跑同一条命令 = 自动 `git pull` + 重装。
-
-> 前置：Node.js 18+ · 装了 Claude Code 或 Codex（任一即可）
-
-### 三种 scope（默认无需选）
-
-| Scope | 装到哪 | 适合谁 |
-|---|---|---|
-| **smart**（默认） | `~/.claude/` + `~/.codex/` 全套，另建 `<cwd>/.claude/PRPs/` 工作产物 | 99% 个人开发者 |
-| **global** | 只装 `~/.claude/` + `~/.codex/`，不动当前目录 | 在 `$HOME` 跑 / 不想污染当前目录 |
-| **project**（team） | 全套到 `<cwd>/.claude/` + `<cwd>/.codex/`，并写 `<cwd>/AGENTS.md`（`commit` 给团队） | 团队 lead 推 MCC 给全队 |
-
-切换：`MCC_BOOTSTRAP_ARGS="--scope project" iwr/curl ... | iex/bash`。其他 flag（`--strict` / `--skip-claudemd` / `--no-exclusive` / `--no-project-stub`）见 **[INSTALL.md](./INSTALL.md)**。
+> **前置 / Prerequisites**：Node.js ≥ 16 · Claude Code 或 Codex 任一  
+> **重启 Claude Code 立即生效** · **Restart Claude Code to activate**
 
 ### 验证装好了
 
-在 Claude Code 里打一条消息：
+在 Claude Code 里打：
+
 ```
 /mcc-help
 ```
 
-激活 MCC 导航，扫 `.claude/PRPs/` 推断当前项目阶段并给建议。Codex 侧用 `mcc-help`。
+看到 MCC 导航 = 成功。
+
+### 立刻试一下（Try it）
+
+在对话里跟 Claude 说一句：
+
+```
+我的 OPENAI_API_KEY 是 sk-xxx
+```
+
+Claude 会自动：
+1. ✓ 检查 / 创建 `~/.claude/USER_VAULT.md`
+2. ✓ 加你的 key 进去
+3. ✓ 触发 hook 同步到 `~/.claude/.user-env.sh` + `.user-env.ps1`
+4. ✓ 自动加 `source` 行到你的 `~/.bashrc` / PowerShell `$PROFILE`
+5. ✓ 简短确认："已加 OPENAI_API_KEY，所有项目都能用 process.env.OPENAI_API_KEY"
+
+**整个过程你只敲了一句中文。**
 
 ---
 
-## 核心设计
+## ✨ 你会拥有 / What you get
 
-### 单一源 → 双目标
+<table>
+<tr>
+<td width="50%" valign="top">
 
-```
-source/                              ← 一份真相
-├── agents/*.md
-├── commands/*.md
-├── skills/*/SKILL.md
-├── modes/*.md
-├── hooks/ + scripts/
-├── mcp/mcp.json
-└── rules/
+### 🤖 19 个领域 agent
 
-       ↓ adapters/build.js（0.2 秒）
+planner · code-reviewer · debugger · security-reviewer · ai-engineer · python-pro · typescript-pro · fastapi-pro · frontend-developer · backend-architect · database-optimizer · performance-engineer · prompt-engineer · vector-database-engineer · refactor-cleaner · silent-failure-hunter · test-automator · code-explorer · javascript-pro
 
-dist/
-├── claude-code/.claude/             ← 给 Claude Code 用
-│   ├── agents/          (19)
-│   ├── commands/    (20，触发 /*)
-│   ├── skills/          (8)
-│   ├── modes/           (3)
-│   ├── .mcc-hooks/      (25 scripts + hooks.json)
-│   ├── rules/common/    (mcc-principles.md)
-│   ├── rules/python/    (5 个)
-│   ├── mcp-configs/
-│   └── settings.fragment.json
-│
-└── codex/                          ← 给 Codex 用
-    ├── .codex/agents/     (tools 字段已转译: Read → read_file 等)
-    ├── .codex/prompts/    (15 个 mcc-*.md)
-    ├── .codex/rules/
-    ├── AGENTS.md          (编译了所有 agents + commands + skill 指引)
-    ├── HOOKS-SOFT-GUIDANCE.md  (hooks 转为自律约定)
-    ├── config.fragment.toml    (MCP 的 TOML 版)
-    └── INSTALL-MANIFEST.json
-```
+</td>
+<td width="50%" valign="top">
 
-编辑 `source/` 后跑 `node adapters/build.js` 刷新 `dist/`。
+### ⚙️ 15 个 slash 命令
 
-### 为什么分 source/adapters/dist
+**PRP 流水线**：`/prd` → `/plan` → `/implement` → `/pr`  
+**审查**：`/review`（并行 reviewer + security）  
+**修复**：`/fix-bug`（4 域分诊：bug / build / perf / deploy）  
+**会话**：`/session-save` `/session-resume`  
+**入门**：`/onboard`（4 阶段扫老项目）· `/index-repo`  
+**导航**：`/mcc-help` · `/explain`（中文讲解）
 
-- **source/**：你的真实配置，版本控制在这里
-- **adapters/**：纯 Node 脚本（无 npm 依赖），把 source 转译成各工具需要的格式
-- **dist/**：构建产物，commit 进 git 方便 `/plugin install` 直接用，不需要每个用户本地构建
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
 
-### 约束：产品化不是拼接
+### 🧠 23 个 skill
 
-MCC 的 agent/command 都是 **融合改写**过的，不是多个源并存：
-- 融合型（`code-reviewer` / `debugger` / `backend-architect` / `database-optimizer` / `performance-engineer`）取多源精华
-- 全部中文化角色定位和段落 header，代码/API/术语保留英文
-- 删除所有来源暴露词（OCI、GPT-5.4 幻觉、三段式空话）
-- Python 主力：`python-pro`、`fastapi-pro` 降 opus→sonnet 省 token
-- AI 应用定向：`ai-engineer` + `prompt-engineer` + `vector-database-engineer` 是独家
+**编排（4）**: orchestration-playbook / help / dispatching-parallel-agents / party-mode  
+**工作流（6）**: confidence-check / tdd-workflow / verification-loop / code-review-workflow / subagent-driven-development / continuous-learning-v2  
+**Vault（3）** ⭐ v2.6: project-vault · **user-vault**（跨项目通用）· claudemd-sync  
+**专项（10）**: 含 e2e-testing · architecture-decision-records · database-schema-doc · project-onboarding 等
 
-详见 [ARCHITECTURE.md](./ARCHITECTURE.md)。
+</td>
+<td width="50%" valign="top">
+
+### 🪝 29 个 hook + 5 MCP
+
+**Hooks**: pre-vault-leak-detect · post-vault-sync · post-user-vault-sync · post-claudemd-sync · session-start · gateguard 等  
+**MCP**: Serena（语义记忆）· Context7（实时文档）· GitHub · Sequential（深推理）· Playwright
+
+</td>
+</tr>
+</table>
 
 ---
 
-## 典型工作流
+## 🏗️ 架构 / Architecture
 
-### 场景 1：做一个新功能
+```mermaid
+graph TB
+    subgraph "📦 单一源 / Single Source"
+        S[source/<br/>agents · commands · skills · hooks · rules · mcp]
+    end
 
-```
-/prd    → 7 phase Socratic 对话生成 PRD
-/plan   → 从 PRD 生成自包含实施计划（含 mandatory reading）
-/implement → 按 plan 执行，每步 5 级验证（type/lint/test/build/integration）
-/review → 并行跑 code-reviewer + security-reviewer
-/pr     → 创建 PR 关联所有 PRP artifacts
-```
+    subgraph "🔧 编译 / Build"
+        A[adapters/build.js<br/>0.2s]
+    end
 
-artifacts 都落 `.claude/PRPs/{prds,plans,reports,reviews}/`。
+    subgraph "🎯 双目标分发 / Multi-target Distribution"
+        CC[dist/claude-code/<br/>.claude/agents · skills · hooks · settings]
+        CX[dist/codex/<br/>.codex/agents · prompts · rules<br/>+ AGENTS.md]
+    end
 
-### 场景 2：卡住了
+    subgraph "🏠 安装 / Install"
+        H1[~/.claude/<br/>用户全局能力]
+        H2[~/.codex/<br/>Codex 全局能力]
+        P1["&lt;cwd&gt;/.claude/PRPs/<br/>项目工作产物"]
+        P2["&lt;cwd&gt;/docs/PROJECT_VAULT.md<br/>项目级 secret"]
+        U1[~/.claude/USER_VAULT.md ⭐<br/>跨项目 secret/git/SSH]
+    end
 
-```
-/fix-bug "登录接口偶尔 500" → root cause 调查 → 方案 A/B → 实施
-```
+    S --> A
+    A --> CC
+    A --> CX
+    CC --> H1
+    CX --> H2
+    H1 -.->|smart 模式| P1
+    H1 -.->|AI 主导写入| P2
+    H1 -.->|v2.6 新| U1
 
-禁止 retry，强制根因分析，产出归档到 `docs/mistakes/`。
-
-### 场景 3：方向有分歧
-
-```
-/mcc-help → 查看当前阶段 + 推荐 skill
-调 party-mode → 真并行 spawn 4 个 MCC agent 辩论
-             (planner + backend-architect + security-reviewer + ai-engineer)
-```
-
-### 场景 4：跨天继续上次的活
-
-```
-昨天结束前：/session-save
-今天开始：/session-resume → 秒懂昨天做到哪了、什么没跑通、下一步 exact action
-```
-
-### 场景 5（v2.0 · 旗舰）：接手已有项目（brownfield onboarding）
-
-刚 clone 一个 50k 行的老项目，从哪开始？
-
-```
-/onboard
+    style S fill:#fef3c7,stroke:#f59e0b
+    style A fill:#fbcfe8,stroke:#ec4899
+    style CC fill:#dbeafe,stroke:#3b82f6
+    style CX fill:#dbeafe,stroke:#3b82f6
+    style H1 fill:#d1fae5,stroke:#10b981
+    style H2 fill:#d1fae5,stroke:#10b981
+    style U1 fill:#fde68a,stroke:#f59e0b,stroke-width:3px
 ```
 
-**4 阶段并行扫，~5 分钟出报告**：
-
-```
-⚡ Phase 1 并行侦察（5 路 Glob / ~30s）
-   ├─ 包管理 / 入口点 / 配置 / 测试结构 / 文档
-
-⚡ Phase 2 并行架构映射（fan-out / ~2 min）
-   ├─ code-explorer        架构层 / 入口 / 调用链
-   ├─ backend-architect    服务边界 / 数据流
-   └─ database-optimizer   schema / migration
-
-⚡ Phase 3 并行规范检测（4 路 / ~1 min）
-   ├─ 命名 / 错误处理 / 测试 / git 约定
-
-✓ Phase 4 产出（~1 min）
-   ├─ .claude/PRPs/onboarding/{date}-onboard-report.md  详细报告
-   └─ CLAUDE.md（≤100 行）  每次 session 自动加载
-```
-
-报告含**栈 / 入口 / 关键模块 / 数据流 / 团队约定 / 危险信号 / 接手第一步建议**，让 Claude 几分钟内理解陌生代码库。
-
-**大项目（>1k 文件）随后跑** `/index-repo`：生成 `PROJECT_INDEX.md` + `.json`，每 session 省 ~10-15K tokens（2K 一次性投入，多 session 摊平 ROI 5-7x · 借鉴 SuperClaude）。
-
-完整 15 个命令速查见 [USAGE.md](./USAGE.md)。
-
-### v1.5 哲学：少命令，多自动
-
-冷门命令（/full-stack / /full-review / /verify / /test-coverage / /e2e / /learn / /skill-create / /build-fix / /troubleshoot）已删除，能力转移到 skill 自动激活：
-
-- 说"验证一下 / 交付前检查" → `verification-loop` skill 自动 6 阶段
-- 说"写 E2E / Playwright" → `e2e-testing` skill 给出 Page Object 模板
-- 说"审一下 / 帮我看看代码" → `code-review-workflow` skill 派 subagent 审
-- 说"记下这个 / 沉淀经验" → `continuous-learning-v2` skill 写 learned skill
-- 说"建个 skill / 提炼约定" → `writing-skills` skill 交互式创作
-
-mcc-principles 加了 P-1"主动性"规则：**用户应少敲命令，Claude 应多主动决策**。详见 `rules/common/mcc-principles.md` 顶部。
+**关键设计**：
+- 📦 **一份真相** ：`source/` 是唯一源，所有改动都在这里
+- 🔧 **零依赖编译**：`adapters/` 纯 Node 脚本，无 npm 依赖，0.2 秒构建
+- 🎯 **dual-target**：Claude Code（hook + skill 都支持）+ Codex（hook 转软约定，skill 转 AGENTS.md 段落）
+- 🏠 **smart-split**：能力装 `~/.claude/`（永久共享），工作产物建在项目里
 
 ---
 
-## 安装后会发生什么
+## 🚀 5 大典型场景
 
-### 你会多出（以 global 为例）
+### 1️⃣ 新功能：PRP 流水线
 
-```
-~/.claude/
-├── agents/{19 个 MCC agent}.md        ← 同名用户已有的不覆盖
-├── commands/{15 个命令}.md         ← 触发 /*
-├── skills/{21 个 skill 目录}/           ← 同名跳过
-├── modes/{3 个 mode}.md
-├── rules/python/ + rules/common/mcc-principles.md
-├── .mcc-hooks/                          ← MCC 私有 namespace
-│   ├── scripts/{25 个 .js/.sh}/
-│   └── hooks.json
-├── mcp-configs/mcp.json
-└── settings.json                        ← 深度合并（已备份原文件）
-
-~/.codex/
-├── agents/{19 个}.md                    ← tools 已转译为 Codex 命名
-├── prompts/{15 个 mcc-*}.md             ← Codex 用 prompt 机制
-├── rules/python/
-└── config.toml                          ← 追加了 6 个 MCP sections
-
-~/.codex/AGENTS.md（project scope 时为项目根 `AGENTS.md`）
-└── 编译版的角色清单 + 命令索引 + skill 指引 + hooks 软约定
+```mermaid
+graph LR
+    A[/prd] -->|7 phase 苏格拉底| B[PRD]
+    B --> C[/plan]
+    C -->|抓代码模式 + mandatory reading| D[自包含计划]
+    D --> E[/implement]
+    E -->|每步 6 阶段验证| F[实现]
+    F --> G[/review]
+    G -->|并行 reviewer + security| H[review report]
+    H --> I[/pr]
+    I -->|关联 artifacts| J[GitHub PR]
+    style A fill:#dbeafe
+    style C fill:#dbeafe
+    style E fill:#dbeafe
+    style G fill:#dbeafe
+    style I fill:#dbeafe
 ```
 
-### 不会动
+artifacts 全部落 `.claude/PRPs/{prds,plans,reports,reviews}/`，下次 session `/session-resume` 秒接。
 
-- 你原有的 `agents/xxx.md` / `commands/xxx.md` / `skills/xxx/` / `modes/xxx.md`（同名跳过）
-- `rules/common/` 下你的现有文件（只加 `mcc-principles.md`）
-- `rules/typescript/` / `rules/web/` / `rules/zh/`（完全不碰）
-- 任何 `.claude/PRPs/` 下的用户产物
-- 任何 `session-data/` / `learned/` / `docs/mistakes/` / `docs/adr/`
+### 2️⃣ 接手老项目：4 阶段并行扫
+
+刚 clone 一个 50k 行的陌生项目？敲 `/onboard`：
+
+```mermaid
+graph TB
+    A["/onboard"] --> B[Phase 1 并行侦察 ~30s<br/>包管理 / 入口 / 配置 / 测试 / 文档]
+    B --> C[Phase 2 并行架构 ~2min<br/>code-explorer + backend-architect + database-optimizer]
+    C --> D[Phase 3 并行规范 ~1min<br/>命名 / 错误处理 / 测试 / git 约定]
+    D --> E[Phase 4 产出 ~1min<br/>onboarding 报告 + CLAUDE.md ≤100 行]
+    style A fill:#fef3c7
+    style E fill:#d1fae5,stroke:#10b981,stroke-width:3px
+```
+
+**~5 分钟出报告**，含栈/入口/数据流/团队约定/危险信号/接手第一步建议。
+
+### 3️⃣ Bug 定位：4 域分诊 + 根因强制
+
+```
+/fix-bug "登录接口偶尔 500"
+```
+
+并行盲诊：debugger + performance-engineer + database-optimizer，**禁止打补丁，强制根因分析**，产出归档到 `docs/mistakes/`。
+
+### 4️⃣ 跨项目 secret 管理（⭐ v2.6 旗舰）
+
+```
+你说: "我的 OPENAI_API_KEY 是 sk-xxx"
+        ↓
+Claude 判断: 跨项目 → USER_VAULT
+        ↓
+写 ~/.claude/USER_VAULT.md
+        ↓
+Hook 自动触发:
+  ├─ ~/.claude/.user-env.sh         (Bash/Zsh 自动 source)
+  ├─ ~/.claude/.user-env.ps1        (PowerShell 自动 dot-source)
+  ├─ ~/.ssh/config (MCC-User 块)    (SSH 主机注入)
+  └─ git config --global            (GIT_USER_* 特殊 key)
+        ↓
+追加 source 行到 ~/.bashrc / $PROFILE (idempotent)
+        ↓
+✓ 所有项目代码 process.env.OPENAI_API_KEY 即时可用
+```
+
+跟 PROJECT_VAULT 互补：本项目 DB 密码写项目里，跨项目 personal key 写用户级。Claude 判断不准时主动问。
+
+### 5️⃣ 跨天继续
+
+```
+昨天结束: /session-save
+今天:    /session-resume
+         → 加载昨天做到哪 / 什么没跑通 / 下一步 exact action
+```
 
 ---
 
-## 卸载
+## 🎓 Philosophy
+
+> **少命令，多自动 / Less commands, more automation**  
+> **AI 主导，用户少敲 / AI-driven, minimal user input**  
+> **Evidence > assumptions** · **Code > documentation** · **Efficiency > verbosity**
+
+详见 `rules/common/mcc-principles.md` 顶部三条元规则。
+
+---
+
+## 📦 安装详情 / Install Details
+
+### 三种 scope（默认 smart）
+
+| Scope | 装到哪 / Install to | 适合谁 / For |
+|---|---|---|
+| **smart**（默认） | `~/.claude/` + `~/.codex/` 全套 + `<cwd>/.claude/PRPs/` 工作产物 | 99% 个人开发者 / Personal devs |
+| **global** | 只装用户级，不动当前目录 | 在 `$HOME` 跑 / 不污染 cwd |
+| **project**（team） | 全套到 `<cwd>/.claude/` + `<cwd>/.codex/` + `AGENTS.md` 进 git | 团队 lead 推给全队 |
+
+切换：`MCC_BOOTSTRAP_ARGS="--scope project" iwr/curl ... | iex/bash`
+
+详细 flag（`--strict` / `--skip-claudemd` / `--exclusive` 等）见 [INSTALL.md](./INSTALL.md)
+
+### 卸载
 
 ```powershell
 # Windows
-.\uninstall.ps1                              # 从最近备份恢复
-.\uninstall.ps1 -Timestamp 2026-04-24-065853 # 指定时间戳恢复
+.\uninstall.ps1
+.\uninstall.ps1 -Timestamp 2026-04-29-075916  # 指定时间戳恢复
 ```
 
 ```bash
 # Unix
-./uninstall.sh --timestamp 2026-04-24-065853
+./uninstall.sh
+./uninstall.sh --timestamp 2026-04-29-075916
 ```
 
-卸载会：
-- 恢复 `settings.json` / `config.toml` 到安装前
-- 删除 `.mcc-hooks/` / `commands/` / `rules/common/mcc-principles.md`（MCC 独有）
-- **保留** 你的 PRPs artifacts、session-data、learned skills、mistakes、ADR
-- **保留** agents/skills/modes（因为你可能改过同名文件）—— 手动清理
+会**保留**你的 PRPs / session-data / learned skills / mistakes / ADR。
 
 ---
 
-## Roadmap
+## 📚 文档 / Documentation
 
-### v1.0 · 2026-04-24 首发
-
-- [x] 19 agents（含 5 融合型）+ 20 commands + 8 skills + 3 modes
-- [x] 8 hooks + 5 MCPs + Python rules + mcc-principles
-- [x] 双目标 adapter（Claude Code + Codex）
-- [x] installer / uninstaller 支持 global/project/hybrid scope
-- [x] 幂等 build + 备份 + 回滚
-
-### v1.1 · 2026-04-24 Superpowers 增量 ✅
-
-- [x] 纳入 [obra/superpowers](https://github.com/obra/superpowers) 8 个独家 skill
-- [x] **subagent-driven-development**：每任务 fresh subagent + 两阶段 review（spec → quality）
-- [x] **tdd-workflow**（改名自 test-driven-development）：填补 `/tdd` 的 skill 实现体，含 testing-anti-patterns
-- [x] **writing-skills**：创作 skill 的 meta-skill + Anthropic 官方最佳实践参考
-- [x] **using-git-worktrees**：worktree 隔离并行开发
-- [x] **finishing-a-development-branch**：分支收尾（merge/PR/cleanup）
-- [x] **requesting-code-review** + **receiving-code-review**：代码审查两端流程
-- [x] **dispatching-parallel-agents**：独立任务并行分发（和 party-mode 辩论互补）
-- [x] skills 从 8 扩展到 **16**
-
-### v1.2 · 2026-04-24 便捷性提升 ✅
-
-- [x] Claude Code slash 命令**去 `/mcc:` 前缀**：`/mcc:prd` → **`/prd`**、`/mcc:plan` → **`/plan`**（20 个全部去）
-- [x] adapter 改：`commands/mcc/` 子目录 → `commands/` 顶层
-- [x] installer 加 **`--exclusive`** flag：独占模式备份并清空 `agents/commands/skills/modes/` 再装 MCC（`rules/` 和 `settings.json` 保留）
-- [x] 文档全量更新（README / USAGE / ARCHITECTURE 所有 `/mcc:xxx` → `/xxx`）
-- [x] Codex 侧保持 `mcc-` prefix 不变（Codex 生态里防 prompt 撞）
-
-### v1.3 · 2026-04-24 Hook 减捣乱 ✅
-
-- [x] **3 个捣乱王默认关**（脚本保留，可手动启用）：
-  - `pre:config-protection`：误判改 tsconfig 为放宽规则
-  - `stop:format-typecheck`：大项目 tsc 30-60 秒拖慢响应
-  - `pre:bash:safety`：内部 6 个子检查 Windows 下白噪音，易误伤 `rm -rf node_modules`
-- [x] **默认保留的 3 个轻量 hook**：
-  - `session:start`（恢复上次 session）
-  - `stop:session-end`（持久化，async）
-  - `stop:check-console-log`（扫 console.log，async）
-- [x] `settings.fragment.json` 重构：每个可选 hook 带 `_reason_off` 和 `_enable_put_into` 字段，便于手动启用
-- [x] README 加 "Hook 开关" 章节说明如何手动开关
-
-### v1.4 · 2026-04-24 Hook 减捣乱 + 团队备份探索
-
-- [x] v1.3 Hook 减捣乱合并发布（3 个捣乱王默认关）
-- [⊗] v1.4.0 的"团队代码备份"（`/backup` 三件套 + team-install 脚本 + 双份 guide）**已在 v1.4.1 下线**。原因：GitHub 安全模型限制，管理员至少要亲自建一次 PAT，无法做到真正全托管。保留设计文档供未来 Organization 版本参考。
-
-### v1.5 · 2026-04-24 少命令，多自动 ✅
-
-哲学：**用户应少敲命令，Claude 应多主动决策**。
-
-- [x] 命令数 20 → **11**（-45%）
-- [x] 删除 9 个冷门命令：`/full-stack` `/full-review` `/build-fix` `/verify` `/test-coverage` `/e2e` `/learn` `/skill-create` `/troubleshoot`
-- [x] `/fix-bug` 吞下 `/troubleshoot` 的 4 域路由（bug / build / performance / deployment 自动判定）
-- [x] 合并 skill：`requesting-code-review` + `receiving-code-review` → `code-review-workflow`（一个 skill 覆盖两端）
-- [x] 新增 skill：`e2e-testing`（Playwright + Page Object + CI 集成，原 `/e2e` 的能力更全）
-- [x] 强化多个 skill 的自动激活关键词（`verification-loop` / `tdd-workflow` / `continuous-learning-v2` / `writing-skills`）
-- [x] `mcc-principles` 新增 **P-1 主动性原则**：含场景-agent/skill 意图映射表，让 Claude 遇到场景自动派发
-- [x] `help`（原 mcc-help）workflow-map.json 同步更新
-
-### v1.6 · 2026-04-24 产品级深度优化 ✅
-
-用"不怕改动"的态度做严肃审计。5 轮并行审查员（agent / command / skill / hooks / infra 层）拉问题清单，批量修复。
-
-- [x] **7 处 CRITICAL 残留引用清零**（review.md / tdd.md / session-save.md / session-resume.md 里引用已删命令的地方）
-- [x] **`/fix-bug` 强制力一致**：Phase 2b 编译诊断统一"必找根因、禁止打补丁"
-- [x] **`refactor-cleaner` 引用不存在的 tdd-guide** → 改为 `test-automator` / `tdd-workflow` skill
-- [x] **6 个 skill description 分工表述**：dispatching-parallel-agents（并行独立）/ subagent-driven-development（串行有依赖）/ verification-loop（技术闸门）/ code-review-workflow（架构合规）/ continuous-learning-v2（被动观察）/ writing-skills（主动创作）
-- [x] **3 个 agent description 升级**：test-automator / performance-engineer / silent-failure-hunter 明确触发条件和分工
-- [x] **e2e-testing skill 加 3 个扩展**：视觉回归 / a11y（axe-core）/ Core Web Vitals 性能基准
-- [x] **hooks 防卡死 3 道防线**：check-console-log 加 100 文件上限 + 500KB 跳过 + 3 秒 watchdog + 第二道 hook timeout 保险
-- [x] **hooks fail-closed**：run-with-flags-shell.sh 改为"检查器异常时默认不跑 hook"（而非默认跑）
-- [x] **`session-start` 加 5 秒 timeout**（之前无 timeout 可能永久挂起）
-- [x] **build.js 健康检查**：source/ 缺目录 / agent<15 / command<8 / skill<12 即 fail fast；dist 产出 <20 文件即拒绝
-- [x] **`tests/smoke.js` 自检套件**：133 项自动检查（frontmatter / manifest 不谎报 / workflow-map 引用 / hooks 脚本存在 / build 可跑 / version 同步）—— 每次 release 前必跑
-
-### v1.7 · 2026-04-24 多智能体自动并行协同 ✅
-
-让**并行派发 subagent 默认主动发生**，不等用户提。定义**协作模式 + 效率控制**。
-
-- [x] `mcc-principles` 新增 **P-0.5 并行优先**：8 条决策表（场景 → agent 组合）+ 4 种协作模式（fan-out / 接力 / 辩论 / 混合）+ 4 个合流整合动作 + 模型分级（Haiku/Sonnet）+ 上限 4 并发
-- [x] `dispatching-parallel-agents` skill 加 **Auto-dispatch 决策树**（Q1-Q4 每次接手任务前跑一遍）+ **10 种场景的 agent 组合速查表** + 用户意图→组合快速映射
-- [x] **`/fix-bug` Phase 2 改并行盲诊**：debugger + 附加信号触发的 performance-engineer / database-optimizer / frontend-developer
-- [x] **`/plan` Phase 2 加 domain agent 并行探索**：按栈类型（后端/前端/AI/全栈）2-3 个 agent 并行
-- [x] **`/pr` Phase 2.5 并行预检**：同时派 verification-loop + code-reviewer + security-reviewer（~2min，串行需 ~6min）
-- [x] **补 `rules/typescript/`**（5 文件：coding-style / testing / security / patterns / hooks）—— 项目定位是 Python + TS + AI 全栈，之前只有 Python 是**长期 gap**
-- [x] **adapter 双侧（Claude Code + Codex）都加 TS rules 转译**
-- [x] **TOOLS_MAP 扩展**：+ WebSearch + NotebookEdit；未映射 tool 从静默穿透改为 **unmappedWarnings 显式 warn**
-- [x] **installer 跨盘符备份原子化**：`copy → 校验（文件数+字节对齐）→ rename → rm`，任一步失败源目录完好
-- [x] `exclusive` 模式的备份也走同一套原子 fallback
-
-### v1.8 · 2026-04-24 4 层架构重构 + token 精简 ✅
-
-**4 层职责清晰化**：rules 只放元规则骨架；commands 是工作流入口；agents 是**领域专家（Actor）**；skills 是**方法论参考（Method）**。避免能力集中在单个大 skill 导致拥堵。
-
-- [x] **mcc-principles 精简**：391 行 → 94 行（5600 → ~1500 tokens 常驻，-73%），只留 3 条元规则骨架 + 指针。通用软工原则（证据 / SOLID / 系统 / 决策 / 风险）挪对应 skill 按需激活
-- [x] **拆分 mcc-help 职责混乱**：恢复纯用户导航（v1.9 改名为 `help`）；新建 `orchestration-playbook` skill（107 行）专职 Claude 自查 —— A 节 agent 派发 / B 节 skill 激活 / C 节并行决策 / D 节任务规模
-- [x] **dispatching-parallel-agents 补全方法论**：协作 4 模式 + 合流 4 动作 + 成本控制，方法论集中一处
-- [x] **AGENTS.md（Codex 侧）TOC + 压缩**：每个 description ≤140 字符；首次显式暴露并行能力；13295 → 12424 bytes
-- [x] **hooks 孤儿误判澄清** + 补 `post_bash_dispatcher_OFF_BY_DEFAULT` 可选入口
-- [x] **installer 拆分撤回**：没坏不动（风险 > 收益）；改为新建 `tests/installer-dry-run.js` 12 checks 作为未来安全网
-- [x] **skills 16 → 17**（新增 orchestration-playbook）
-- [x] **smoke 144 → 145 checks**
-
-### v1.9 · 2026-04-24 彻查遗留 + 并行可视化 + mcc-help→help ✅
-
-**5 审查员并行深审**拉出完整问题清单后批量修复。彻查遗留。
-
-- [x] **7 处 CRITICAL 修复**：
-  - `mcc-help` skill → `help`（所有引用清零：principles / orchestration-playbook / README / USAGE / tests）
-  - orchestration-playbook 死链 `engineering-judgment` → 分发到 4 个真实 skill/agent
-  - plan.md 重复段落清除
-  - README/USAGE "16 个 skill" → 17
-  - ai-engineer 的 `call_with_fallback` 重写（primary 3 retry + 单次 fallback，不再双层重试）
-  - planner.md `tdd-guide` → `test-automator` agent + `tdd-workflow` skill
-  - **`dispatching-parallel-agents` + `orchestration-playbook` 新增"派发可视化模板"**——强制 Claude 每次并行派 agent 输出 ⚡ 派发文本 + ✓ 合流文本，让用户看到真并行
-- [x] **3 处 HIGH 修复**：
-  - implement.md 的 `5 级验证` → `6 阶段验证`（对齐 verification-loop skill）
-  - build.js MIN_SKILLS 12→15（接近实际 17 但留缓冲）
-  - **Python rules 补齐到 TS 对等**（coding-style 42→170 / testing 38→180 / security 29→180 / patterns 40→210 / hooks 20→120）
-- [x] Python rules 新增覆盖：ruff + pyright 严格度 / Pydantic 校验 / async 最佳实践 / argon2 / OWASP Top 10 Python 对照 / FastAPI DI / Repository Protocol / pre-commit hooks
-- [x] **skills 16 → 17**（v1.8 新增的 orchestration-playbook + v1.9 改名的 help）
-
-### v1.10 · 2026-04-25 5 审查员交叉审计清零 + Codex 伪并行 + ECC onboard 调研 ✅
-
-**5 审查员交叉审计**（A 引用闭环 / B 数字术语 / C 行为流贯彻 / D 隐藏 bug / E Python↔TS 对等度）拉出完整问题清单，**一次性清零**。
-
-- [x] **3 个 CRITICAL bug 修复**：
-  - `session-start-bootstrap.js` timeout 30s→5s（对齐 hook 设的 5s）
-  - `session-end.js` stdin 1MB 静默截断 → 显式 WARNING + fallback
-  - `build.js assertSourceIsHealthy` 加 rules/{common,python,typescript} 检查
-- [x] **3 个 HIGH 修复**：
-  - `uninstaller` 不清 rules/typescript（v1.7 起加入但漏了）
-  - `install.ps1/sh` 头部硬编版本号 → 运行时从 manifest 读取（永不漂移）
-  - `manifest.principles_sections` 8→3（v1.9 重构后没同步）
-- [x] **Cross-target 派发可视化**：4 个核心 command（/fix-bug / /plan / /pr / /review）补 ⚡派发 + ✓合流的**具体格式模板**，不只说"要可视化"
-- [x] **Codex 伪并行方案**：AGENTS.md 新增"Codex 没有 Task tool 时如何伪并行"章节 —— 1 次回复扮多角色 + 结构化分段
-- [x] **TS rules 补 AI/LLM 章节**（PromptTemplate / retry+fallback 分层 / streaming / token 埋点），与 Python 对等
-- [x] **TS security OWASP 5→11 项**（A02 加密 / A04 设计 / A06 组件 / A09 日志 / A10 SSRF）+ SSRF 具体防御代码
-- [x] **ECC 竞品调研完成**（背景 agent）—— v2.0 设计参考：
-  - ECC `codebase-onboarding` 4 阶段
-  - SuperClaude `/sc:index-repo` token 节省（2K 投入省 55K/session）
-  - wshobson 多维并行扫描（架构 + 安全 + 死代码）
-  - 用显式命令（避免隐式触发）
-  - CLAUDE.md ≤100 行
-
-### v2.0 · 2026-04-25 接手已有项目（brownfield onboarding）✅
-
-**装上 MCC 后，让 Claude 几分钟内理解陌生大代码库**。借鉴 affaan-m/ECC 的 4 阶段 codebase-onboarding + SuperClaude `/sc:index-repo` 的 token 节省。
-
-- [x] **新命令 `/onboard`**：4 阶段并行扫已有项目（Reconnaissance → Architecture Mapping → Convention Detection → Output），~5 min 完成；产出详细 onboarding 报告 + ≤100 行 CLAUDE.md
-- [x] **新命令 `/index-repo`**：生成 PROJECT_INDEX.md（人读 ~3KB）+ .json（机读 ~10KB），2K 投入 → 每 session 省 ~10-15K tokens（多 session 摊平 ROI 5-7x）
-- [x] **新 skill `project-onboarding`**：4 阶段方法论的实现体（含派发可视化 + 失败模式降级）
-- [x] **强化 `/init`**：检测到已有项目（src/ 满 + >50 文件）时自动建议改用 `/onboard`；空项目仍走轻量初始化
-- [x] **orchestration-playbook 主动性映射**：'我刚 clone' / '不熟这个项目' / '怎么接手' → 自动激活 `/onboard`
-- [x] **help skill workflow-map 加 phase 0-onboard**：检测 src/ >50 文件 + 无 CLAUDE.md → 推断在 onboard 阶段
-- [x] **PRPs/onboarding/ 占位目录**（落盘 `*-onboard-report.md`）
-- [x] commands: 11 → **13**；skills: 17 → **18**
-
-### v2.1+ · 待定（按社区反馈）
-
-- [ ] `install.ps1 -Minimal` 最小 MCP 模式（只装 Context7 + Sequential，省 7-11k tokens）
-- [ ] `doc-updater` agent（ECC 有但当前没装）
-- [ ] 更多语言 rules（Go / Rust 等按需）
-- [ ] Cursor / Gemini CLI 支持（按需）
-- [ ] MCC 自检测试套件
-- [ ] e2e-testing skill（当前 `/e2e` 是内联版）
-- [ ] Organization 版 team backup（每同事自己的 GitHub + collaborator，不共用 PAT）
+| 文件 | 内容 |
+|---|---|
+| [USAGE.md](./USAGE.md) | 15 个命令完整速查 |
+| [INSTALL.md](./INSTALL.md) | 安装 flag 详解 + 故障排查 |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | source/adapters/dist 三层 + 双目标转译细节 |
+| [QUICKSTART.md](./QUICKSTART.md) | 快速上手 |
+| [CHANGELOG.md](./CHANGELOG.md) | 版本变更日志 |
+| [README.en.md](./README.en.md) | English version |
 
 ---
 
-## 开源协议
+## 🙏 致谢 / Credits
+
+融合了以下 5 个 MIT 项目精华（**不是简单拼接**——都做了产品级融合改写）：
+
+| 项目 | 贡献 |
+|---|---|
+| [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code) | 4 阶段 onboarding 设计 |
+| [SuperClaude-Org/SuperClaude_Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework) | `/index-repo` token 节省策略 |
+| [wshobson/agents](https://github.com/wshobson/agents) | 多维并行扫描 |
+| [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) | 角色 agent 设计 |
+| [obra/superpowers](https://github.com/obra/superpowers) | 8 个独家 skill（subagent-driven-development / tdd-workflow 等） |
+
+---
+
+## 🤝 贡献 / Contributing
+
+- 提 issue / PR 前先看 [ARCHITECTURE.md](./ARCHITECTURE.md)
+- 改 agent/command/skill **只改 `source/`**，不要直接改 `dist/`（会被 build 覆盖）
+- 跑 `node adapters/build.js` 验证产出
+- 跑 `node tests/installer-dry-run.js` 验证 installer
+- PR / commit / release notes 默认中文（跟仓库历史一致）
+
+---
+
+## 📄 License
 
 MIT. 详见 [LICENSE](./LICENSE)。
 
-融合了以下项目的精华（均为 MIT 协议）：
-- [affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code)
-- [SuperClaude-Org/SuperClaude_Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework)
-- [wshobson/agents](https://github.com/wshobson/agents)
-- [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD)
-- [obra/superpowers](https://github.com/obra/superpowers) （v1.1 新增：8 个独家 skill）
-
 ---
 
-## 贡献
+<div align="center">
 
-- 提 issue / PR 前先看 [ARCHITECTURE.md](./ARCHITECTURE.md)
-- 改 agent/command/skill 时改 `source/` 不要直接改 `dist/`（会被下次 build 覆盖）
-- 跑 `node adapters/build.js` 验证产出
-- `./install.sh --dry-run` 验证 installer 逻辑
+**[⬆ 回到顶部](#mcc)** · **[🌐 English](./README.en.md)** · **[⭐ Star on GitHub](https://github.com/18811184907/mcc)**
+
+Made with ❤️ for AI-driven coding workflows
+
+</div>
