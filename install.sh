@@ -72,9 +72,11 @@ fi
 echo ""
 echo "===================================="
 # 动态读取 manifest.json 的 version
+# v2.6.4 fix: 之前用 $ROOT 但全文未定义；bash set -u 下直接 unbound 退出，
+# install.sh 完全跑不通（codex audit 找到的 HIGH 静态确定 bug）。改 $SCRIPT_DIR。
 MCC_VERSION="(unknown)"
-if [ -f "$ROOT/manifest.json" ]; then
-  MCC_VERSION=$(node -e "console.log(require('$ROOT/manifest.json').version)" 2>/dev/null || echo "(unknown)")
+if [ -f "$SCRIPT_DIR/manifest.json" ]; then
+  MCC_VERSION=$(node -e "console.log(require('$SCRIPT_DIR/manifest.json').version)" 2>/dev/null || echo "(unknown)")
 fi
 echo "  MCC Installer v$MCC_VERSION"
 echo "===================================="

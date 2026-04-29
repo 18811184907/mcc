@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.6.3",
+  "mccVersion": "2.6.4",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\claude-code",
   "installBase": ".claude/",
@@ -583,8 +583,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/gateguard-fact-force.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/gateguard-fact-force.js",
-      "size": 13664,
-      "sha256": "7c2639cb238b546fe073cd58fa4e65ce4533e43229c6daee3daf3c98eaaa650c"
+      "size": 14349,
+      "sha256": "ed0e78eb06bb21230a133117ab846019c8e70e18518e6880613ef8a2c9f2ab1e"
     },
     {
       "kind": "hooks",
@@ -611,8 +611,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/post-vault-sync.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/post-vault-sync.js",
-      "size": 12362,
-      "sha256": "c25f6cd2a80d2c893cdc067cfeda5d3f6158518e219a9ae88b56109aff2d4264"
+      "size": 12819,
+      "sha256": "7a1392257d861231667e6bb8df36a138d17234dcfbb09be31cbe03ed2adca793"
     },
     {
       "kind": "hooks",
@@ -765,8 +765,8 @@
       "kind": "settings-fragment-strict",
       "dist": ".claude/settings.fragment.strict.json",
       "install": ".claude/settings.fragment.strict.json",
-      "size": 1877,
-      "sha256": "8098e14f25f7af7c969d1b04dd5f10ae984ba6c6b360af7ad23ba3dfc6f22186"
+      "size": 2983,
+      "sha256": "7dbd7a072c83172bd400130fc0265eeae57e2e576c44db782c8622444cae949a"
     },
     {
       "kind": "templates",
@@ -961,6 +961,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 992725
+    "totalBytes": 994973
   }
 }

@@ -230,7 +230,10 @@ function syncSshConfig(sshHosts, projectName) {
   if (!fs.existsSync(sshDir)) {
     fs.mkdirSync(sshDir, { recursive: true, mode: 0o700 });
   }
-  fs.writeFileSync(sshConfigPath, existing.trimEnd() + blockLines.join('\n'), { mode: 0o600 });
+  // v2.6.4: 走 secureWrite（symlink-safe + atomic + Windows ACL lockdown），
+  // 跟 user-vault-sync 的 ssh config 写入对齐。之前直接 fs.writeFileSync 在
+  // ~/.ssh/config 这种敏感文件上没有 symlink defense（codex audit 找到的）。
+  secureWrite(sshConfigPath, existing.trimEnd() + blockLines.join('\n'), { mode: 0o600 });
 }
 
 function syncSecretsIndex(env, sshHosts, projectRoot) {
@@ -269,7 +272,9 @@ function syncSecretsIndex(env, sshHosts, projectRoot) {
     lines.push('');
   }
 
-  fs.writeFileSync(indexPath, lines.join('\n'));
+  // v2.6.4: SECRETS-INDEX.md is committed (no values), so no Windows ACL
+  // lockdown — but secureWrite still gives us symlink defense + atomic replace.
+  secureWrite(indexPath, lines.join('\n'), { mode: 0o644, lockdownWindows: false });
 }
 
 // ─── .gitignore Guard ───────────────────────────────────────────────────────

@@ -380,12 +380,23 @@ function run(rawInput) {
   }
 
   if (toolName === 'MultiEdit') {
+    // v2.6.4 fix (codex audit MEDIUM): MultiEdit 的 file_path 在 tool_input
+    // 顶层，不在 edits[] 里。之前从 edit.file_path 取永远是 undefined → 等价
+    // 把 MultiEdit 当成 allow（绕过 Edit 的 gate）。codex 实测 Edit deny 但
+    // 等价 MultiEdit 通过——这是真 bypass。
+    const filePath = toolInput.file_path || toolInput.filePath || '';
+    if (filePath && !isClaudeSettingsPath(filePath) && !isChecked(filePath)) {
+      markChecked(filePath);
+      return denyResult(editGateMsg(filePath));
+    }
+    // Belt-and-suspenders: 如果将来 schema 变了 edits[] 真的塞 file_path，
+    // 兼容老 codex 的写法。
     const edits = toolInput.edits || [];
     for (const edit of edits) {
-      const filePath = edit.file_path || '';
-      if (filePath && !isClaudeSettingsPath(filePath) && !isChecked(filePath)) {
-        markChecked(filePath);
-        return denyResult(editGateMsg(filePath));
+      const editPath = edit.file_path || '';
+      if (editPath && !isClaudeSettingsPath(editPath) && !isChecked(editPath)) {
+        markChecked(editPath);
+        return denyResult(editGateMsg(editPath));
       }
     }
     return rawInput; // allow

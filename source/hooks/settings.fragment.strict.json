@@ -38,6 +38,8 @@
 
   "enableAllProjectMcpServers": true,
 
+  "_mcc_v2_6_4_strict_now_includes_vault_hooks": "v2.6.4 fix (codex audit HIGH): strict 之前缺 vault hooks，安全敏感用户选 strict 反而失去 secret 防护。现在 strict 也装 pre-vault-leak-detect / post-vault-sync / post-user-vault-sync（这些是安全核心，跟 strict 哲学一致）。",
+
   "hooks": {
     "SessionStart": [
       {
@@ -46,6 +48,40 @@
           {
             "type": "command",
             "command": "node ${MCC_HOOKS}/hooks/session-start-bootstrap.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${MCC_HOOKS}/hooks/pre-vault-leak-detect.js",
+            "async": false,
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${MCC_HOOKS}/hooks/post-vault-sync.js",
+            "async": false,
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "node ${MCC_HOOKS}/hooks/post-user-vault-sync.js",
+            "async": false,
             "timeout": 5
           }
         ]

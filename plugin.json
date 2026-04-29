@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "2.6.3",
-  "description": "MCC Multi-target Claude/Codex Configuration - 19 agents + 15 commands + 23 skills + 3 behavioral modes + 29 hook scripts + 5 MCP servers + curated rules. v2.6.3 第二轮审计设计议题收尾：mcc-principles 压缩 -51%（baseline 省 ~1.5k tokens）、user-vault 默认改 PROJECT、'PROJECT 覆盖 USER' 文案诚实化（仅 Node+dotenv 成立）、跨机同步 3 方案 FAQ（1Password / SOPS / scp）。",
+  "version": "2.6.4",
+  "description": "MCC Multi-target Claude/Codex Configuration - 19 agents + 15 commands + 23 skills + 3 behavioral modes + 30 hook scripts + 5 MCP servers + curated rules. v2.6.4 第三轮 codex audit 修复：1 CRITICAL gitignore 漏 docs/PROJECT_VAULT.md（真 secret 泄漏）+ 3 HIGH（bootstrap rm -rf 校验 / install.sh \\$ROOT 未定义 / strict fragment 缺 vault hooks）+ 2 MEDIUM（post-vault-sync ssh secureWrite + gateguard MultiEdit path）。",
   "author": {
     "name": "MCC",
     "url": "https://github.com/18811184907/mcc"

@@ -70,8 +70,20 @@ if ($skipPull) {
       Write-Host "[OK] git pull done" -ForegroundColor Green
     } catch {
       Pop-Location
-      Write-Host "[!] git pull failed, removing and re-cloning..." -ForegroundColor Yellow
-      Remove-Item -Recurse -Force $MCC_DIR
+      # v2.6.4 safety: 校验是真的 MCC clone 才 rm -rf。如果用户误设
+      # MCC_DIR=$HOME 类场景，pull 失败时不能盲删。
+      $mccRemote = ""
+      if (Test-Path "$MCC_DIR\.git") {
+        $mccRemote = (git -C $MCC_DIR config --get remote.origin.url 2>$null)
+      }
+      if ($mccRemote -match "18811184907/mcc" -or $mccRemote -match [regex]::Escape($REPO_URL)) {
+        Write-Host "[!] git pull failed, removing and re-cloning..." -ForegroundColor Yellow
+        Remove-Item -Recurse -Force $MCC_DIR
+      } else {
+        Write-Host "[X] git pull failed AND $MCC_DIR is not a recognized MCC clone (remote=$mccRemote)" -ForegroundColor Red
+        Write-Host "[X] refusing to Remove-Item -- manually inspect: dir $MCC_DIR" -ForegroundColor Red
+        exit 1
+      }
     } finally {
       if ((Get-Location).Path -eq $MCC_DIR) { Pop-Location }
     }

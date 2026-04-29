@@ -92,8 +92,23 @@ else
     if ( cd "$MCC_DIR" && git pull origin main --quiet ); then
       echo -e "${C_GREEN}[OK] git pull done${C_RESET}"
     else
-      echo -e "${C_YELLOW}[!] git pull failed, removing and re-cloning...${C_RESET}"
-      rm -rf "$MCC_DIR"
+      # v2.6.4 safety: 不无脑 rm -rf $MCC_DIR — 先确认它是真的 MCC clone（含 .git
+      # 且 remote 指向预期 repo），否则用户误设 MCC_DIR=$HOME 类场景会删错地方。
+      mcc_remote=""
+      if [ -d "$MCC_DIR/.git" ]; then
+        mcc_remote=$( cd "$MCC_DIR" && git config --get remote.origin.url 2>/dev/null || true )
+      fi
+      case "$mcc_remote" in
+        *18811184907/mcc*|*"$REPO_URL"*)
+          echo -e "${C_YELLOW}[!] git pull failed, removing and re-cloning...${C_RESET}"
+          rm -rf "$MCC_DIR"
+          ;;
+        *)
+          echo -e "${C_RED}[X] git pull failed AND $MCC_DIR is not a recognized MCC clone (remote=$mcc_remote)${C_RESET}"
+          echo -e "${C_RED}[X] refusing to rm -rf — manually inspect: ls -la $MCC_DIR${C_RESET}"
+          exit 1
+          ;;
+      esac
     fi
   fi
 

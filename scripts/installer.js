@@ -1077,16 +1077,16 @@ function installProjectStub(cwd, dryRun, opts = {}) {
 // v2.5.3: 项目级 .gitignore 强制加 vault / .env 相关条目
 function ensureProjectGitignore(cwd) {
   const gitignorePath = path.join(cwd, '.gitignore');
+  // v2.6.4 critical fix: 加上 docs/PROJECT_VAULT.md（v2.5.10 起新装走 docs/）。
+  // 之前只 ignore .claude/PROJECT_VAULT.md 旧路径，新装的 vault 文件会进 git
+  // → 真 secret 泄漏风险。codex audit 找到。
   const required = [
-    '.claude/PROJECT_VAULT.md',
+    'docs/PROJECT_VAULT.md',         // v2.5.10+ 新默认路径
+    '.claude/PROJECT_VAULT.md',      // 老路径兼容
     '.env.local',
     '.env.*.local',
     '.deploy.local.md',
   ];
-  // Idempotency marker — prevents repeated reinstalls from re-appending the
-  // block when user's .gitignore uses a wildcard like `**/*.md` or `.claude/`
-  // that ignores the required entries via pattern (the line-equality check
-  // alone would not detect that case).
   const MCC_MARKER = '# MCC PROJECT_VAULT (auto-managed — secrets must never enter git)';
 
   let existing = '';
@@ -1094,8 +1094,9 @@ function ensureProjectGitignore(cwd) {
     existing = fs.readFileSync(gitignorePath, 'utf8');
   }
 
-  if (existing.includes(MCC_MARKER)) return false;
-
+  // v2.6.4 fix: 之前看到 marker 就 return，老 .gitignore（v2.5.x 装的）有 marker
+  // 但缺 docs/PROJECT_VAULT.md → 升级也补不上。现在改成"先看 marker 是否存在
+  // + 检查 required 全在；缺啥补啥"。
   const existingLines = new Set(
     existing.split(/\r?\n/).map(l => l.trim()).filter(Boolean)
   );
@@ -1103,6 +1104,17 @@ function ensureProjectGitignore(cwd) {
 
   if (missing.length === 0) return false;
 
+  // 已有 marker：补缺失行（不再追加新 marker，避免重复）
+  if (existing.includes(MCC_MARKER)) {
+    fs.writeFileSync(
+      gitignorePath,
+      existing.trimEnd() + '\n' + missing.join('\n') + '\n'
+    );
+    log('ok', `[project-stub] 🚫 .gitignore 补 ${missing.length} 行漏掉的 vault 路径（${missing.join(', ')}）`);
+    return true;
+  }
+
+  // 没 marker：新加完整块
   const additions = [
     '',
     MCC_MARKER,

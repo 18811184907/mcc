@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.6.3",
+  "version": "2.6.4",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -53,10 +53,10 @@
   "components": {
     "agents": 19,
     "commands": 15,
-    "skills": 22,
+    "skills": 23,
     "modes": 3,
-    "hooks": 8,
-    "hook_scripts": 28,
+    "hooks": 9,
+    "hook_scripts": 30,
     "mcp_servers": 5,
     "rules_python": 5,
     "rules_typescript": 5,
@@ -116,6 +116,22 @@
     "build_command": "node adapters/build.js"
   },
   "version_history": [
+    {
+      "version": "2.6.4",
+      "date": "2026-04-29",
+      "changes": [
+        "v2.6.4 - 第三轮 audit (codex) 修复：1 CRITICAL + 3 HIGH + 2 MEDIUM",
+        "SEC-CRITICAL: ensureProjectGitignore required 加 docs/PROJECT_VAULT.md（v2.5.10 起新装走 docs/，但 .gitignore 只 ignore 老路径 .claude/PROJECT_VAULT.md → 真 secret 泄漏风险）。同时改 marker 检查逻辑：已有 marker 时也检查 required 全在，缺啥补啥（不再无脑跳过升级补漏）。验证：清空 tmp 项目 install 后 git check-ignore docs/PROJECT_VAULT.md 命中。",
+        "SEC-HIGH: bootstrap.sh + bootstrap.ps1 在 git pull 失败 rm -rf $MCC_DIR 之前先校验是真 MCC clone（含 .git + remote.origin.url 匹配 18811184907/mcc 或 $REPO_URL）。防用户误设 MCC_DIR=$HOME 类场景被删错地方。",
+        "FIX-HIGH: install.sh line 76 用 $ROOT 但全文未定义；bash set -u 下 unbound variable 直接退出，install.sh 完全跑不通。改 $SCRIPT_DIR。",
+        "SEC-HIGH: settings.fragment.strict.json 加 PreToolUse(pre-vault-leak-detect) + PostToolUse(post-vault-sync + post-user-vault-sync)。之前 strict 模式只有 SessionStart/Stop，安全敏感用户选 strict 反而失去 secret 防护。",
+        "SEC-MED: post-vault-sync.js 写 ~/.ssh/config 改用 secureWrite（symlink-safe + atomic + Windows ACL lockdown），跟 user-vault-sync 对齐。同样 syncSecretsIndex 也走 secureWrite。",
+        "FIX-MED: gateguard-fact-force.js MultiEdit 路径识别错位 —— 之前从 edits[].file_path 取（永远是 undefined），等价 MultiEdit 全 allow（绕过 Edit 的 gate）。修：从 tool_input.file_path 顶层取，保留 edits[] 兼容 fallback。",
+        "FIX-doc: manifest.components.skills 22→23（v2.6.0 加 user-vault 后没同步），hooks 8→9，hook_scripts 28→30。",
+        "测试: 60/60 全过 + 真实 tmp 项目 install 验证 gitignore 修复成功。",
+        "致谢: 这一轮 codex 模型独立 audit 抓出来的，跨 audit 工具交叉验证比单 agent 多角度更稳。"
+      ]
+    },
     {
       "version": "2.6.3",
       "date": "2026-04-29",
