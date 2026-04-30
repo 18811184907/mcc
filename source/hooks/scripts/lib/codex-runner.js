@@ -189,11 +189,12 @@ function probeRecovery() {
     timeout: 15_000,
   });
   const stderr = String(result.stderr || '');
-  const stdout = String(result.stdout || '');
-  const combined = stderr + '\n' + stdout;
 
-  // 看到 rate-limit 关键字 → 仍 blocked
-  if (RATE_LIMIT_PATTERNS.some(re => re.test(combined))) {
+  // v2.7.2 hotfix (Layer 2 finding-validator 发现): 跟主路径 runCodexAudit 一致
+  // 双校验。之前这里仍用 combined = stderr+stdout 扫，是 v2.7.1 修主路径时
+  // 漏掉的同款 false positive。stdout 永不扫，exit 0 = 恢复。
+  if ((result.error || result.status !== 0)
+      && RATE_LIMIT_PATTERNS.some(re => re.test(stderr))) {
     return true;
   }
   // exit code 非 0 但不是 rate-limit → 当临时错误，不算恢复也不算 blocked

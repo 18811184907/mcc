@@ -723,8 +723,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/lib/codex-runner.js",
       "install": ".claude/.mcc-hooks/scripts/lib/codex-runner.js",
-      "size": 16262,
-      "sha256": "be7aad03ff3d06246dfe48702e4ee8cf3982d1a5cf680016dab52877db337f1c"
+      "size": 16428,
+      "sha256": "5bc0dd245a4920d30c54a24743a79766693f62f95df937b95f08aa8395422cf5"
     },
     {
       "kind": "hooks",
@@ -1003,6 +1003,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 1045095
+    "totalBytes": 1045261
   }
 }
