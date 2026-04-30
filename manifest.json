@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -116,6 +116,22 @@
     "build_command": "node adapters/build.js"
   },
   "version_history": [
+    {
+      "version": "2.8.1",
+      "date": "2026-04-30",
+      "changes": [
+        "v2.8.1 - codex audit Layer 1+2+3 实战修复（5 finding：1 CRITICAL + 2 HIGH + 2 MEDIUM）",
+        "META: 用户跑 codex audit 提 5 finding。Claude 派 5 个 finding-validator subagent 真并行二审。结果: 4 confirmed + 1 rejected (PROJECT_VAULT 相对路径正则字面正确但 Claude Code tool_input.file_path 始终绝对路径 - 攻击场景不存在)。Layer 3 自动按 fix_guidance 修了 confirmed，rejected 记 docs/adr/codex-rejection-2026-04-30.md。三层架构在真实 5-finding 场景实战通过。",
+        "CRITICAL FIX: scripts/installer.js line 644+697 — MCC_HOOKS 之前替成 '.mcc-hooks' 但脚本实际在 '.mcc-hooks/scripts/hooks/'，导致 settings.json 里所有 hook 命令路径缺 'scripts/' 子目录 → 文件不存在 → 所有 hook 静默失败（包括 vault-leak-detect / vault-sync / claudemd-sync / session-end / session-start-bootstrap / check-console-log / pre-config-protection）。改 MCC_HOOKS 替换值为 path.join(mccHome, 'scripts')。hooks.json 自描述 line 8 早就明确 MCC_HOOKS = ${MCC_HOME}/hooks/scripts，installer 从未对齐。这一日所有 hook 都没在工作（vault-hook-test 通过是因为绕过 settings.json 直接 spawn source 文件）。",
+        "HIGH FIX: source/hooks/scripts/hooks/session-start-bootstrap.js — resolvePluginRoot() 之前只查 ECC 名字 (ecc / everything-claude-code) 和 ~/.claude direct，找不到 MCC 安装的 ~/.claude/.mcc-hooks/scripts/hooks/run-with-flags.js。fallback 到 ~/.claude → 查 ~/.claude/scripts/hooks/run-with-flags.js (不存在) → SessionStart hook 静默 skip → session memory / context 注入失效。修：在优先级 2 加 ~/.claude/.mcc-hooks 候选，env override 后立即查 MCC fork 目录。",
+        "MEDIUM FIX: tests/smoke.js line 53 frontmatter parser — Windows CRLF checkout 下 body.slice(4, end) 切到 \\n 前，最后一行（typically description:）留下孤儿 \\r → 正则 $ 不匹配 → fields.description 永远空 → 22 个 SKILL.md 全报误。修：先 .replace(/\\r/g, '') 剥光 \\r 再 split。",
+        "MEDIUM FIX: tests/smoke.js line 180 README version badge 检查 — README 重写 (753fdf3) 后 badge 改成动态 shields.io/github/v/tag/<repo>，不再含字面 version 字符串。修：检查接受动态 badge URL OR 老式静态 version-X.Y.Z。",
+        "MEDIUM FIX: tests/installer-dry-run.js Case 10 (新增) — 真装到 tmp 目录 + 解析 settings.json + 逐条 fs.existsSync 验证 hook command 路径存在。本 case 直接覆盖 v2.8.0 之前 CRITICAL hook 路径 bug 类回归。22 → 22 checks（新加 3 断言）。",
+        "ADR: docs/adr/codex-rejection-2026-04-30.md 记 PROJECT_VAULT 相对路径正则 finding 的 reasoning trace（rejected）。",
+        "测试 results: smoke 23 失败 → 0 失败 (现在 206 checks 全过)；installer-dry-run 19 → 22 (新 Case 10)；其他 4 套不变。合计 6 套 300 checks 全过。",
+        "实战 dogfood: validator 不带原对话偏见独立复现，1/5 给 rejected，避免了一次 false positive 修改。Layer 2 设计的 ROI 实战证明（每 5 个 finding 平均 1 个误报，大概 20-30% 误报率）。"
+      ]
+    },
     {
       "version": "2.8.0",
       "date": "2026-04-30",

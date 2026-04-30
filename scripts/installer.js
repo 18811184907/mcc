@@ -638,15 +638,21 @@ async function installClaudeCode(distDir, scope, options) {
   log('ok', `hook scripts: ${hookScriptsRes.copied.length} files → .mcc-hooks/scripts/`);
 
   // 6) hooks.json 的 ${MCC_HOOKS} 替换
+  // v2.8.1 CRITICAL fix (codex audit): MCC_HOOKS 之前替成 .mcc-hooks 但脚本
+  // 实际在 .mcc-hooks/scripts/hooks/，导致 settings 里所有 hook 命令路径
+  // 缺 'scripts/' → 文件不存在 → 所有 hook 静默失败。hooks.json 的
+  // 自描述 (line 8) 明确 MCC_HOOKS = ${MCC_HOME}/hooks/scripts。修：替
+  // MCC_HOOKS 时加上 'scripts'。
   const hooksJsonSrc = path.join(sourceClaudeDir, '.mcc-hooks', 'hooks.json');
   const hooksJsonDst = path.join(targetDir, '.mcc-hooks', 'hooks.json');
   if (pathExists(hooksJsonSrc)) {
     const mccHome = path.join(targetDir, '.mcc-hooks');
+    const mccHooks = path.join(mccHome, 'scripts');
     const mccSkills = path.join(targetDir, 'skills');
     const content = readText(hooksJsonSrc);
     const replaced = replaceInstallVariables(content, {
       MCC_HOME: mccHome,
-      MCC_HOOKS: mccHome,
+      MCC_HOOKS: mccHooks,
       MCC_SKILLS: mccSkills,
     });
     if (!options.dryRun) {
@@ -692,9 +698,12 @@ async function installClaudeCode(distDir, scope, options) {
     if (options.strict) log('info', '🛡  --strict 模式：使用细粒度白名单');
     // 在 fragment 的 hooks 里也做变量替换（它引用了 ${MCC_HOOKS}）
     const fragmentStr = JSON.stringify(fragment);
+    // v2.8.1 CRITICAL fix: MCC_HOOKS 必须指向 .mcc-hooks/scripts (含脚本子目录)
+    // 否则 settings.json 里 ${MCC_HOOKS}/hooks/X.js → .mcc-hooks/hooks/X.js (不存在)
+    const fragmentMccHome = path.join(targetDir, '.mcc-hooks');
     const resolvedStr = replaceInstallVariables(fragmentStr, {
-      MCC_HOME: path.join(targetDir, '.mcc-hooks'),
-      MCC_HOOKS: path.join(targetDir, '.mcc-hooks'),
+      MCC_HOME: fragmentMccHome,
+      MCC_HOOKS: path.join(fragmentMccHome, 'scripts'),
       MCC_SKILLS: path.join(targetDir, 'skills'),
     });
     const resolvedFragment = JSON.parse(resolvedStr);

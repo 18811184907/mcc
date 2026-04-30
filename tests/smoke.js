@@ -50,7 +50,11 @@ function parseFrontmatter(text) {
   if (!text.startsWith('---')) return null;
   const end = text.indexOf('\n---', 4);
   if (end < 0) return null;
-  const body = text.slice(4, end);
+  // v2.8.1 fix (codex audit MEDIUM): 先剥光 \r 再解析。Windows checkout 默认
+  // CRLF，body.slice 切到 \n 前一字符，最后一行 (typically description:) 留下
+  // 孤儿 \r → 正则 `$` 不匹配 → fields.description 永远空 → 22 个 SKILL.md
+  // 全报误。
+  const body = text.slice(4, end).replace(/\r/g, '');
   const fields = {};
   for (const line of body.split(/\r?\n/)) {
     const m = line.match(/^([a-zA-Z_][a-zA-Z0-9_-]*):\s*(.*)$/);
@@ -173,8 +177,15 @@ assert(plugin.version === v, `plugin.json version=${plugin.version} ≠ manifest
 const mv = marketplace.plugins?.[0]?.version;
 assert(mv === v, `marketplace.json plugins[0].version=${mv} ≠ manifest ${v}`);
 const readme = readText(path.join(ROOT, 'README.md'));
-assert(readme.includes(`version-${v}-blue`) || readme.includes(`version-${v}`),
-  `README.md 未见 version badge=${v}`);
+// v2.8.1 fix (codex audit MEDIUM): README 重写 (753fdf3) 后 badge 改成动态
+// shields.io/github/v/tag/<repo> 不再含字面 version 字符串。检查更新为
+// 接受动态 badge URL OR 老式静态 version-X.Y.Z badge。
+assert(
+  readme.includes('img.shields.io/github/v/tag/')
+    || readme.includes(`version-${v}-blue`)
+    || readme.includes(`version-${v}`),
+  `README.md 未见 version badge (dynamic tag URL or static version-${v})`
+);
 
 // --- 8. installer dry-run 集成测试 ---
 

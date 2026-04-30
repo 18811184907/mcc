@@ -63,10 +63,11 @@ function hasRunnerRoot(candidate) {
 /**
  * Resolves the ECC plugin root using the following priority order:
  *   1. CLAUDE_PLUGIN_ROOT environment variable
- *   2. ~/.claude (direct install)
- *   3. Several well-known plugin sub-paths under ~/.claude/plugins/ (current + legacy)
- *   4. Versioned cache directories under ~/.claude/plugins/cache/{ecc,everything-claude-code}/
- *   5. Falls back to ~/.claude if nothing else matches
+ *   2. ~/.claude/.mcc-hooks (MCC fork install — v2.8.1 codex audit fix)
+ *   3. ~/.claude (direct install)
+ *   4. Several well-known plugin sub-paths under ~/.claude/plugins/ (current + legacy)
+ *   5. Versioned cache directories under ~/.claude/plugins/cache/{ecc,everything-claude-code}/
+ *   6. Falls back to ~/.claude if nothing else matches
  *
  * @returns {string}
  */
@@ -78,6 +79,17 @@ function resolvePluginRoot() {
 
   const home = require('os').homedir();
   const claudeDir = path.join(home, '.claude');
+
+  // v2.8.1 (codex audit HIGH fix): MCC fork installs hooks under
+  // ~/.claude/.mcc-hooks/scripts/hooks/run-with-flags.js. resolvePluginRoot
+  // 之前只查 ECC 名字 / ~/.claude direct，找不到 MCC 安装会 fallback 到
+  // ~/.claude，line 121 `fs.existsSync(~/.claude/scripts/hooks/run-with-flags.js)`
+  // 永远 false → SessionStart hook body 静默跳过 → session memory / context
+  // 注入失效。优先级最高（仅次 env override）。
+  const mccHooksDir = path.join(claudeDir, '.mcc-hooks');
+  if (hasRunnerRoot(mccHooksDir)) {
+    return mccHooksDir;
+  }
 
   if (hasRunnerRoot(claudeDir)) {
     return claudeDir;

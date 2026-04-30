@@ -173,6 +173,56 @@ if (r9.error && r9.error.code === 'ENOENT') {
     'Case 9: install.ps1 should not fail PowerShell parameter binding');
 }
 
+// --- Case 10: 真实安装到 tmp 目录 + 解析 settings.json 验证 hook 路径存在 ---
+// v2.8.1 新增（codex audit MEDIUM 修复）：dry-run 不写文件，漏掉 v2.8.0 之前
+// CRITICAL hook 路径 bug（${MCC_HOOKS} 替错位置 → settings.json 里 command
+// 路径缺 'scripts/'）。本 case 真装 → 解析 settings.json → 逐条 fs.existsSync
+// 校验 hook command 文件存在。
+
+const realInstallDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mcc-real-install-'));
+try {
+  // 真装（不带 --dry-run）到临时目录
+  const r10 = spawnSync('node', [INSTALLER, '--scope', 'project', '--target', 'claude-code', '--skip-claudemd'], {
+    cwd: realInstallDir,
+    encoding: 'utf8',
+    timeout: 60_000,
+    env: { ...process.env, MCC_NO_COLOR: '1' },
+  });
+  assert(r10.status === 0,
+    `Case 10: 真实安装应 exit 0，实际 ${r10.status}；stderr: ${(r10.stderr || '').slice(0, 300)}`);
+
+  const installedSettings = path.join(realInstallDir, '.claude', 'settings.json');
+  assert(fs.existsSync(installedSettings),
+    'Case 10: 安装后 .claude/settings.json 应存在');
+
+  if (fs.existsSync(installedSettings)) {
+    const settings = JSON.parse(fs.readFileSync(installedSettings, 'utf8'));
+    const hooks = settings.hooks || {};
+    const brokenPaths = [];
+
+    for (const [event, groups] of Object.entries(hooks)) {
+      for (const group of (Array.isArray(groups) ? groups : [])) {
+        for (const h of (group.hooks || [])) {
+          if (!h.command) continue;
+          // 提取 node <path> 或 node -e "require('<path>')" 里的文件路径
+          const directMatch = h.command.match(/^node\s+([^\s"']+\.js)/);
+          const requireMatch = h.command.match(/require\(['"]([^'"]+\.js)['"]\)/);
+          const p = (directMatch && directMatch[1]) || (requireMatch && requireMatch[1]);
+          if (p && !fs.existsSync(p)) {
+            brokenPaths.push(`${event}: command="${h.command.slice(0, 80)}..." → resolved="${p}" 不存在`);
+          }
+        }
+      }
+    }
+
+    assert(brokenPaths.length === 0,
+      `Case 10 CRITICAL: settings.json 里有 ${brokenPaths.length} 条 hook command 指向不存在文件:\n` +
+      brokenPaths.map(x => '  ' + x).join('\n'));
+  }
+} finally {
+  fs.rmSync(realInstallDir, { recursive: true, force: true });
+}
+
 console.log('  MCC Installer Dry-Run Test');
 console.log('════════════════════════════════════');
 console.log(`checks: ${checks}`);

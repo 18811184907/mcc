@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.8.0",
+  "mccVersion": "2.8.1",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\claude-code",
   "installBase": ".claude/",
@@ -702,8 +702,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/hooks/session-start-bootstrap.js",
       "install": ".claude/.mcc-hooks/scripts/hooks/session-start-bootstrap.js",
-      "size": 5722,
-      "sha256": "7cbbe08b654cbbe36a866d213e4ab3c42dae0a1b54360df9ef8113b0f35a6906"
+      "size": 6398,
+      "sha256": "222516ff4a0df61cedf7be536736e6eb3a240ecd0073dfe16f22af8a85c7d0ac"
     },
     {
       "kind": "hooks",
@@ -1003,6 +1003,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 1048959
+    "totalBytes": 1049635
   }
 }
