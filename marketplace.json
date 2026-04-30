@@ -12,7 +12,7 @@
       "name": "mcc",
       "source": "./",
       "description": "21 agents + 16 commands + 24 skills + 3 behavioral modes + 32 hook scripts + 5 MCP servers + curated rules. v2.7.1 codex Layer 2 二审 + auto-fix：codex 提 finding → finding-validator (Claude fresh subagent) 独立复现 → 通过自动 Edit 修不询问。+ hotfix v2.7.0 rate-limit false positive。",
-      "version": "2.8.1",
+      "version": "2.8.2",
       "author": {
         "name": "MCC"
       },

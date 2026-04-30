@@ -347,6 +347,32 @@ function mergeSettingsJson(existing, fragment) {
   // hooks：按 event + matcher 分组，合并数组
   if (fragment.hooks) {
     merged.hooks = merged.hooks || {};
+
+    // v2.8.2 hotfix: 清掉老路径错命令（v2.8.0 之前 ${MCC_HOOKS} 替错位置写
+    // 入的 .mcc-hooks/hooks/X.js 不带 scripts/）。这些命令对应文件不存在
+    // silent skip，但污染 settings.json。升级时统一清理。
+    // 识别条件：command 含 .mcc-hooks/hooks/ 但 *不* 含 .mcc-hooks/scripts/
+    const isLegacyMccHookCmd = (cmd) => {
+      if (typeof cmd !== 'string') return false;
+      const hasOldPath = /[\/\\]\.mcc-hooks[\/\\]hooks[\/\\]/.test(cmd);
+      const hasNewPath = /[\/\\]\.mcc-hooks[\/\\]scripts[\/\\]/.test(cmd);
+      return hasOldPath && !hasNewPath;
+    };
+    let prunedLegacyCount = 0;
+    for (const [event, groups] of Object.entries(merged.hooks)) {
+      if (!Array.isArray(groups)) continue;
+      for (const group of groups) {
+        const before = (group.hooks || []).length;
+        group.hooks = (group.hooks || []).filter(h => !isLegacyMccHookCmd(h.command));
+        prunedLegacyCount += before - group.hooks.length;
+      }
+      // 移除空 group
+      merged.hooks[event] = groups.filter(g => (g.hooks || []).length > 0);
+    }
+    if (prunedLegacyCount > 0) {
+      log('info', `[mergeSettings] 清理 ${prunedLegacyCount} 条 v2.8.0 之前 hook 老错路径命令（缺 scripts/）`);
+    }
+
     for (const [event, groups] of Object.entries(fragment.hooks)) {
       if (!Array.isArray(groups)) continue;
       merged.hooks[event] = merged.hooks[event] || [];
