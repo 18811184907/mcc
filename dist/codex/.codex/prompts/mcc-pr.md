@@ -88,32 +88,55 @@ git diff origin/<base>..HEAD --name-only
 
 ---
 
-## Phase 2.5 — **并行预检**（v1.7 新增）
+## Phase 2.5 — **并行预检**（v1.7 / v2.7.0 升级到 4 路）
 
-推送前**并行派 3 路检查**，防止 PR 里有显而易见的问题。**派发可视化（v1.9 强制）**：
+推送前**并行派 4 路检查**，防止 PR 里有显而易见的问题。**派发可视化**：
 
 派发前：
 ```
-⚡ 并行派发 3 路 PR 预检（fan-out / 预计 ~2 min · 串行需 ~6 min）
+⚡ 并行派发 4 路 PR 预检（fan-out / 预计 ~2 min · 串行需 ~8 min）
    ├─ verification-loop skill   build / typecheck / lint / test / security / diff 6 阶段
    ├─ code-reviewer agent       扫 diff CRITICAL/HIGH 清单
-   └─ security-reviewer agent   敏感路径 / 密钥 / 注入
+   ├─ security-reviewer agent   敏感路径 / 密钥 / 注入
+   └─ codex-reviewer (v2.7.0)   差异化对抗审查（红队 / 不同模型 / audit_pr 模板）
 ```
 
-（同一条 message 里 3 个 Task call —— 这是真并行）
+（同一条 message 里 3 个 Task call + 1 个 Bash run_in_background:true 跑 codex —— 真 4 路并行）
+
+**codex 调用**：
+```js
+const { runCodexAudit, REDTEAM_TEMPLATES } = require('<MCC_HOOKS>/lib/codex-runner');
+const result = runCodexAudit({
+  prompt: REDTEAM_TEMPLATES.audit_pr({
+    prNumber: '本地新 PR',
+    gitRange: 'origin/main..HEAD',
+    summary: prTitle,
+  }),
+  cwd: projectRoot,
+  timeoutMs: 90_000,
+});
+```
 
 返回后：
 ```
-✓ 3 路全部返回（X.X min）
+✓ 4 路全部返回（X.X min）
    ├─ verification-loop  X.X min → 6 阶段 [全绿 | 阶段 N 卡住]
    ├─ code-reviewer      X.X min → N CRITICAL / N HIGH / N MEDIUM
-   └─ security-reviewer  X.X min → N 高危 / N 中危
+   ├─ security-reviewer  X.X min → N 高危 / N 中危
+   └─ codex-reviewer     X.X min → N CRITICAL / N HIGH / N MEDIUM (差异化盲区)
+                         OR [SKIPPED: 5h limit / not installed]
 
 合流（去重 / 调矛盾 / 压摘要）：
   PR 预检结论：[GO | HOLD]
   阻塞项（必修）：...
   警告项（可发但 PR body 列出）：...
 ```
+
+**codex finding 处理**（按 codex-audit skill 规则）：
+- 真 bug → 阻塞 PR，先修
+- Claude reviewer / security 也报同一 issue → 高置信，必修
+- 只有 codex 报 → 必须 Claude 复现验证才修（误报率不低）
+- 误报 → 记 `docs/adr/codex-rejection-{date}.md`
 
 **合流规则**：
 - 任一返回 CRITICAL → 停止 push，让用户决定修 or 仍发

@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.6.4",
+  "mccVersion": "2.7.0",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\claude-code",
   "installBase": ".claude/",
@@ -32,6 +32,13 @@
       "install": ".claude/agents/code-reviewer.md",
       "size": 9799,
       "sha256": "caa7e1129a36ecba51530bb5bc01ab19e34f386a4bdb2954471ee066fba25ea9"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/codex-reviewer.md",
+      "install": ".claude/agents/codex-reviewer.md",
+      "size": 3191,
+      "sha256": "0604d82db550a9c62b3079bf580534a1efa154e4f5f2c95c56b31a66747f410d"
     },
     {
       "kind": "agents",
@@ -147,6 +154,13 @@
     },
     {
       "kind": "command",
+      "dist": ".claude/commands/cross-check.md",
+      "install": ".claude/commands/cross-check.md",
+      "size": 4935,
+      "sha256": "d03b7363e530118e1653ce2373967b60d5113851d4c9e8addb3955b2cfb8bb44"
+    },
+    {
+      "kind": "command",
       "dist": ".claude/commands/explain.md",
       "install": ".claude/commands/explain.md",
       "size": 1294,
@@ -163,8 +177,8 @@
       "kind": "command",
       "dist": ".claude/commands/implement.md",
       "install": ".claude/commands/implement.md",
-      "size": 8240,
-      "sha256": "3a2d8103cee3073ea42559825bb4ac6f1f39270acbe907f200bfa38a2b96c166"
+      "size": 8900,
+      "sha256": "56f292f9e379b4560b74ed9a4c11d82c1d24b0ea6c4a8f0c86d82eb07e840c24"
     },
     {
       "kind": "command",
@@ -198,15 +212,15 @@
       "kind": "command",
       "dist": ".claude/commands/plan.md",
       "install": ".claude/commands/plan.md",
-      "size": 12489,
-      "sha256": "f95c431ad57c16f4552d913402feb0a5948df84f22003dee21c8c7c97a47e3ce"
+      "size": 13347,
+      "sha256": "6398f8077a3659170e0ecbcecb9d3b43eedc03ee47a58adae1300bda102ac61e"
     },
     {
       "kind": "command",
       "dist": ".claude/commands/pr.md",
       "install": ".claude/commands/pr.md",
-      "size": 6608,
-      "sha256": "3ce75e25f196189f2404a23389545227052a19cdb6bd0527ce86dd889f8373fe"
+      "size": 7558,
+      "sha256": "568012a61ba01a53d86c2615348ca592efa11f8f45e59e95ef4697ef71e88a76"
     },
     {
       "kind": "command",
@@ -219,8 +233,8 @@
       "kind": "command",
       "dist": ".claude/commands/review.md",
       "install": ".claude/commands/review.md",
-      "size": 8071,
-      "sha256": "1fa4f9e85b11b80192500b6728fb46bcfc125bb256d096c83884c56ad0bf1beb"
+      "size": 9163,
+      "sha256": "6c8cc5b620a9a7ae344a5caf77055d7aa4c76c2c2d4079097936da2d9cec631a"
     },
     {
       "kind": "command",
@@ -270,6 +284,13 @@
       "install": ".claude/skills/code-review-workflow/code-reviewer-prompt-template.md",
       "size": 3681,
       "sha256": "e01b413adf30ed23056d670660c01b60c858808a7bbfa014c25bfe6063fbb689"
+    },
+    {
+      "kind": "skills",
+      "dist": ".claude/skills/codex-audit/SKILL.md",
+      "install": ".claude/skills/codex-audit/SKILL.md",
+      "size": 8079,
+      "sha256": "4a686809ed3e238bace00b8d196583893782d2703cfab3b302b3e0609b095091"
     },
     {
       "kind": "skills",
@@ -693,6 +714,13 @@
     },
     {
       "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/lib/codex-runner.js",
+      "install": ".claude/.mcc-hooks/scripts/lib/codex-runner.js",
+      "size": 15377,
+      "sha256": "9e5f23db10e42200a93d2fe2734da4304158189c282f13e4d72d08797c75c90c"
+    },
+    {
+      "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/lib/hook-flags.js",
       "install": ".claude/.mcc-hooks/scripts/lib/hook-flags.js",
       "size": 1845,
@@ -814,8 +842,8 @@
       "kind": "rules",
       "dist": ".claude/rules/common/mcc-principles.md",
       "install": ".claude/rules/common/mcc-principles.md",
-      "size": 2311,
-      "sha256": "32a01326f1fbe7846334f1e93f73709d82379a6a09f8f3187d1a64b3e5f67801"
+      "size": 2787,
+      "sha256": "4d7b656c299ffdd43f17a2315f363c7102028fc9e406fb7c274f6939e34c976c"
     },
     {
       "kind": "rules",
@@ -946,13 +974,13 @@
   ],
   "notes": [],
   "summary": {
-    "total": 134,
+    "total": 138,
     "byKind": {
-      "agents": 19,
-      "command": 15,
-      "skills": 39,
+      "agents": 20,
+      "command": 16,
+      "skills": 40,
       "modes": 3,
-      "hooks": 30,
+      "hooks": 31,
       "hooks-config": 1,
       "settings-fragment": 1,
       "settings-fragment-strict": 1,
@@ -961,6 +989,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 994973
+    "totalBytes": 1030591
   }
 }

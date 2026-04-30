@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "mccVersion": "2.6.4",
+  "mccVersion": "2.7.0",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\codex",
   "files": [
@@ -27,6 +27,12 @@
       "dist": ".codex/agents/code-reviewer.md",
       "size": 9803,
       "sha256": "5d876dd586a3991dd88ede4541f6a33ddb00fd7e68f368ee8949131e25ac82e2"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/codex-reviewer.md",
+      "size": 3180,
+      "sha256": "7128153a2b255598988fccd81844c7e9aafe76e59b7f3fc4099aef14f17ed350"
     },
     {
       "kind": "agent",
@@ -126,6 +132,12 @@
     },
     {
       "kind": "prompt",
+      "dist": ".codex/prompts/mcc-cross-check.md",
+      "size": 4935,
+      "sha256": "d03b7363e530118e1653ce2373967b60d5113851d4c9e8addb3955b2cfb8bb44"
+    },
+    {
+      "kind": "prompt",
       "dist": ".codex/prompts/mcc-explain.md",
       "size": 1294,
       "sha256": "c433bd8a06dace23e4fa17155c3f6fb4b6fd2f4775930e8ce89f2ae25b89f20f"
@@ -139,8 +151,8 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-implement.md",
-      "size": 8240,
-      "sha256": "3a2d8103cee3073ea42559825bb4ac6f1f39270acbe907f200bfa38a2b96c166"
+      "size": 8900,
+      "sha256": "56f292f9e379b4560b74ed9a4c11d82c1d24b0ea6c4a8f0c86d82eb07e840c24"
     },
     {
       "kind": "prompt",
@@ -169,14 +181,14 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-plan.md",
-      "size": 12489,
-      "sha256": "f95c431ad57c16f4552d913402feb0a5948df84f22003dee21c8c7c97a47e3ce"
+      "size": 13347,
+      "sha256": "6398f8077a3659170e0ecbcecb9d3b43eedc03ee47a58adae1300bda102ac61e"
     },
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-pr.md",
-      "size": 6608,
-      "sha256": "3ce75e25f196189f2404a23389545227052a19cdb6bd0527ce86dd889f8373fe"
+      "size": 7558,
+      "sha256": "568012a61ba01a53d86c2615348ca592efa11f8f45e59e95ef4697ef71e88a76"
     },
     {
       "kind": "prompt",
@@ -187,8 +199,8 @@
     {
       "kind": "prompt",
       "dist": ".codex/prompts/mcc-review.md",
-      "size": 8071,
-      "sha256": "1fa4f9e85b11b80192500b6728fb46bcfc125bb256d096c83884c56ad0bf1beb"
+      "size": 9163,
+      "sha256": "6c8cc5b620a9a7ae344a5caf77055d7aa4c76c2c2d4079097936da2d9cec631a"
     },
     {
       "kind": "prompt",
@@ -271,15 +283,15 @@
     {
       "kind": "rule",
       "dist": ".codex/rules/common/mcc-principles.md",
-      "size": 2311,
-      "sha256": "32a01326f1fbe7846334f1e93f73709d82379a6a09f8f3187d1a64b3e5f67801"
+      "size": 2787,
+      "sha256": "4d7b656c299ffdd43f17a2315f363c7102028fc9e406fb7c274f6939e34c976c"
     },
     {
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 17077,
-      "sha256": "71e13313c3f77ea01796d6c0031f6351997200031cc6be67963074393d61fac3"
+      "size": 17564,
+      "sha256": "7e3ededb123953bdbe7dc8b0270ee2b7d48622d797831382adf97cf7af308bc4"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -303,15 +315,15 @@
     "Codex 不支持 skill，转为 AGENTS.md 中的场景指引段"
   ],
   "summary": {
-    "total": 48,
+    "total": 50,
     "byKind": {
-      "agent": 19,
-      "prompt": 15,
+      "agent": 20,
+      "prompt": 16,
       "rule": 11,
       "agents-md": 1,
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 304760
+    "totalBytes": 317398
   }
 }

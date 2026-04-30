@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.6.4",
+  "version": "2.7.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -51,12 +51,12 @@
     }
   },
   "components": {
-    "agents": 19,
-    "commands": 15,
-    "skills": 23,
+    "agents": 20,
+    "commands": 16,
+    "skills": 24,
     "modes": 3,
     "hooks": 9,
-    "hook_scripts": 30,
+    "hook_scripts": 31,
     "mcp_servers": 5,
     "rules_python": 5,
     "rules_typescript": 5,
@@ -116,6 +116,26 @@
     "build_command": "node adapters/build.js"
   },
   "version_history": [
+    {
+      "version": "2.7.0",
+      "date": "2026-04-30",
+      "changes": [
+        "v2.7.0 - codex CLI 集成为差异化对抗审查员（Level 1 红队）",
+        "FEAT: 新 lib source/hooks/scripts/lib/codex-runner.js（~430 行）—— 跨平台 Windows .cmd 兼容、prompt 走 stdin 防 shell injection、rate-limit 检测 7 关键词、auto-probe 指数退避（5/10/20/40/60min）、优雅降级未装/限流时返回 skipped 不阻塞主线。",
+        "FEAT: 新 skill source/skills/codex-audit/SKILL.md —— 何时自动派 codex（plan 完成 / implement 大改动 / review 3 路并行 / pr 4 路并行），4 红队 prompt 模板，Claude 复现验证规则三档分类（真 bug 修 / 误报记 ADR / 模糊升给用户），adversarial loop 上限 2 轮。",
+        "FEAT: 新 agent source/agents/codex-reviewer.md —— 角色卡描述（Claude 编排时知道有这个外部 CLI agent 可派），不通过 Task tool 派而通过 Bash + codex-runner.js wrapper。",
+        "FEAT: 新命令 source/commands/cross-check.md —— 手动入口（plan/diff/impl/pr 四种 mode），99% 场景已自动覆盖只在审旧 plan / 已 push PR / 历史 commit 时手动调。",
+        "FEAT: /review 升级 2 路 → 3 路并行（code-reviewer + security-reviewer + codex-reviewer 同 message 真并行）。",
+        "FEAT: /pr Phase 2.5 升级 3 路 → 4 路并行预检（加 codex-reviewer 红队视角）。",
+        "FEAT: /plan Phase 7 自动 codex audit plan 找盲区（测试覆盖 / 边界 / 顺序 / 耦合）。",
+        "FEAT: /implement 单 step 完成且改动 > 50 行/跨文件时自动 codex audit implementation。",
+        "FEAT: mcc-principles 加第 4 条元规则'差异化审查'，跟主动性/并行优先/核心指令并列。",
+        "TEST: 新 tests/codex-runner-test.js（35 checks）—— mock codex CLI（含 rate-limit / probe 恢复 / token 解析 / 未装 / 多种错误场景）覆盖完整 flag lifecycle。",
+        "DOC: docs/adr/0001-codex-adversarial-review.md —— 设计决策记录（为何选对抗审查不选执行器、Level 1 vs Level 2/3 取舍、5h 限制策略）。",
+        "测试: 95/95 全过（installer-dry-run 19 + codex-patches-followup 8 + vault-hook-test 5 + user-vault-hook-test 28 + codex-runner-test 35）。",
+        "重要: codex CLI 由 ChatGPT 账号 OAuth auth，不需要 OpenAI API key（用户 ChatGPT plan 内的 5h 滚动窗口配额）。"
+      ]
+    },
     {
       "version": "2.6.4",
       "date": "2026-04-29",

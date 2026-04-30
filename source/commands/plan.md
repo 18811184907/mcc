@@ -405,6 +405,28 @@ EXPECT: Build succeeds
 - [ ] 代码片段是真实代码（不是编造的）
 - [ ] SOURCE 引用指向真实文件和行号
 
+## Phase 7 — codex 对抗审查（v2.7.0 自动）
+
+plan 写完后**自动**派 codex 找盲区（红队视角）：测试覆盖漏 / 边界遗漏 / 顺序风险 / 耦合冲突。
+
+```js
+// Claude 在 Bash run_in_background:true 跑（不阻塞用户对话）:
+const { runCodexAudit, REDTEAM_TEMPLATES } = require('<MCC_HOOKS>/lib/codex-runner');
+const planContent = fs.readFileSync(planPath, 'utf8');
+const result = runCodexAudit({
+  prompt: REDTEAM_TEMPLATES.audit_plan({ planContent, projectContext: projectName }),
+  cwd: projectRoot,
+  timeoutMs: 60_000,
+});
+```
+
+**处理 finding**（按 codex-audit skill 复现验证规则）：
+- 真盲区 → 改 plan
+- 误报 → 记 `docs/adr/codex-rejection-{date}.md`
+- 模糊 → 升给用户拍板
+
+**降级**：codex 未装 / 5h 限流 → 跳过 Phase 7，不阻塞 plan 完成。
+
 ## 与其他命令的关系
 
 - 上游：`/prd` 若范围还不清楚，先写 PRD

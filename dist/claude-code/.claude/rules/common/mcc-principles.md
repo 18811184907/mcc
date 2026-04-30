@@ -41,6 +41,12 @@
 | P1 | **Code > documentation** —— README 写 X、源码写 Y → 以源码为准 |
 | P2 | **Efficiency > verbosity** —— 回答压到最短 |
 
+### 4. 差异化审查 · v2.7.0 起
+
+关键节点（plan 完成 / commit / PR / 大 implement step）**自动**调 codex CLI 做对抗审查（红队 prompt）。codex 是不同模型 → 不同盲区，跟 Claude 互补。**Claude 永远拿决策权**，codex finding 必须 Claude 复现验证才修。详见 `codex-audit` skill。
+
+5h 限制时优雅降级（写 flag + auto-probe，不阻塞 Claude 主线）。codex CLI 未装时自动跳过，不阻断主线工作。
+
 ---
 
 ## 其他工程判断 → 按需激活 skill

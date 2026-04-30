@@ -11,8 +11,8 @@
     {
       "name": "mcc",
       "source": "./",
-      "description": "19 agents + 15 commands + 23 skills + 3 behavioral modes + 30 hook scripts + 5 MCP servers + curated rules. v2.6.4 第三轮 codex audit 修复：1 CRITICAL（gitignore 漏 docs/PROJECT_VAULT.md = 真 secret 泄漏）+ 3 HIGH（bootstrap rm -rf 校验 / install.sh $ROOT 未定义 / strict fragment 缺 vault hooks）+ 2 MEDIUM。",
-      "version": "2.6.4",
+      "description": "20 agents + 16 commands + 24 skills + 3 behavioral modes + 31 hook scripts + 5 MCP servers + curated rules. v2.7.0 codex CLI 集成为差异化对抗审查员（Level 1 红队）：plan/implement/review/pr 自动调 codex 找盲区。Claude 主决策，codex 辅助。5h 限制 auto-probe 优雅降级。完全自动。",
+      "version": "2.7.0",
       "author": {
         "name": "MCC"
       },

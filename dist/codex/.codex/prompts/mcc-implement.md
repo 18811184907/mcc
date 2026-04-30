@@ -109,6 +109,19 @@ git pull --rebase origin $(git branch --show-current) 2>/dev/null || true
    ```
    type-check 失败 → 修好再进下一个
 4. **记进度** — 打日志：`[done] Task N: [name] — complete`
+5. **大改动后 codex 对抗审查（v2.7.0 自动）** —— 该 task 改动 > 50 行或跨文件时**自动**派 codex 红队审单 step：
+   ```js
+   const { runCodexAudit, REDTEAM_TEMPLATES } = require('<MCC_HOOKS>/lib/codex-runner');
+   const result = runCodexAudit({
+     prompt: REDTEAM_TEMPLATES.audit_implementation({
+       filePath: changedFiles.join(', '),
+       taskSpec: task.spec,
+     }),
+     cwd: projectRoot,
+   });
+   // codex 找的真 bug 修了再进下一 task；误报记 docs/adr/；模糊升给用户
+   ```
+   小改动 (<50 行 / 单文件 / typo) 跳过本步。降级（codex 未装/限流）跳过不阻塞。
 
 ### 处理偏差
 

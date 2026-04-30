@@ -1,5 +1,5 @@
 ---
-description: "代码审查：本地未提交改动（无参数）OR GitHub PR（传 PR number/URL 走 PR 模式）。并行调用 code-reviewer + security-reviewer。"
+description: "代码审查：本地未提交改动（无参数）OR GitHub PR（传 PR number/URL 走 PR 模式）。v2.7.0 起 3 路并行：code-reviewer + security-reviewer + codex (差异化对抗审查)。codex 未装或限流时自动 2 路降级。"
 argument-hint: "[PR# | PR URL]（留空则审本地未提交）"
 ---
 
@@ -35,19 +35,45 @@ git diff --name-only HEAD
 
 若无变更文件，停："Nothing to review."
 
-### Phase 2 — REVIEW（并行委派）
+### Phase 2 — REVIEW（**v2.7.0: 3 路并行**）
 
-**派发可视化（v1.9 强制）**：
+**派发可视化（强制可视化）**：
 
 ```
-⚡ 并行派发 2 reviewer（fan-out / 预计 ~1 min）
-   ├─ code-reviewer       质量 / 架构 / 大小 / 错误处理 / 测试
-   └─ security-reviewer   硬编码密钥 / SQL 注入 / XSS / 路径遍历
+⚡ 并行派发 3 路 reviewer（fan-out / 预计 ~1 min）
+   ├─ code-reviewer       (Claude) 质量 / 架构 / 大小 / 错误处理 / 测试
+   ├─ security-reviewer   (Claude) 硬编码密钥 / SQL 注入 / XSS / 路径遍历
+   └─ codex-reviewer      (codex CLI) 差异化对抗审查（红队视角，不同模型 → 不同盲区）
 
 [深度审或大改动加：silent-failure-hunter + performance-engineer]
 ```
 
-**一次回复里发两个 Task，并行运行**：
+**关键**：
+- 同一条消息里发 **2 个 Claude Task** + **1 个 Bash run_in_background:true** 跑 codex。三路真并行 ≈ 1× 时间。
+- codex 未装 / 5h 限流 → runner 优雅降级，本命令降为 2 路（不阻断）。
+
+**codex 派发模板**（runner.js 已封装，Claude 调时引用）：
+
+```js
+// 在 Bash 里调
+const { runCodexAudit, REDTEAM_TEMPLATES } = require('<MCC_HOOKS>/lib/codex-runner');
+const result = runCodexAudit({
+  prompt: REDTEAM_TEMPLATES.audit_diff({
+    gitRange: 'HEAD',  // 本地 diff 模式
+    focusAreas: null,  // 用模板默认 5 维度
+  }),
+  cwd: process.cwd(),
+  timeoutMs: 90_000,
+});
+if (result.skipped) {
+  // 降级：仅 Claude 2 路审，不阻断
+  console.log(`[codex skipped: ${result.reason}]`);
+} else {
+  // 把 result.output 一起合并到 Phase 3 finding 表
+}
+```
+
+**一次回复里发并行 Task**：
 
 ```
 Task (parallel x2):
