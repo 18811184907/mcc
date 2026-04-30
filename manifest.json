@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -51,12 +51,12 @@
     }
   },
   "components": {
-    "agents": 20,
+    "agents": 21,
     "commands": 16,
     "skills": 24,
     "modes": 3,
     "hooks": 9,
-    "hook_scripts": 31,
+    "hook_scripts": 32,
     "mcp_servers": 5,
     "rules_python": 5,
     "rules_typescript": 5,
@@ -116,6 +116,20 @@
     "build_command": "node adapters/build.js"
   },
   "version_history": [
+    {
+      "version": "2.7.1",
+      "date": "2026-04-30",
+      "changes": [
+        "v2.7.1 - codex Layer 2 二审 + auto-fix + v2.7.0 hotfix",
+        "HOTFIX: rate-limit 检测假阳性修复 —— v2.7.0 把 stderr+stdout 合并扫，导致 codex 审查含'rate-limit'主题的代码时输出里自然提到这些词被误判为限流。改为 (exit code 非 0) AND (stderr 含关键词) 双校验，stdout 永不扫。LLM 自指 bug 修了。",
+        "FEAT: 新 lib source/hooks/scripts/lib/finding-parser.js（~150 行）—— 解析 codex 自由文本输出成结构化 [{severity, file, line, summary, raw}] 列表，含 sortBySeverity / summarize 工具方法。",
+        "FEAT: 新 agent source/agents/finding-validator.md —— Layer 2 二审 fresh subagent，无原对话 context 独立复现验证。三档 verdict (confirmed/rejected/ambiguous) + 严格判别（'宁可 ambiguous 也不要错 confirmed'）+ Read/Grep/Bash 工具内强制复现。",
+        "FEAT: codex-audit skill 升级到三层架构：Layer 1 codex 提 finding → Layer 2 finding-validator subagent 二审 → Layer 3 主 Claude 自动 Edit 修不询问用户。confirmed=自动修，rejected=记 ADR，ambiguous=升用户。",
+        "FIX: spawnCodex 改用显式 cmd /c <bin> args... 替代 shell:true，绕过 Node DEP0190 deprecation warning，安全边界保持（args 全清洁，prompt 走 stdin）。",
+        "测试: 95/95 全过（含 codex-runner-test 35 含新的 stdout 关键字 + exit 0 → 不误判 case）。",
+        "重要修复: v2.7.0 的 rate-limit false positive 是真 bug（用户实测发现）。这一 hotfix 让 codex audit 真正可用。"
+      ]
+    },
     {
       "version": "2.7.0",
       "date": "2026-04-30",

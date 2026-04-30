@@ -1,6 +1,6 @@
 ---
 name: codex-audit
-description: "Claude 主动用 codex CLI 做差异化对抗审查（red-team 视角）。触发：(a) /plan 完成自动审 plan 找盲区；(b) /review 默认 3 路并行（Claude reviewer + security + codex）；(c) /pr 创建前自动审 diff；(d) /implement 大改动后自动审实施。codex 是不同模型 → 不同盲区，跟 Claude 互补不替代。**Claude 主决策，codex finding 必须 Claude 复现验证才修**。5h 限制时优雅降级（写 flag + auto-probe 探测恢复，不阻塞主线）。**全自动 — 用户从不需要手动调 codex**。"
+description: "Claude 用 codex CLI 做差异化对抗审查 + Layer 2 二审 + auto-fix 全链路。三层架构：Layer 1 codex (OpenAI) 提 finding → Layer 2 finding-validator subagent (Claude fresh) 独立复现验证 → Layer 3 二审通过自动 Edit 修不询问用户。触发：/plan 完成 / /implement 大改动 / /review 3 路并行 / /pr 4 路 PR 预检。codex 是不同模型 = 不同盲区，跟 Claude 互补不替代。**v2.7.1 起二审验证机制使 auto-fix 安全 — 错给 confirmed 比错给 ambiguous 危害更大，validator 严格判别**。5h 限制时优雅降级（写 flag + auto-probe 探测恢复 + stderr-only + exit-code 双校验防 v2.7.0 false-positive 复发）。**全自动 — 用户从不需要手动管 codex**。"
 ---
 
 # codex-audit · 差异化对抗审查 skill
@@ -49,34 +49,101 @@ if (result.skipped) {
 processCodexFindings(result.output);
 ```
 
-## Claude 复现验证规则（**必走，不可跳**）
-
-codex finding 来了之后 Claude **永远不直接修**，先做 3 件事：
+## v2.7.1 三层架构（Layer 1 → Layer 2 → Layer 3）
 
 ```
-对每个 codex finding:
-  1. 实测复现:
-     - 文件存在？(Read 验证)
-     - 行号对得上？(grep 验证)
-     - 攻击 input 真能触发？(必要时跑代码验证)
-     - 已经被别处覆盖了？(grep 已有防御)
-  
-  2. 三档分类:
-     ✓ 真 bug   → 修 + 在 commit message 标 "(codex audit found this)"
-     ✗ 误报    → 写 reason 到 docs/adr/ 或 docs/mistakes/
-                  ("codex thought X, but Y because Z")
-     ? 模糊    → 升给用户拍板（不擅自决定）
-  
-  3. 决不盲信:
-     - codex 误报率不低（30%-50%）
-     - 同样的 issue Claude reviewer + security-reviewer 也报过 → 高置信
-     - 只有 codex 一方报 → 必须复现才修
+LAYER 1 · codex 提 finding (OpenAI)
+  ↓ runCodexAudit() 返回 raw 文本
+  ↓ parseFindings() 解析成 [{severity, file, line, summary, raw}]
+LAYER 2 · finding-validator subagent (Claude fresh)
+  ↓ 对每个 finding 派 fresh subagent 独立复现
+  ↓ subagent 返回 verdict: confirmed / rejected / ambiguous
+LAYER 3 · 主 Claude 自动决策
+  ✓ confirmed   → 直接 Edit 修，**不询问用户**
+  ✗ rejected    → 记 docs/adr/codex-rejection-{date}.md
+  ? ambiguous   → 升给用户拍板（少数情况）
 ```
 
-**反模式**：
-- ❌ codex 说有 bug → 直接 Edit 修 → 实际是误报 → 把好代码改坏了
-- ❌ codex 找到 finding → Claude 在不复现的情况下"以防万一"加防御 → 代码膨胀
-- ❌ Adversarial loop > 2 轮（第 3 轮起 codex 开始编 finding）
+**关键安全约束**：Layer 2 严格判别——错给 confirmed 比错给 ambiguous 危害大（confirmed 等于授权 Layer 3 自动修）。validator agent prompt 写明"宁可 ambiguous 也不要错 confirmed"。
+
+## Claude 主线工作流（编排 3 层）
+
+收到 codex finding 后，Claude 按这个流程：
+
+```js
+// Phase 1: 拿 codex output (已经有，从 runCodexAudit)
+const codexResult = runCodexAudit({...});
+if (codexResult.skipped) return; // 优雅降级
+
+// Phase 2: 解析成结构化 finding
+const { parseFindings, sortBySeverity, summarize } = require('<MCC_HOOKS>/lib/finding-parser');
+const findings = sortBySeverity(parseFindings(codexResult.output));
+console.log(`[codex-audit] codex 提了 ${findings.length} 条 finding (${summarize(findings)})`);
+
+// Phase 3: 对每个 finding 派 fresh subagent 二审（一次 message 多 Task call 真并行）
+const validations = await Promise.all(findings.map(f =>
+  Task({
+    subagent_type: 'finding-validator',
+    prompt: buildValidatorPrompt(f, gitRange, projectRoot),
+  })
+));
+
+// Phase 4: 按 verdict 分流
+const fixed = [];
+const rejected = [];
+const ambiguous = [];
+for (let i = 0; i < findings.length; i++) {
+  const f = findings[i];
+  const v = parseVerdict(validations[i]); // verdict / reasoning / fix_guidance / user_question
+  
+  if (v.verdict === 'confirmed') {
+    // Layer 3 自动 Edit 修，不问用户
+    applyFix(f, v.fix_guidance);
+    fixed.push({f, v});
+  } else if (v.verdict === 'rejected') {
+    appendToADR(f, v); // docs/adr/codex-rejection-YYYY-MM-DD.md
+    rejected.push({f, v});
+  } else {
+    ambiguous.push({f, v});
+  }
+}
+
+// Phase 5: 给用户摘要
+report({
+  total: findings.length,
+  fixed: fixed.length,
+  rejected: rejected.length,
+  ambiguous, // 只有这部分需要用户回应
+});
+```
+
+## Validator Subagent 派发模板
+
+```js
+function buildValidatorPrompt(finding, gitRange, projectRoot) {
+  return `codex 提了一条 finding：
+severity: ${finding.severity}
+file: ${finding.file}
+line: ${finding.line}
+summary: ${finding.summary}
+raw: ${finding.raw}
+
+工作目录: ${projectRoot}
+git range: ${gitRange}
+
+任务：独立复现 + 给 verdict (confirmed / rejected / ambiguous)。
+按 finding-validator agent 描述的输出格式严格遵守。
+`;
+}
+```
+
+## 反模式（必看）
+
+- ❌ **跳过 Layer 2 直接修** → 把好代码改坏（v2.7.0 之前的设计就是这样）
+- ❌ **Layer 2 用同 session Claude（带原对话 context）** → 不是真二审，等于自审
+- ❌ **Layer 2 仅靠 LLM 判断不复现** → validator agent prompt 强制 Read/Grep/Bash 复现
+- ❌ **Layer 3 confirmed 又问用户一次** → 用户烦，违反 v2.7.0 全自动原则
+- ❌ **Adversarial loop > 2 轮**（第 3 轮起 codex 编 finding）—— 二审是 1 轮，不是迭代
 
 ## 红队 prompt 模板（在 codex-runner.js 里）
 

@@ -1,8 +1,8 @@
 {
   "$schema": "https://schemas.claude.com/plugin/v1.json",
   "name": "mcc",
-  "version": "2.7.0",
-  "description": "MCC Multi-target Claude/Codex Configuration - 20 agents + 16 commands + 24 skills + 3 behavioral modes + 31 hook scripts + 5 MCP servers + curated rules. v2.7.0 codex CLI 集成为差异化对抗审查员（Level 1 红队）：plan/implement/review/pr 关键节点自动调 codex 找盲区，不同模型 = 不同盲区，跟 Claude 互补。Claude 主决策，codex finding 必须复现验证。5h 限制时优雅降级 + auto-probe 探测恢复。完全自动 — 用户从不手动调 codex。",
+  "version": "2.7.1",
+  "description": "MCC Multi-target Claude/Codex Configuration - 21 agents + 16 commands + 24 skills + 3 behavioral modes + 32 hook scripts + 5 MCP servers + curated rules. v2.7.1 codex Layer 2 二审 + auto-fix：codex 提 finding → finding-validator subagent (Claude fresh) 独立复现 → 通过自动 Edit 修不询问。同时 hotfix v2.7.0 rate-limit 假阳性（stderr+exit-code 双校验）+ 修 Node DEP0190 shell:true deprecation。",
   "author": {
     "name": "MCC",
     "url": "https://github.com/18811184907/mcc"

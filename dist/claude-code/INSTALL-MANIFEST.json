@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.7.0",
+  "mccVersion": "2.7.1",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\claude-code",
   "installBase": ".claude/",
@@ -60,6 +60,13 @@
       "install": ".claude/agents/fastapi-pro.md",
       "size": 4992,
       "sha256": "397a95f12d696209abfb1aff8d4e9982841b8ad18e83b1eac6975de7424ce669"
+    },
+    {
+      "kind": "agents",
+      "dist": ".claude/agents/finding-validator.md",
+      "install": ".claude/agents/finding-validator.md",
+      "size": 6329,
+      "sha256": "4106f62553b69929f85cbb768e725c4fd8c6f3d3b057f822ac2279052a882f24"
     },
     {
       "kind": "agents",
@@ -289,8 +296,8 @@
       "kind": "skills",
       "dist": ".claude/skills/codex-audit/SKILL.md",
       "install": ".claude/skills/codex-audit/SKILL.md",
-      "size": 8079,
-      "sha256": "4a686809ed3e238bace00b8d196583893782d2703cfab3b302b3e0609b095091"
+      "size": 10530,
+      "sha256": "05ef867e15d054a101f0850e8e28237d3fcc924c42cdd968bcce639d3211bcf6"
     },
     {
       "kind": "skills",
@@ -716,8 +723,15 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/lib/codex-runner.js",
       "install": ".claude/.mcc-hooks/scripts/lib/codex-runner.js",
-      "size": 15377,
-      "sha256": "9e5f23db10e42200a93d2fe2734da4304158189c282f13e4d72d08797c75c90c"
+      "size": 16262,
+      "sha256": "be7aad03ff3d06246dfe48702e4ee8cf3982d1a5cf680016dab52877db337f1c"
+    },
+    {
+      "kind": "hooks",
+      "dist": ".claude/.mcc-hooks/scripts/lib/finding-parser.js",
+      "install": ".claude/.mcc-hooks/scripts/lib/finding-parser.js",
+      "size": 4839,
+      "sha256": "a017e7daa0b73d368f3c66c7c28577f1b667c17d8c1156f289e1f22853d9ec74"
     },
     {
       "kind": "hooks",
@@ -974,13 +988,13 @@
   ],
   "notes": [],
   "summary": {
-    "total": 138,
+    "total": 140,
     "byKind": {
-      "agents": 20,
+      "agents": 21,
       "command": 16,
       "skills": 40,
       "modes": 3,
-      "hooks": 31,
+      "hooks": 32,
       "hooks-config": 1,
       "settings-fragment": 1,
       "settings-fragment-strict": 1,
@@ -989,6 +1003,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 1030591
+    "totalBytes": 1045095
   }
 }

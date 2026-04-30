@@ -1,6 +1,6 @@
 {
   "target": "codex",
-  "mccVersion": "2.7.0",
+  "mccVersion": "2.7.1",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\codex",
   "files": [
@@ -51,6 +51,12 @@
       "dist": ".codex/agents/fastapi-pro.md",
       "size": 4996,
       "sha256": "834f1d11877875c6059b3b5e32add1e15568f9f9b1f5ede770c2cc6534c936dd"
+    },
+    {
+      "kind": "agent",
+      "dist": ".codex/agents/finding-validator.md",
+      "size": 6341,
+      "sha256": "87e4bc0692f65e1a521955a21fc2166a3dea63fad4641fc53b4e98cbcffce1d7"
     },
     {
       "kind": "agent",
@@ -290,8 +296,8 @@
       "kind": "agents-md",
       "dist": "AGENTS.md",
       "install": "AGENTS.md（放在项目根或 ~/.codex/AGENTS.md）",
-      "size": 17564,
-      "sha256": "7e3ededb123953bdbe7dc8b0270ee2b7d48622d797831382adf97cf7af308bc4"
+      "size": 17705,
+      "sha256": "8ef773ceef367ae538973e6dc0feb43f07cb83aa13b60aaba708ee538e64b4a4"
     },
     {
       "kind": "hooks-soft-guidance",
@@ -315,15 +321,15 @@
     "Codex 不支持 skill，转为 AGENTS.md 中的场景指引段"
   ],
   "summary": {
-    "total": 50,
+    "total": 51,
     "byKind": {
-      "agent": 20,
+      "agent": 21,
       "prompt": 16,
       "rule": 11,
       "agents-md": 1,
       "hooks-soft-guidance": 1,
       "mcp-toml": 1
     },
-    "totalBytes": 317398
+    "totalBytes": 323880
   }
 }

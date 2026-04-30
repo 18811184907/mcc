@@ -77,16 +77,22 @@ function resolveCodexBin() {
 }
 
 // Windows 下 Node 的 spawnSync **不能直接执行** .cmd / .bat 文件（EINVAL）。
-// 解决方案：shell: true 让 cmd.exe 跑 .cmd，但严格只有清洁 args 通过 shell。
-// user prompt 走 stdin（input 字段），不进 args，shell injection 不可能。
+// v2.7.0: 用 shell:true wrap，但触发 Node DEP0190 deprecation warning（args 不会被
+// shell escape）。
+// v2.7.1: 改用显式 cmd /c <bin> args... 调用，绕过 shell:true，没 deprecation。
+// 安全边界保持不变：args 全清洁（hard-coded 'exec' / '--skip-git-repo-check' / '-'），
+// prompt 永远走 stdin（input 字段）。所以即便走 cmd 也无 injection 风险。
 function spawnCodex(bin, args, opts = {}) {
   const onWindows = process.platform === 'win32';
-  // Windows + .cmd/.bat 需要 shell:true（cmd.exe wrap）。其他情况直接 spawn。
-  const needsShell = onWindows && /\.(cmd|bat|ps1)$/i.test(bin);
-  return spawnSync(bin, args, {
-    ...opts,
-    shell: needsShell,
-  });
+  const isCmdFile = onWindows && /\.(cmd|bat)$/i.test(bin);
+
+  if (isCmdFile) {
+    // cmd /c <bin> args... — 显式 wrap，args 作为独立参数传给 cmd.exe
+    // cmd.exe 自己负责把后续 token 还原成 .cmd 的 %1 %2... 所以 args 顺序保留。
+    return spawnSync('cmd', ['/c', bin, ...args], opts);
+  }
+  // 其他情况（exe / Unix shebang / .js with shebang）直接 spawn
+  return spawnSync(bin, args, opts);
 }
 
 /**
@@ -291,10 +297,16 @@ function runCodexAudit(opts) {
 
   const stderr = String(result.stderr || '');
   const stdout = String(result.stdout || '');
-  const combined = stderr + '\n' + stdout;
 
-  // 4. rate-limit 检测
-  if (RATE_LIMIT_PATTERNS.some(re => re.test(combined))) {
+  // 4. rate-limit 检测（v2.7.1 fix）
+  // 关键: 必须同时满足 (exit code 非 0) AND (stderr 含关键词)。
+  // 之前 v2.7.0 把 stdout + stderr 合并扫 → codex 审查含"rate-limit"主题的代码时
+  // 输出里自然提到 "rate-limit" 等词被误判为限流。stdout 永远不该被扫。
+  // exit 0 = 成功，无论 stdout 含啥词都不是限流。
+  const isRealRateLimit = (result.error || result.status !== 0)
+    && RATE_LIMIT_PATTERNS.some(re => re.test(stderr));
+
+  if (isRealRateLimit) {
     writeBlockFlag({ probeAttempts: 0 });
     return {
       skipped: true,
@@ -302,7 +314,7 @@ function runCodexAudit(opts) {
     };
   }
 
-  // 5. 其他错误（超时 / spawn 失败 / exit 非 0）
+  // 5. 其他错误（超时 / spawn 失败 / exit 非 0 但不是限流）
   if (result.error || result.status !== 0) {
     const detail = result.error?.message
       || (stderr.split('\n').filter(Boolean).slice(-3).join(' | '))
@@ -318,7 +330,7 @@ function runCodexAudit(opts) {
   return {
     skipped: false,
     output: stdout.trim(),
-    tokensUsed: parseTokenUsage(combined),
+    tokensUsed: parseTokenUsage(stderr + '\n' + stdout), // tokens 解析两边都看 OK
     durationMs,
   };
 }

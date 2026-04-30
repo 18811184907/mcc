@@ -222,17 +222,19 @@ const flagPath = path.join(tmpHome, '.claude', '.codex-blocked-until');
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// Test 8: rate-limit-2 (stdout 含关键字) 也被识别
+// Test 8: stdout 含 rate-limit 关键字 + exit 0 → 不应误判（v2.7.1 hotfix）
 // ════════════════════════════════════════════════════════════════════════════
 {
-  console.log('\n── Test 8: stdout 含 rate-limit 关键字也识别 ──');
+  console.log('\n── Test 8: stdout 含 rate-limit 关键字 + exit 0 → 不误判 ──');
   try { fs.unlinkSync(flagPath); } catch (_) {}
-  process.env.MOCK_CODEX_MODE = 'rate-limit-2';
+  process.env.MOCK_CODEX_MODE = 'rate-limit-2'; // 现在该模式：stdout 含关键字 + exit 0
+  // 反映真实场景：codex audit 一段讲限流的代码时，输出会自然提到 rate-limit。
+  // v2.7.0 之前会误判，v2.7.1 修复后必须当成正常成功。
 
   const result = runner.runCodexAudit({ prompt: 'test', timeoutMs: 5000 });
-  check('skipped: true', result.skipped === true);
-  check('reason 含 rate-limited', /rate-limited/.test(result.reason || ''));
-  check('flag 被写入', fs.existsSync(flagPath));
+  check('skipped: false (exit 0 = 成功)', result.skipped === false);
+  check('output 含 mock 内容', /Some output|usage limit approaching/.test(result.output || ''));
+  check('flag NOT 写入（stdout 关键字不算限流）', !fs.existsSync(flagPath));
 }
 
 // ════════════════════════════════════════════════════════════════════════════
