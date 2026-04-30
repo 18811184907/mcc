@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.mcc.dev/manifest-v1.json",
   "name": "mcc",
-  "version": "2.7.2",
+  "version": "2.8.0",
   "description": "Multi-target Claude/Codex Configuration",
   "license": "MIT",
   "homepage": "https://github.com/18811184907/mcc",
@@ -116,6 +116,24 @@
     "build_command": "node adapters/build.js"
   },
   "version_history": [
+    {
+      "version": "2.8.0",
+      "date": "2026-04-30",
+      "changes": [
+        "v2.8.0 - codex-runner 流式 streaming 重写（minor bump，改 API）",
+        "ARCH: spawnSync batch → spawn 流式。runCodexAudit 现在是 async (Promise) 必须 await。新增 onEvent / onStderr 回调让 Claude 主线实时看到 codex 思考过程（thread.started / turn.started / item.completed 含 reasoning|agent_message|command_execution / turn.completed 含 usage）。",
+        "FIX: idle-timeout 替代 total-timeout —— 没新事件 idleTimeoutMs (默认 90s) 才算卡死，不是 'codex 思考长就杀'。totalTimeoutMs 兜底绝对上限 10min。这解了 v2.7.x 大 prompt 被 240s timeout 砍的问题。",
+        "FIX: Windows stdin UTF-8 编码问题 —— 用 child.stdin.write(prompt, 'utf8') 走 pipe 不走 cmd codepage。中文 prompt 不再乱码。",
+        "FIX: JSONL parser 鲁棒 —— 非 JSON 行（codex banner / debug）静默忽略，不丢已收到的 events。",
+        "FIX: child.on('exit') 替代 'close' —— SIGTERM kill 后立即 resolve，不等 grandchild 持有的 stdio pipe 自然关闭。idle timeout 测试从 60s → 5.1s。",
+        "OPT: rate-limit detection 删 'exceeded' 关键词（太宽泛，触发 v2.7.x false positive）。保留：rate.?limit / 429 / quota / try again in / too many requests / usage limit。仍要 exit 非 0 + stderr 含关键词双校验。",
+        "OPT: result.output 只累积 agent_message text，过滤 reasoning / tool_call / command_execution（这些是 codex 内部活动不是给用户的输出）。",
+        "FEAT: result.events 完整事件数组保留，debug 用。result.tokensUsed = input + output (从 turn.completed.usage 取)。",
+        "TEST: codex-runner-test 35 → 31 checks（async 改写，新增 streaming 多事件累积 + idle-stuck timeout + onEvent 回调测试）。",
+        "实测: 跑真 codex audit on v2.7.2..HEAD 看到 thread.started @3.3s → 4 轮 agent_message + 多次 command_execution → 90+ 秒后真撞 codex rate-limit (这次不是 false positive)。streaming 让用户看到 codex 真在工作。",
+        "测试: 95/95 全过 (installer-dry-run 19 + codex-patches-followup 8 + vault-hook-test 5 + user-vault-hook-test 28 + codex-runner-test 31)."
+      ]
+    },
     {
       "version": "2.7.2",
       "date": "2026-04-30",

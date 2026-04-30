@@ -1,6 +1,6 @@
 {
   "target": "claude-code",
-  "mccVersion": "2.7.1",
+  "mccVersion": "2.8.0",
   "sourceDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\source",
   "distDir": "D:\\01App\\07 claude\\06everything\\mcc-fork\\dist\\claude-code",
   "installBase": ".claude/",
@@ -296,8 +296,8 @@
       "kind": "skills",
       "dist": ".claude/skills/codex-audit/SKILL.md",
       "install": ".claude/skills/codex-audit/SKILL.md",
-      "size": 10530,
-      "sha256": "05ef867e15d054a101f0850e8e28237d3fcc924c42cdd968bcce639d3211bcf6"
+      "size": 11520,
+      "sha256": "760ab7a3af787e85a93c249dd09c82bd94a3004a40eede8ead027ecc4323677f"
     },
     {
       "kind": "skills",
@@ -723,8 +723,8 @@
       "kind": "hooks",
       "dist": ".claude/.mcc-hooks/scripts/lib/codex-runner.js",
       "install": ".claude/.mcc-hooks/scripts/lib/codex-runner.js",
-      "size": 16428,
-      "sha256": "5bc0dd245a4920d30c54a24743a79766693f62f95df937b95f08aa8395422cf5"
+      "size": 19136,
+      "sha256": "4bb945d1c31d23d5a03f3bccc8ef8659fccd96b00b1b00ff9b338c37e281868f"
     },
     {
       "kind": "hooks",
@@ -1003,6 +1003,6 @@
       "rules": 11,
       "placeholder": 8
     },
-    "totalBytes": 1045261
+    "totalBytes": 1048959
   }
 }

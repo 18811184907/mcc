@@ -1,6 +1,6 @@
 ---
 name: codex-audit
-description: "Claude 用 codex CLI 做差异化对抗审查 + Layer 2 二审 + auto-fix 全链路。三层架构：Layer 1 codex (OpenAI) 提 finding → Layer 2 finding-validator subagent (Claude fresh) 独立复现验证 → Layer 3 二审通过自动 Edit 修不询问用户。触发：/plan 完成 / /implement 大改动 / /review 3 路并行 / /pr 4 路 PR 预检。codex 是不同模型 = 不同盲区，跟 Claude 互补不替代。**v2.7.1 起二审验证机制使 auto-fix 安全 — 错给 confirmed 比错给 ambiguous 危害更大，validator 严格判别**。5h 限制时优雅降级（写 flag + auto-probe 探测恢复 + stderr-only + exit-code 双校验防 v2.7.0 false-positive 复发）。**全自动 — 用户从不需要手动管 codex**。"
+description: "Claude 用 codex CLI 做差异化对抗审查 + Layer 2 二审 + auto-fix 全链路。**v2.8.0 起流式 streaming**：codex 思考过程实时事件流（onEvent 回调每个 thread.started / item.completed / turn.completed），idle-timeout（90s 没新事件才算卡死）替代固定 totalTimeout。runCodexAudit 是 async，要 await。三层架构：Layer 1 codex (OpenAI) 流式产 finding → Layer 2 finding-validator subagent (Claude fresh) 独立复现 → Layer 3 通过自动 Edit 修不询问用户。触发：/plan 完成 / /implement 大改动 / /review 3 路并行 / /pr 4 路 PR 预检。codex 是不同模型 = 不同盲区，跟 Claude 互补不替代。**全自动 — 用户从不需要手动管 codex**。"
 ---
 
 # codex-audit · 差异化对抗审查 skill
@@ -25,29 +25,49 @@ description: "Claude 用 codex CLI 做差异化对抗审查 + Layer 2 二审 + a
 - 用户说"快速 patch / 临时改 / 试一下"
 - 用户已经在多轮 codex audit 后第 3 轮（避免 codex 编 finding）
 
-## 如何调用（Claude 内部）
+## 如何调用（Claude 内部，v2.8 streaming）
 
 ```js
 // Claude 在 hook / skill / command 里 require:
 const { runCodexAudit, REDTEAM_TEMPLATES } = require('<MCC_HOOKS>/lib/codex-runner');
 
 const prompt = REDTEAM_TEMPLATES.audit_diff({ gitRange: 'HEAD~1..HEAD' });
-const result = runCodexAudit({
+
+// v2.8 是 async — 必须 await
+const result = await runCodexAudit({
   prompt,
   cwd: projectRoot,
-  timeoutMs: 90_000,
+  idleTimeoutMs: 90_000,    // 没新事件 90s 当卡死
+  totalTimeoutMs: 600_000,  // 绝对上限 10min
+  onEvent: (ev) => {
+    // 实时回调：thread.started / turn.started / item.completed / turn.completed
+    if (ev.type === 'item.completed' && ev.item?.type === 'agent_message') {
+      process.stderr.write(`[codex] message: ${ev.item.text.slice(0, 60)}...\n`);
+    } else {
+      process.stderr.write(`[codex] ${ev.type}\n`); // 心跳进度
+    }
+  },
 });
 
 if (result.skipped) {
-  // 优雅降级：codex 不可用（未装 / rate-limit / 错误）
-  // 不阻塞主线，正常完成 Claude 这边的工作
   process.stderr.write(`[codex-audit] skipped: ${result.reason}\n`);
   return;
 }
 
-// 收 codex finding，进入"Claude 复现验证"流程（下方）
+// result.output = 累积所有 agent_message 的 text（不含 reasoning / tool_call）
+// result.events = 完整事件数组（debug 用）
+// result.tokensUsed = total tokens (input + output)
+// result.durationMs = 总耗时
+
 processCodexFindings(result.output);
 ```
+
+**关键设计**：
+- **streaming**: 不再等终结才返回，事件实时到 onEvent
+- **idle-timeout > total-timeout**: codex 思考 5 分钟没事但 90s 没动静就 idle 杀
+- **stdin UTF-8**: prompt 通过 child.stdin.write(prompt, 'utf8') 走 pipe，绕过 Windows cmd codepage
+- **JSONL parse**: 每行一个事件 JSON.parse，非 JSON 行（banner）忽略
+- **agent_message only**: result.output 只累积 agent_message text，过滤掉 reasoning + tool_call
 
 ## v2.7.1 三层架构（Layer 1 → Layer 2 → Layer 3）
 

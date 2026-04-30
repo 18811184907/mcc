@@ -1,37 +1,50 @@
 'use strict';
 
 /**
- * codex-runner — wrap OpenAI codex CLI for adversarial audit calls.
+ * codex-runner v2.8 — 流式 streaming wrapper for OpenAI codex CLI.
  *
- * v2.7.0 design:
- *   - codex 作为差异化审查员，Level 1（红队 prompt）
- *   - rate-limit 检测 + 优雅降级（写 flag → skip codex 不阻塞主线）
- *   - 自动 probe 探测流量恢复（不等死 1h）
- *   - Claude 拿最终决策权，codex finding 必须 Claude 复现
+ * v2.8 重写动机:
+ *   v2.7.x 用 spawnSync batch 模式，问题：
+ *     1. codex 大 prompt 思考 > timeoutMs 直接被砍
+ *     2. 没有实时进度，用户看像死了
+ *     3. Windows cmd /c stdin 走 GBK codepage 中文 prompt 乱码
  *
- * 用法:
- *   const { runCodexAudit } = require('./codex-runner');
+ *   v2.8 改 spawn + --json 流式读 jsonl 事件:
+ *     1. idle-timeout 而非 total-timeout (codex 在思考 = 还有事件出 = 不算 idle)
+ *     2. 实时 onEvent / onFinding callback (用户能看到进度)
+ *     3. stdin 通过 child.stdin.write(prompt, 'utf8') 走 pipe 不走 cmd codepage
+ *
+ * 使用:
  *   const result = await runCodexAudit({
- *     prompt: 'red-team this diff: ...',
- *     cwd: projectRoot,
- *     timeoutMs: 60_000,
+ *     prompt,
+ *     cwd,
+ *     idleTimeoutMs: 90_000,    // 没新事件 90s 就当卡死
+ *     totalTimeoutMs: 600_000,  // 绝对上限 10min
+ *     onEvent: (ev) => process.stderr.write(`[codex] ${ev.type}\n`),
  *   });
- *   if (result.skipped) { ... fallback ... }
- *   else { ... result.output ... }
+ *
+ * 同步 wrapper runCodexAuditSync 仍保留给老 caller，内部 await。
+ *
+ * codex --json JSONL 事件类型:
+ *   thread.started        — 会话开始
+ *   turn.started          — 一轮思考开始
+ *   item.completed        — 输出一段（reasoning / agent_message / tool_call）
+ *   turn.completed        — 含 usage.{input_tokens, output_tokens, ...}
+ *   thread.completed      — 整个会话结束
+ *   error                 — 错误（含 rate-limit）
  */
 
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { spawnSync } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 
-// 状态文件路径 — 用 getter 函数让 tests 能 override HOME 后重新解析
+// ─── 状态 flag ─────────────────────────────────────────────────────────────
+
 function getFlagPath() {
-  // 优先 HOME / USERPROFILE env (跟 lib/utils.js getHomeDir 风格一致)
   const home = process.env.HOME || process.env.USERPROFILE || os.homedir();
   return path.join(home, '.claude', '.codex-blocked-until');
 }
-// 兼容老消费者 — 但生产环境用 getFlagPath()
 const FLAG_PATH = getFlagPath();
 
 // rate-limit 关键字（codex CLI stderr 模式）
@@ -40,22 +53,19 @@ const RATE_LIMIT_PATTERNS = [
   /\b429\b/,
   /quota/i,
   /try again in/i,
-  /exceeded/i,
   /too many requests/i,
   /usage limit/i,
 ];
 
 // auto-probe 间隔策略（指数退避）
-const PROBE_INTERVALS_MIN = [5, 10, 20, 40, 60]; // 探测间隔分钟
-const DEFAULT_BLOCK_HOURS = 1; // 写 flag 时默认假设 1h 后可能恢复
+const PROBE_INTERVALS_MIN = [5, 10, 20, 40, 60];
+const DEFAULT_BLOCK_HOURS = 1;
 
-// Cache resolved codex binary path. Node's spawnSync 在 Windows **不会**
-// 自动通过 PATHEXT 解析 .cmd / .bat —— 直接 spawn('codex') 在 Windows 拿
-// ENOENT。必须先用 where.exe / which 找绝对路径。
-let cachedCodexPath = undefined; // undefined = 未查；null = 查过但没装；string = 路径
+// ─── codex bin 解析 ────────────────────────────────────────────────────────
+
+let cachedCodexPath = undefined;
 
 function resolveCodexBin() {
-  // 测试 / 显式 override
   if (process.env.CODEX_BIN_OVERRIDE) return process.env.CODEX_BIN_OVERRIDE;
   if (cachedCodexPath !== undefined) return cachedCodexPath;
 
@@ -67,7 +77,6 @@ function resolveCodexBin() {
     timeout: 3000,
   });
   if (result.status === 0 && result.stdout) {
-    // where.exe 可能多行（codex / codex.cmd / codex.ps1）—— 优先 .cmd
     const lines = result.stdout.trim().split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     cachedCodexPath = lines.find(l => /\.cmd$/i.test(l)) || lines[0] || null;
   } else {
@@ -76,54 +85,27 @@ function resolveCodexBin() {
   return cachedCodexPath;
 }
 
-// Windows 下 Node 的 spawnSync **不能直接执行** .cmd / .bat 文件（EINVAL）。
-// v2.7.0: 用 shell:true wrap，但触发 Node DEP0190 deprecation warning（args 不会被
-// shell escape）。
-// v2.7.1: 改用显式 cmd /c <bin> args... 调用，绕过 shell:true，没 deprecation。
-// 安全边界保持不变：args 全清洁（hard-coded 'exec' / '--skip-git-repo-check' / '-'），
-// prompt 永远走 stdin（input 字段）。所以即便走 cmd 也无 injection 风险。
-function spawnCodex(bin, args, opts = {}) {
-  const onWindows = process.platform === 'win32';
-  const isCmdFile = onWindows && /\.(cmd|bat)$/i.test(bin);
+function _resetBinCache() { cachedCodexPath = undefined; }
 
-  if (isCmdFile) {
-    // cmd /c <bin> args... — 显式 wrap，args 作为独立参数传给 cmd.exe
-    // cmd.exe 自己负责把后续 token 还原成 .cmd 的 %1 %2... 所以 args 顺序保留。
-    return spawnSync('cmd', ['/c', bin, ...args], opts);
-  }
-  // 其他情况（exe / Unix shebang / .js with shebang）直接 spawn
-  return spawnSync(bin, args, opts);
-}
-
-/**
- * 检查 codex CLI 是否装。
- * @returns {boolean}
- */
 function isCodexInstalled() {
   const bin = resolveCodexBin();
   if (!bin) return false;
-  const result = spawnCodex(bin, ['--version'], {
-    stdio: ['ignore', 'pipe', 'pipe'],
-    windowsHide: true,
-    timeout: 3000,
-  });
+  // sync version OK for quick existence check
+  const onWindows = process.platform === 'win32';
+  const isCmdFile = onWindows && /\.(cmd|bat)$/i.test(bin);
+  const result = isCmdFile
+    ? spawnSync('cmd', ['/c', bin, '--version'], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, timeout: 3000 })
+    : spawnSync(bin, ['--version'], { stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true, timeout: 3000 });
   return result.status === 0;
 }
 
-/**
- * 读 flag 文件，返回当前 block 状态。
- * @returns {{blocked: boolean, blockedUntil?: Date, lastProbeAt?: Date, probeAttempts?: number}}
- */
+// ─── flag I/O（同步 OK，文件操作快）────────────────────────────────────────
+
 function readBlockState() {
   const flagPath = getFlagPath();
   if (!fs.existsSync(flagPath)) return { blocked: false };
-
-  let raw;
-  try { raw = fs.readFileSync(flagPath, 'utf8'); }
-  catch (_) { return { blocked: false }; }
-
   let parsed;
-  try { parsed = JSON.parse(raw); }
+  try { parsed = JSON.parse(fs.readFileSync(flagPath, 'utf8')); }
   catch (_) { return { blocked: false }; }
 
   const now = new Date();
@@ -131,18 +113,13 @@ function readBlockState() {
   const lastProbeAt = parsed.last_probe_at ? new Date(parsed.last_probe_at) : null;
   const probeAttempts = parsed.probe_attempts || 0;
 
-  // expired
   if (blockedUntil && now >= blockedUntil) {
     try { fs.unlinkSync(flagPath); } catch (_) {}
     return { blocked: false };
   }
-
   return { blocked: true, blockedUntil, lastProbeAt, probeAttempts };
 }
 
-/**
- * 写 flag — codex 命中 rate-limit 时调用。
- */
 function writeBlockFlag({ probeAttempts = 0 } = {}) {
   const now = new Date();
   const blockedUntil = new Date(now.getTime() + DEFAULT_BLOCK_HOURS * 60 * 60 * 1000);
@@ -162,9 +139,6 @@ function writeBlockFlag({ probeAttempts = 0 } = {}) {
   }
 }
 
-/**
- * 是否到了下一次 probe 时间（指数退避）。
- */
 function shouldProbe(state) {
   if (!state.lastProbeAt) return true;
   const idx = Math.min(state.probeAttempts || 0, PROBE_INTERVALS_MIN.length - 1);
@@ -173,139 +147,231 @@ function shouldProbe(state) {
   return new Date() >= nextProbeAt;
 }
 
-/**
- * 跑一个最小 probe（"say ok"）测 codex 是否恢复。
- * 不消耗多少 token；恢复了立即清 flag。
- * @returns {boolean} 是否仍然 blocked
- */
-function probeRecovery() {
-  const bin = resolveCodexBin();
-  if (!bin) return true; // 未装直接当 blocked
-  // probe 用极短 prompt "say ok"。args 全清洁可走 shell。
-  const result = spawnCodex(bin, ['exec', '--skip-git-repo-check', 'say ok'], {
-    encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe'],
-    windowsHide: true,
-    timeout: 15_000,
-  });
-  const stderr = String(result.stderr || '');
-
-  // v2.7.2 hotfix (Layer 2 finding-validator 发现): 跟主路径 runCodexAudit 一致
-  // 双校验。之前这里仍用 combined = stderr+stdout 扫，是 v2.7.1 修主路径时
-  // 漏掉的同款 false positive。stdout 永不扫，exit 0 = 恢复。
-  if ((result.error || result.status !== 0)
-      && RATE_LIMIT_PATTERNS.some(re => re.test(stderr))) {
-    return true;
-  }
-  // exit code 非 0 但不是 rate-limit → 当临时错误，不算恢复也不算 blocked
-  if (result.status !== 0) {
-    return true;
-  }
-  return false; // 恢复了
-}
-
-/**
- * 更新 flag 的 probe 状态（次数 + 时间），不清 flag。
- */
 function updateProbeState(state) {
   const flagPath = getFlagPath();
-  const probeAttempts = (state.probeAttempts || 0) + 1;
   let raw;
   try { raw = JSON.parse(fs.readFileSync(flagPath, 'utf8')); }
   catch (_) { return; }
   raw.last_probe_at = new Date().toISOString();
-  raw.probe_attempts = probeAttempts;
+  raw.probe_attempts = (state.probeAttempts || 0) + 1;
   try { fs.writeFileSync(flagPath, JSON.stringify(raw, null, 2)); }
-  catch (_) { /* noop */ }
+  catch (_) {}
 }
 
+// ─── streaming codex spawn ──────────────────────────────────────────────────
+
 /**
- * 解析 codex exec 输出，提取 token 用量（如有）。
+ * Spawn codex with streaming JSON output and stdin prompt (UTF-8).
+ * Returns a Promise<{stdout, stderr, exitCode, events, durationMs, idleTimeoutHit, totalTimeoutHit}>
  */
-function parseTokenUsage(combined) {
-  const m = combined.match(/tokens used\s+([\d,]+)/i);
-  if (m) return parseInt(m[1].replace(/,/g, ''), 10);
-  return null;
+function spawnCodexStream(bin, args, { input, cwd, idleTimeoutMs, totalTimeoutMs, onEvent, onStderr }) {
+  return new Promise((resolve) => {
+    const onWindows = process.platform === 'win32';
+    const isCmdFile = onWindows && /\.(cmd|bat)$/i.test(bin);
+    const child = isCmdFile
+      ? spawn('cmd', ['/c', bin, ...args], { cwd, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true })
+      : spawn(bin, args, { cwd, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
+
+    const startedAt = Date.now();
+    let stdoutBuf = '';
+    let stderrBuf = '';
+    let lineBuf = '';
+    const events = [];
+    let lastEventAt = Date.now();
+    let idleTimeoutHit = false;
+    let totalTimeoutHit = false;
+    let killed = false;
+
+    // idle timeout: 没新事件超过 idleTimeoutMs 就杀
+    const idleTimer = setInterval(() => {
+      if (Date.now() - lastEventAt > idleTimeoutMs && !killed) {
+        idleTimeoutHit = true;
+        killed = true;
+        try { child.kill('SIGTERM'); } catch (_) {}
+        setTimeout(() => { try { child.kill('SIGKILL'); } catch (_) {} }, 2000);
+      }
+    }, 5000);
+
+    // total timeout: 绝对上限
+    const totalTimer = setTimeout(() => {
+      if (!killed) {
+        totalTimeoutHit = true;
+        killed = true;
+        try { child.kill('SIGTERM'); } catch (_) {}
+        setTimeout(() => { try { child.kill('SIGKILL'); } catch (_) {} }, 2000);
+      }
+    }, totalTimeoutMs);
+
+    child.stdout.setEncoding('utf8');
+    child.stdout.on('data', chunk => {
+      stdoutBuf += chunk;
+      lineBuf += chunk;
+      // jsonl 一行一个事件
+      let nlIdx;
+      while ((nlIdx = lineBuf.indexOf('\n')) !== -1) {
+        const line = lineBuf.slice(0, nlIdx).trim();
+        lineBuf = lineBuf.slice(nlIdx + 1);
+        if (!line) continue;
+        try {
+          const ev = JSON.parse(line);
+          events.push(ev);
+          lastEventAt = Date.now();
+          if (onEvent) {
+            try { onEvent(ev); } catch (_) {}
+          }
+        } catch (_) {
+          // 非 JSON 行（codex 偶尔输出 banner / unstructured）—— 忽略，不影响累积
+        }
+      }
+    });
+
+    child.stderr.setEncoding('utf8');
+    child.stderr.on('data', chunk => {
+      stderrBuf += chunk;
+      if (onStderr) {
+        try { onStderr(chunk); } catch (_) {}
+      }
+    });
+
+    let resolved = false;
+    const finish = (payload) => {
+      if (resolved) return;
+      resolved = true;
+      clearInterval(idleTimer);
+      clearTimeout(totalTimer);
+      // 强制关闭 stdio pipe（Windows cmd /c 的 grandchild 可能持有 pipe）
+      try { child.stdout && child.stdout.destroy(); } catch (_) {}
+      try { child.stderr && child.stderr.destroy(); } catch (_) {}
+      resolve(payload);
+    };
+
+    child.on('error', err => {
+      finish({
+        stdout: stdoutBuf, stderr: stderrBuf, exitCode: null,
+        events, durationMs: Date.now() - startedAt,
+        error: err, idleTimeoutHit, totalTimeoutHit,
+      });
+    });
+
+    // 用 'exit' 而非 'close'：exit 在 process 退出时触发，不等所有 stdio 关闭。
+    // 这让 idle-timeout 杀进程后立即 resolve，不等 grandchild stdio。
+    child.on('exit', (code, signal) => {
+      finish({
+        stdout: stdoutBuf, stderr: stderrBuf,
+        exitCode: code, signal,
+        events, durationMs: Date.now() - startedAt,
+        error: null, idleTimeoutHit, totalTimeoutHit,
+      });
+    });
+
+    // 写 prompt 到 stdin（UTF-8 直接写 pipe，不走 cmd codepage）
+    if (input != null) {
+      try {
+        child.stdin.write(input, 'utf8');
+        child.stdin.end();
+      } catch (e) {
+        // stdin write 失败（child 已 exit 了）—— close 事件会触发
+      }
+    }
+  });
 }
 
 /**
- * 主入口：跑一次 codex audit。
- *
+ * Probe with minimal prompt to test recovery. Returns true if still blocked.
+ */
+async function probeRecovery() {
+  const bin = resolveCodexBin();
+  if (!bin) return true;
+
+  const result = await spawnCodexStream(bin, ['exec', '--skip-git-repo-check', '--json', '-'], {
+    input: 'say ok',
+    idleTimeoutMs: 30_000,
+    totalTimeoutMs: 60_000,
+  });
+
+  // v2.8: stderr only + exit 非 0
+  const stderr = String(result.stderr || '');
+  if ((result.error || result.exitCode !== 0)
+      && RATE_LIMIT_PATTERNS.some(re => re.test(stderr))) {
+    return true; // 仍 blocked
+  }
+  if (result.error || result.exitCode !== 0) return true; // 临时错误，保守不解锁
+  return false; // 恢复了
+}
+
+// ─── 主入口 runCodexAudit (async) ──────────────────────────────────────────
+
+/**
  * @param {object} opts
- * @param {string} opts.prompt - 红队 prompt（self-contained，含路径/上下文）
- * @param {string} [opts.cwd] - 工作目录（codex 会 cd 进去）
- * @param {number} [opts.timeoutMs=60000] - 超时
- * @param {boolean} [opts.skipGitRepoCheck=true] - 默认跳过 git repo 检查
- * @returns {{ skipped: boolean, reason?: string, output?: string, tokensUsed?: number, durationMs?: number }}
+ * @param {string} opts.prompt - 红队 prompt（self-contained）
+ * @param {string} [opts.cwd] - 工作目录
+ * @param {number} [opts.idleTimeoutMs=90000] - 没新事件 90s 当卡死
+ * @param {number} [opts.totalTimeoutMs=600000] - 绝对上限 10min
+ * @param {(ev: object) => void} [opts.onEvent] - 实时事件回调
+ * @param {(chunk: string) => void} [opts.onStderr] - 实时 stderr 回调
+ * @returns {Promise<{ skipped, reason?, output?, tokensUsed?, durationMs?, events? }>}
  */
-function runCodexAudit(opts) {
-  const { prompt, cwd, timeoutMs = 60_000, skipGitRepoCheck = true } = opts || {};
+async function runCodexAudit(opts) {
+  const {
+    prompt,
+    cwd,
+    idleTimeoutMs = 90_000,
+    totalTimeoutMs = 600_000,
+    onEvent,
+    onStderr,
+  } = opts || {};
+
   if (!prompt || typeof prompt !== 'string') {
     return { skipped: true, reason: 'no prompt provided' };
   }
-
-  // 1. CLI 装否
   if (!isCodexInstalled()) {
     return { skipped: true, reason: 'codex CLI not installed (run: npm install -g @openai/codex)' };
   }
 
-  // 2. flag 检查 + auto-probe
+  // flag 检查 + auto-probe
   const state = readBlockState();
   if (state.blocked) {
     if (shouldProbe(state)) {
-      const stillBlocked = probeRecovery();
+      const stillBlocked = await probeRecovery();
       if (stillBlocked) {
         updateProbeState(state);
+        const nextIdx = Math.min((state.probeAttempts || 0) + 1, PROBE_INTERVALS_MIN.length - 1);
         return {
           skipped: true,
-          reason: `codex rate-limited (probe ${state.probeAttempts + 1} failed); next probe in ${PROBE_INTERVALS_MIN[Math.min((state.probeAttempts || 0) + 1, PROBE_INTERVALS_MIN.length - 1)]}min`,
+          reason: `codex rate-limited (probe ${state.probeAttempts + 1} failed); next probe in ${PROBE_INTERVALS_MIN[nextIdx]}min`,
         };
       }
-      // 恢复了！清 flag
       try { fs.unlinkSync(getFlagPath()); } catch (_) {}
-      // 继续往下跑真任务
+      // 继续跑真任务
     } else {
       const remainingMs = state.blockedUntil.getTime() - Date.now();
       const remainingMin = Math.max(1, Math.round(remainingMs / 60_000));
+      const idx = Math.min(state.probeAttempts || 0, PROBE_INTERVALS_MIN.length - 1);
       return {
         skipped: true,
-        reason: `codex rate-limited (next auto-probe in <${PROBE_INTERVALS_MIN[Math.min(state.probeAttempts || 0, PROBE_INTERVALS_MIN.length - 1)]}min, expires in ${remainingMin}min)`,
+        reason: `codex rate-limited (next auto-probe in <${PROBE_INTERVALS_MIN[idx]}min, expires in ${remainingMin}min)`,
       };
     }
   }
 
-  // 3. 跑真任务
+  // 跑真任务（流式）
   const bin = resolveCodexBin();
-  if (!bin) return { skipped: true, reason: 'codex CLI not installed' };
+  const args = ['exec', '--skip-git-repo-check', '--json', '-'];
 
-  // 关键安全决策: prompt **走 stdin** 而非 arg。这样无论 prompt 多长 / 含什么
-  // shell 元字符，都不会被解释。shell:true 只 wrap 清洁 args（exec / -- 等）。
-  const args = ['exec'];
-  if (skipGitRepoCheck) args.push('--skip-git-repo-check');
-  args.push('-'); // codex exec - 表示从 stdin 读 prompt
-
-  const startedAt = Date.now();
-  const result = spawnCodex(bin, args, {
+  const result = await spawnCodexStream(bin, args, {
     input: prompt,
     cwd: cwd || process.cwd(),
-    encoding: 'utf8',
-    stdio: ['pipe', 'pipe', 'pipe'],
-    windowsHide: true,
-    timeout: timeoutMs,
-    maxBuffer: 16 * 1024 * 1024,
+    idleTimeoutMs,
+    totalTimeoutMs,
+    onEvent,
+    onStderr,
   });
-  const durationMs = Date.now() - startedAt;
 
   const stderr = String(result.stderr || '');
-  const stdout = String(result.stdout || '');
 
-  // 4. rate-limit 检测（v2.7.1 fix）
-  // 关键: 必须同时满足 (exit code 非 0) AND (stderr 含关键词)。
-  // 之前 v2.7.0 把 stdout + stderr 合并扫 → codex 审查含"rate-limit"主题的代码时
-  // 输出里自然提到 "rate-limit" 等词被误判为限流。stdout 永远不该被扫。
-  // exit 0 = 成功，无论 stdout 含啥词都不是限流。
-  const isRealRateLimit = (result.error || result.status !== 0)
-    && RATE_LIMIT_PATTERNS.some(re => re.test(stderr));
+  // rate-limit 检测（仅 stderr，需 exit 非 0）
+  const isRealRateLimit = (result.error || result.exitCode !== 0)
+                       && RATE_LIMIT_PATTERNS.some(re => re.test(stderr));
 
   if (isRealRateLimit) {
     writeBlockFlag({ probeAttempts: 0 });
@@ -315,35 +381,45 @@ function runCodexAudit(opts) {
     };
   }
 
-  // 5. 其他错误（超时 / spawn 失败 / exit 非 0 但不是限流）
-  if (result.error || result.status !== 0) {
-    const detail = result.error?.message
-      || (stderr.split('\n').filter(Boolean).slice(-3).join(' | '))
-      || `exit ${result.status}`;
+  // 其他错误
+  if (result.error || result.exitCode !== 0) {
+    let detail;
+    if (result.idleTimeoutHit) detail = `idle timeout (no events for ${idleTimeoutMs}ms)`;
+    else if (result.totalTimeoutHit) detail = `total timeout (${totalTimeoutMs}ms)`;
+    else if (result.error) detail = result.error.message;
+    else detail = stderr.split('\n').filter(Boolean).slice(-3).join(' | ') || `exit ${result.exitCode}`;
     return {
       skipped: true,
       reason: `codex error: ${detail}`,
-      durationMs,
+      durationMs: result.durationMs,
+      events: result.events,
     };
   }
 
-  // 6. 成功
+  // 成功 — 累积 agent_message text 作为最终 output，提取 usage
+  const agentMessages = result.events
+    .filter(ev => ev?.type === 'item.completed' && ev?.item?.type === 'agent_message')
+    .map(ev => ev.item.text)
+    .filter(Boolean);
+  const output = agentMessages.join('\n').trim();
+
+  const turnCompleted = result.events.find(ev => ev?.type === 'turn.completed');
+  const tokensUsed = turnCompleted?.usage
+    ? (turnCompleted.usage.input_tokens || 0) + (turnCompleted.usage.output_tokens || 0)
+    : null;
+
   return {
     skipped: false,
-    output: stdout.trim(),
-    tokensUsed: parseTokenUsage(stderr + '\n' + stdout), // tokens 解析两边都看 OK
-    durationMs,
+    output,
+    tokensUsed,
+    durationMs: result.durationMs,
+    events: result.events,
   };
 }
 
-/**
- * 红队 prompt 模板库 (Level 1 对抗).
- * 调用方传 vars 填占位。
- */
+// ─── 红队 prompt 模板库（同 v2.7） ──────────────────────────────────────────
+
 const REDTEAM_TEMPLATES = {
-  /**
-   * 审 plan 找盲区
-   */
   audit_plan: ({ planContent, projectContext }) =>
 `你是经验丰富的资深架构师 + 渗透测试员。下面是一份开发 plan：
 
@@ -368,9 +444,6 @@ ${planContent}
 
 如果 plan 完美无缺，**你必须给反例**：构造一个能让这 plan 失败的实际场景。绝不写"plan 看起来不错"。`,
 
-  /**
-   * 审 git diff 找 bug
-   */
   audit_diff: ({ gitRange, focusAreas }) =>
 `你是渗透测试员 + 代码审查员。审 \`git diff ${gitRange || 'HEAD~1..HEAD'}\` 的改动。
 
@@ -393,9 +466,6 @@ ${focusAreas || `1. 安全：path traversal / command injection / secret 泄漏 
 
 如果你认为修复彻底，**用反证**: 构造一个能突破现有防御的 input。`,
 
-  /**
-   * 审一个 implementation step
-   */
   audit_implementation: ({ filePath, taskSpec }) =>
 `你是渗透测试员。Claude 刚实现了这个任务:
 
@@ -416,9 +486,6 @@ ${taskSpec}
 
 如果你认真审了找不到任何 bug，列 3 个**潜在未来 bug**（依赖外部条件 / 边界变化时会出问题），并给触发条件。`,
 
-  /**
-   * 审 PR / commit 综合
-   */
   audit_pr: ({ prNumber, gitRange, summary }) =>
 `你是 staff engineer 做 PR review。
 
@@ -441,11 +508,6 @@ summary: ${summary || '(从 commit message 读)'}
 - 修复建议`,
 };
 
-// For tests: 重置缓存的 codex bin 路径（让下次调用重新解析 CODEX_BIN_OVERRIDE）
-function _resetBinCache() {
-  cachedCodexPath = undefined;
-}
-
 module.exports = {
   runCodexAudit,
   isCodexInstalled,
@@ -454,10 +516,11 @@ module.exports = {
   writeBlockFlag,
   probeRecovery,
   shouldProbe,
-  parseTokenUsage,
   RATE_LIMIT_PATTERNS,
   REDTEAM_TEMPLATES,
   FLAG_PATH,
   PROBE_INTERVALS_MIN,
   _resetBinCache,
+  // 暴露 streaming 内部给高级用户
+  spawnCodexStream,
 };
